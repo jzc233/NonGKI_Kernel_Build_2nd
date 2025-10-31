@@ -66,7 +66,7 @@ env:
 
   REKERNEL_ENABLE: "true" # if u need Re:Kernel.
   
-  BASEBAND_GUARD_ENABLE: "false" #if u want prevent unauthorized writes to critical partitions/device nodes.
+  BASEBAND_GUARD_ENABLE: "true" #if u want prevent unauthorized writes to critical partitions/device nodes.
   BASEBAND_GUARD_BOOT: "false" #if u want to protect boot partition.
 
   HOOK_METHOD: "syscall" # manual hook method,can choice : normal, syscall and tracepoint.
@@ -116,6 +116,7 @@ jobs:
         run: |
           # Only ${{ env.DEVICE_NAME }} use it.
           cd $GITHUB_WORKSPACE/device_kernel
+          sed -i '/^CONFIG_LOCALVERSION=/ s/="\([^"]*\)"/=yu13140/' arch/arm64/configs/vendor/xiaomi-sdm439.config
           # Nothing
 
       - name: 🧰 Patch Kernel of Re:Kernel
