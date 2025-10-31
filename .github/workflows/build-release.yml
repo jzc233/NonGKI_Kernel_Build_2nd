@@ -53,7 +53,7 @@ jobs:
         | Samsung Note 10 Plus | d2s | 4.14 | OneUI 7 | 15 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ❌ | ❌ | Tracepoint |
         | Xiaomi 11 | venus | 5.4 | Evolution X 11.X | 16 | AnyKernel3 | SukiSU(U) | ✅ | ✅ | ✅ | ❌ | Tracepoint |
         | Smartisan U3 Pro | osborn | 4.4 | Lineage OS 18 | 11 | AnyKernel3 | rsuntk | ❌ | ❌ | ❌ | ❌ | Normal |
-        | Redmi 8 | olive | 4.19 | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | ✅ | ✅ | ❌ | Syscall |
+        | Redmi 8 | olive | 4.19 | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | ✅ | ✅ | ✅ | Syscall |
         | Redmi Note 7 | lavender | 4.19 | Based-AOSP | 15 | AnyKernel3 | Next | ✅ | ❌ | ❌ | ❌ | Syscall |
         | Samsung Note 10 | d1 | 4.14 | OneUI 7 | 15 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ❌ | ❌ | Tracepoint |
         | Redmi Note 11 Pro 5G | veux | 5.4 | Based-AOSP | 16 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ✅ | ❌ | Normal |
