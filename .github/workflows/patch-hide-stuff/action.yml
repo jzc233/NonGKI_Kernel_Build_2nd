@@ -1,0 +1,33 @@
+name: 'Patch Hide Stuff.'
+
+runs:
+  using: 'composite'
+  steps:
+      - name: Patch Hide Stuff
+        if: env.HIDE_STUFF == 'true'
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/device_kernel/
+
+          if grep -q "show_vma_header_prefix_fake" "fs/proc/task_mmu.c"; then
+            echo "[+] Found show_vma_header_prefix_fake."
+          else
+            cp /tmp/Patches/Patch/added_show_vma_header_prefix_fake.cocci ./
+            spatch --sp-file added_show_vma_header_prefix_fake.cocci --in-place fs/proc/task_mmu.c > /dev/null 2>&1
+            echo "[+] Added show_vma_header_prefix_fake."
+          fi
+
+          if grep "struct dentry \*dentry" "fs/proc/task_mmu.c"; then
+            echo "[+] Found variable."
+          else
+            sed -i '/const char \*name = NULL;/a\    struct dentry *dentry;' fs/proc/task_mmu.c
+            echo "[+] Added dentry."
+          fi
+
+          if grep -q "jit-zygote-cache" "fs/proc/task_mmu.c"; then
+            echo "[+] Found hide stuff."
+          else
+            cp /tmp/Patches/Patch/function_hide_stuff.cocci ./
+            spatch --sp-file function_hide_stuff.cocci --in-place fs/proc/task_mmu.c > /dev/null 2>&1
+            echo "[+] Added hide stuff."
+          fi
