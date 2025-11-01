@@ -46,3 +46,8 @@ runs:
             spatch --sp-file function_hide_stuff_partii.cocci --in-place fs/proc/base.c
             echo "[+] Added hide stuff part ii."
           fi
+
+          if grep -q "/dev/ashmem" "fs/proc/task_mmu.c"; then
+            sed -i 's|name = "/dev/ashmem (deleted)";|name = "/system/framework/framework-res.apk";|' test.txt
+            echo "[+] Changed ashmem to framework-res."
+          fi
