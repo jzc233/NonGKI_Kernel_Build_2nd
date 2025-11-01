@@ -9,6 +9,11 @@ runs:
         run: |
           cd $GITHUB_WORKSPACE/device_kernel/
 
+          # Set ENV
+          if [ "${{ env.SYSTEM_VERSION }}" == "oldest" ]; then
+            eval $(opam env)
+          fi
+
           if grep -q "show_vma_header_prefix_fake" "fs/proc/task_mmu.c"; then
             echo "[+] Found show_vma_header_prefix_fake."
           else
