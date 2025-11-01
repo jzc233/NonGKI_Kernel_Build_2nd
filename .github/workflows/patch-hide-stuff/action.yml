@@ -31,3 +31,10 @@ runs:
             spatch --sp-file function_hide_stuff.cocci --in-place fs/proc/task_mmu.c
             echo "[+] Added hide stuff."
           fi
+
+          if grep -q "bypass:" "fs/proc/task_mmu.c"; then
+            echo "[+] Found bypass."
+          else
+            sed -i '/show_vma_header_prefix(m, start, end, flags, pgoff, dev, ino);/a\bypass:' fs/proc/task_mmu.c
+            echo "[+] Added bypass."
+          fi
