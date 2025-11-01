@@ -48,6 +48,7 @@ runs:
           fi
 
           if grep -q "/dev/ashmem" "fs/proc/task_mmu.c"; then
-            sed -i 's|name = "/dev/ashmem (deleted)";|name = "/system/framework/framework-res.apk";|' test.txt
+            sed -i 's|"/dev/ashmem (deleted)"|"/system/framework/framework-res.apk"|' fs/proc/task_mmu.c
+            sed -i 's|"/dev/ashmem (deleted)"|"/system/framework/framework-res.apk"|' fs/proc/base.c
             echo "[+] Changed ashmem to framework-res."
           fi
