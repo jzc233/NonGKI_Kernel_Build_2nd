@@ -95,7 +95,7 @@ runs:
             apt-get install libtinfo5 -y
 
             # Install Coccinelle
-            apt-get install opam pkg-config libpcre3-dev python3-dev -y
+            apt-get install ocaml opam pkg-config libpcre3-dev python3-dev -y
             opam init
             opam update
             opam install coccinelle
