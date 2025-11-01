@@ -13,7 +13,7 @@ runs:
             echo "[+] Found show_vma_header_prefix_fake."
           else
             cp /tmp/Patches/Patch/added_show_vma_header_prefix_fake.cocci ./
-            spatch --sp-file added_show_vma_header_prefix_fake.cocci --in-place fs/proc/task_mmu.c > /dev/null 2>&1
+            spatch --sp-file added_show_vma_header_prefix_fake.cocci --in-place fs/proc/task_mmu.c
             echo "[+] Added show_vma_header_prefix_fake."
           fi
 
@@ -28,6 +28,6 @@ runs:
             echo "[+] Found hide stuff."
           else
             cp /tmp/Patches/Patch/function_hide_stuff.cocci ./
-            spatch --sp-file function_hide_stuff.cocci --in-place fs/proc/task_mmu.c > /dev/null 2>&1
+            spatch --sp-file function_hide_stuff.cocci --in-place fs/proc/task_mmu.c
             echo "[+] Added hide stuff."
           fi
