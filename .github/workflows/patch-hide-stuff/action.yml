@@ -35,8 +35,13 @@ runs:
           if grep -q "bypass:" "fs/proc/task_mmu.c"; then
             echo "[+] Found bypass."
           else
-            sed -i '/show_vma_header_prefix(m, start, end, flags, pgoff, dev, ino);/a\bypass:' fs/proc/task_mmu.c
-            echo "[+] Added bypass."
+            if grep -q 'if (show_vma_header_prefix' "fs/proc/task_mmu.c"; then
+                perl -i -0pe 's/(if \(show_vma_header_prefix\(m, start, end, flags, pgoff, dev, ino\)\)\s+return;)/$1\nbypass:/s' fs/proc/task_mmu.c
+                echo "[+] Added bypass."
+            else
+                sed -i '/show_vma_header_prefix(m, start, end, flags, pgoff, dev, ino);/a\bypass:' fs/proc/task_mmu.c
+                echo "[+] Added bypass."
+            fi
           fi
 
           if grep -q "lineage" "fs/proc/base.c"; then
