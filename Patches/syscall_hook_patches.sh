@@ -158,7 +158,7 @@ for i in "${patch_files[@]}"; do
     # kernel/ changes
     ## kernel/reboot.c
     kernel/reboot.c)
-        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c" then
+        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c"; then
             sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
             sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
         fi
