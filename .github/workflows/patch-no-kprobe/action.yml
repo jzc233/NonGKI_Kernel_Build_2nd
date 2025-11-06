@@ -47,8 +47,7 @@ runs:
           }
 
           # Check hook
-          if grep -q "ksu_handle" "fs/exec.c"; then
-            grep -r "ksu_handle" "fs/exec.c"
+          if grep -q "can_umount" "fs/namespace.c" && grep -q "ksu_init" "fs/exec.c"; then
             echo "Your kernel source code appears to have been manually patched, so this step is skipped."
 
           # Check normal hook
