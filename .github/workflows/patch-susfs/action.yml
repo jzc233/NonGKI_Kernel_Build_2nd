@@ -276,6 +276,14 @@ runs:
             echo "============================================================"
           fi
 
+          # Clean SUS_SU
+          CLEAN_FILES=("fs/devpts/inode.c" "fs/exec.c" "fs/open.c" "fs/stat.c")
+
+          for file in "${CLEAN_FILES[@]}"; do
+            sed -i '/#ifdef CONFIG_KSU_SUSFS_SUS_SU/,/#endif/d' "${file}"
+            echo "Cleaned SUS_SU for ${file}."
+          done
+
       - name: Updated SUSFS Patch Fixed
         if: env.SUSFS_ENABLE == 'true' && env.SUSFS_UPDATE == 'true' && env.SUSFS_SKIP != 'true'
         shell: bash
