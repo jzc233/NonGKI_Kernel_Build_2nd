@@ -7,7 +7,7 @@
 | Xiaomi 11 | All | venus | [5.4/kamikaonashi/venus](https://github.com/kamikaonashi/kernel_xiaomi_venus) | Evolution X 11.X | 16 | AnyKernel3 | SukiSU(U) | ✅ | Tracepoint | ✅ | ✅ | ❌ | Stable |  
 | Xiaomi Mix2s | All | polaris | [4.19/duckyduckG/sdm845_419](https://github.com/duckyduckG/android_kernel_xiaomi_sdm845_419) | Based AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | Tracepoint | ❌ | ❌ | ❌ | Testing |  
 | Redmi Note 10 Pro | CN | chopin | [4.14/ChopinKernels/android_T](https://github.com/ChopinKernels/android_kernel_chopin_android_T) | MIUI | 13 | AnyKernel3 | SukiSU(U) | ❌ | Normal | ❌ | ❌ | ❌ | Testing |  
-| Smartisan U3 Pro | CN | osborn | [4.4/anrui2032/LineageOS](https://github.com/anrui2032/android_kernel_smartisan_sdm660) | Lineage OS 18 | 11 | AnyKernel3 | rsuntk | ❌ | Normal | ❌ | ❌ | ❌ | Stable |  
+| Smartisan U3 Pro | CN | osborn | [4.4/anrui2032/LineageOS](https://github.com/anrui2032/android_kernel_smartisan_sdm660) | Lineage OS 18 | 11 | AnyKernel3 | SukiSU(U) | ❌ | Normal | ❌ | ❌ | ❌ | Stable |  
 | Redmi Note 10 Pro | INT | sweet | [4.14/negrroo/Lawrun_sm6150](https://github.com/negrroo/LawRun_xiaomi_sm6150) | MIUI | 13 | AnyKernel3 | rsuntk | ❌ | Normal | ❌ | ❌ | ❌ | Testing |  
 | Redmi 8 | All | olive | [4.19/blazey66/sdm439-4.19](https://github.com/blazey66/android_kernel_xiaomi_sdm439-4.19) | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | Syscall | ✅ | ✅ | ✅ | Stable |  
 | Redmi Note 7 | CN | lavender | [4.19/pix106/southwest](https://github.com/pix106/android_kernel_xiaomi_southwest-4.19) | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | Syscall | ❌ | ❌ | ❌ | Stable |  
