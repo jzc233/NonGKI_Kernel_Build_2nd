@@ -289,6 +289,16 @@ runs:
             fi
           fi
 
+          # Fixed no member named security
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
+            if grep -q "security" "include/linux/signal.h" && [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
+                echo "[+] Skipped it!"
+            else
+                sed -i '/struct thread_struct thread;/i \    void *security;' include/linux/signal.h
+                echo "[+] Changed successfully!"
+            fi
+          fi
+
       - name: KPM Function Support
         if: env.KPM_ENABLE == 'true'
         shell: bash
