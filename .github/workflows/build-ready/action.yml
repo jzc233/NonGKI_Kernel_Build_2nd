@@ -254,6 +254,31 @@ runs:
           fi
           echo "KERNELSU_METHOD=${{ env.KERNELSU_METHOD }}" >> $GITHUB_ENV
 
+      - name: KernelSU Additional Process
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/device_kernel
+
+          # Some Kernel could not support selinux_cred
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
+            if grep -q "selinux_cred" "security/selinux/include/objsec.h"; then
+                echo "[+] Detected selinux_cred in objsec.h!"
+            else
+                sed -i 's/selinux_cred(cred)/cred->security/g' drivers/kernelsu/selinux/selinux.c
+                echo "[+] Changed successfully!"
+            fi
+          fi
+
+          # Fixed too many arguments to function call
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
+            if [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
+                sed -i 's/fsnotify_init_mark(m, g, m_free)/fsnotify_init_mark(m, m_free)/g' drivers/kernelsu/pkg_observer.c
+                echo "[+] Changed successfully!"
+            else
+                echo "[+] Skipped it!"
+            fi
+          fi
+
       - name: KPM Function Support
         if: env.KPM_ENABLE == 'true'
         shell: bash
