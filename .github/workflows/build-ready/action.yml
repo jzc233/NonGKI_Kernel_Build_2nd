@@ -279,6 +279,16 @@ runs:
             fi
           fi
 
+          # Fixed not found signal.h
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
+            if [ -f "include/linux/sched/signal.h" ]; then
+                echo "[+] Skipped it!"
+            else
+                sed -i 's|<linux/sched/signal.h>|<linux/signal.h>|g' drivers/kernelsu/core_hook.c
+                echo "[+] Changed successfully!"
+            fi
+          fi
+
       - name: KPM Function Support
         if: env.KPM_ENABLE == 'true'
         shell: bash
