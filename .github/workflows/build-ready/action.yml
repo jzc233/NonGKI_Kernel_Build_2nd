@@ -291,10 +291,10 @@ runs:
 
           # Fixed no member named security
           if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
-            if grep -q "security" "include/linux/signal.h" && [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
-                echo "[+] Skipped it!"
+            if grep -q "security" "include/linux/sched/signal.h" && [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
+                echo "[+] Detected security in signal.h!"
             else
-                sed -i '/struct thread_struct thread;/i \    void *security;' include/linux/signal.h
+                sed -i '/DEFINE_MEMBER(task_struct, security)/d' drivers/kernelsu/kpm/super_access.c
                 echo "[+] Changed successfully!"
             fi
           fi
