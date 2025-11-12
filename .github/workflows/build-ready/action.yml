@@ -159,14 +159,14 @@ runs:
             fi
 
             if [[ "${{ env.KERNELSU_METHOD }}" == "shell" ]]; then
-                curl -sSL "https://raw.githubusercontent.com/$KERNELSU_AUTHOR/$KERNELSU_NAME/refs/heads/$KERNELSU_ORIGIN_BRANCH/kernel/setup.sh" | bash -s "$KERNELSU_BRANCH"
+                curl -sSL "https://raw.githubusercontent.com/${KERNELSU_AUTHOR}/${KERNELSU_NAME}/refs/heads/${KERNELSU_ORIGIN_BRANCH}/kernel/setup.sh" | bash -s "$KERNELSU_BRANCH"
             elif [[ "${{ env.KERNELSU_METHOD }}" == "manual" ]]; then
                 rm -rf *KernelSU*
                 rm -rf drivers/kernelsu
                 git clone "https://github.com/$KERNELSU_AUTHOR/$KERNELSU_NAME.git" -b "$KERNELSU_BRANCH" "$KERNELSU_FOLDER"
-                ln -sf "$(realpath --relative-to="$GITHUB_WORKSPACE/device_kernel/drivers" "$GITHUB_WORKSPACE/device_kernel/$KERNELSU_FOLDER/kernel")" "kernelsu"
+                ln -sf "../$KERNELSU_FOLDER/kernel" "drivers/kernelsu"
                 grep -q "kernelsu" "$GITHUB_WORKSPACE/device_kernel/drivers/Makefile" || printf "\nobj-\$(CONFIG_KSU) += kernelsu/\n" >> $GITHUB_WORKSPACE/device_kernel/drivers/Makefile
-                grep -q "source \"drivers/kernelsu/Kconfig\"" "$GITHUB_WORKSPACE/device_kernel/drivers/Kconfig" || sed -i "/endmenu/i\source \"drivers/kernelsu/Kconfig\"" "$GITHUB_WORKSPACEdevice_kernel/drivers/Kconfig"
+                grep -q "source \"drivers/kernelsu/Kconfig\"" "$GITHUB_WORKSPACE/device_kernel/drivers/Kconfig" || sed -i "/endmenu/i\source \"drivers/kernelsu/Kconfig\"" "${GITHUB_WORKSPACE}/device_kernel/drivers/Kconfig"
                 echo "KernelSU Settings done."
             elif [[ "${{ env.KERNELSU_METHOD }}" == "only" ]]; then
                 rm -rf *KernelSU*
@@ -191,9 +191,9 @@ runs:
                 rm -rf *KernelSU*
                 rm -rf drivers/kernelsu
                 git clone "${{ env.KERNELSU_SOURCE }}" -b "${{ env.KERNELSU_BRANCH }}" "$KERNELSU_FOLDER"
-                ln -sf "$(realpath --relative-to="$GITHUB_WORKSPACE/device_kernel/drivers" "$GITHUB_WORKSPACE/device_kernel/$KERNELSU_FOLDER/kernel")" "kernelsu"
+                ln -sf "../$KERNELSU_FOLDER/kernel" "drivers/kernelsu"
                 grep -q "kernelsu" "$GITHUB_WORKSPACE/device_kernel/drivers/Makefile" || printf "\nobj-\$(CONFIG_KSU) += kernelsu/\n" >> $GITHUB_WORKSPACE/device_kernel/drivers/Makefile
-                grep -q "source \"drivers/kernelsu/Kconfig\"" "$GITHUB_WORKSPACE/device_kernel/drivers/Kconfig" || sed -i "/endmenu/i\source \"drivers/kernelsu/Kconfig\"" "$GITHUB_WORKSPACEdevice_kernel/drivers/Kconfig"
+                grep -q "source \"drivers/kernelsu/Kconfig\"" "$GITHUB_WORKSPACE/device_kernel/drivers/Kconfig" || sed -i "/endmenu/i\source \"drivers/kernelsu/Kconfig\"" "${GITHUB_WORKSPACE}/device_kernel/drivers/Kconfig"
                 echo "KernelSU Settings done."
             elif [[ "${{ env.KERNELSU_METHOD }}" == "only" ]]; then
                 rm -rf *KernelSU*
@@ -342,6 +342,30 @@ runs:
           # Fork
           if [[ "${{ env.KERNELSU_SOURCE }}" == *rsuntk* ]] || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "rsuntk" ]]; then
             echo "CONFIG_KSU_MANUAL_HOOK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+          fi
+
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *next* ]] || [[ "${{ env.KERNELSU_SOURCE }}" == *wild* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "wild" ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "next" ]]; then
+
+            if grep -q "CONFIG_OVERLAY_FS" "./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}"; then
+                echo "Detected overlayfs, skipped."
+            else
+                echo "CONFIG_OVERLAY_FS=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+                echo "==============================================================Warning=============================================================="
+                echo "=                                 Your device defconfig does not have overlayfs enabled by default                                ="
+                echo "=                                                     it will be enabled next                                                     ="
+                echo "=                                But this will most likely cause your device to generate bootloop!                                ="
+                echo "=It is therefore recommended that you replace the KernelSU Fork with a KernelSU Fork that does not require the Overlay FS feature.="
+                echo "=                                                                                                                                 ="
+                echo "=                                      KernelSU Fork currently known to require Overlay FS :                                      ="
+                echo "=                                           KernelSU Next, Wild KSU, KernelSU Official.                                           ="
+                echo "==================================================================================================================================="
+            fi
+
+            echo "CONFIG_KSU_KPROBES_HOOK=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+          fi
+
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *blackslashxx* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "magic" ]]; then
+            echo "KSU_KPROBES_KSUD=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
           fi
 
           if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
