@@ -29,10 +29,10 @@ env:
   DEFCONFIG_ORIGIN_IMAGE: ""
   DEFCONFIG_FROM_BOOT: false
 
-  KERNELSU_SOURCE : ""
-  KERNELSU_BRANCH : ""
+  KERNELSU_SOURCE : "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh"
+  KERNELSU_BRANCH : "staging"
 
-  KERNELSU_AUTO_GET : "true"
+  KERNELSU_AUTO_GET : "false"
   KERNELSU_AUTO_FORK : "next" # magic, rsuntk , next and sukisu
 
   SUSFS_ENABLE : false
