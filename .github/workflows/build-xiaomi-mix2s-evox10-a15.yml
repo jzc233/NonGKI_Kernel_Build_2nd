@@ -29,8 +29,8 @@ env:
   DEFCONFIG_ORIGIN_IMAGE: ""
   DEFCONFIG_FROM_BOOT: false
 
-  KERNELSU_SOURCE : "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/refs/heads/susfs-BBG-prctl/kernel/setup.sh"
-  KERNELSU_BRANCH : "susfs-BBG-prctl"
+  KERNELSU_SOURCE : ""
+  KERNELSU_BRANCH : ""
 
   KERNELSU_AUTO_GET : "true"
   KERNELSU_AUTO_FORK : "rsuntk" # magic, rsuntk , next and sukisu
