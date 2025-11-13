@@ -137,7 +137,7 @@ EOF
     # include/ changes
     ## linux/seccomp.h
     include/linux/seccomp.h)
-        if grep "atomic_t filter_count;" "/include/linux/seccomp.h"; then
+        if grep "atomic_t filter_count;" "include/linux/seccomp.h"; then
             sed -i '/int mode;/a\	atomic_t filter_count;' include/linux/seccomp.h
             sed -i '/#include <linux\/thread_info.h>/a\#include <linux/atomic.h>' include/linux/seccomp.h
         fi
