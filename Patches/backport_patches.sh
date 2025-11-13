@@ -53,6 +53,7 @@ for i in "${patch_files[@]}"; do
     security/selinux/hooks.c)
         sed -i 's/struct inode_security_struct \*isec = inode->i_security/struct inode_security_struct *isec = selinux_inode(inode)/g' security/selinux/hooks.c
         sed -i 's/return inode->i_security/return selinux_inode(inode)/g' security/selinux/hooks.c
+        sed -i 's/\bisec = inode->i_security;/isec = selinux_inode(inode);/' security/selinux/hooks.c
         ;;
     ## selinux/selinuxfs.c
     security/selinux/selinuxfs.c)
