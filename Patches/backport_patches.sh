@@ -6,10 +6,9 @@
 patch_files=(
     fs/namespace.c
     fs/internal.h
-    kernel/trace/bpf_trace.c
-    kernel/trace/trace_kprobe.c
-    include/linux/uaccess.h
-    mm/maccess.c
+    security/selinux/hooks.c
+    security/selinux/selinuxfs.c
+    security/selinux/include/objsec.h
     include/linux/seccomp.h
 )
 
@@ -22,10 +21,7 @@ for i in "${patch_files[@]}"; do
     if grep -q "path_umount" "$i"; then
         echo "Warning: $i contains KernelSU"
         continue
-    elif grep -q "get_cred_rcu" "$i"; then
-        echo "Warning: $i contains KernelSU"
-        continue
-    elif grep -q "strncpy_from_user_nofault" "$i"; then
+    elif grep -q "selinux_inode(inode)" "$i"; then
         echo "Warning: $i contains KernelSU"
         continue
     fi
@@ -53,65 +49,18 @@ for i in "${patch_files[@]}"; do
         fi
         ;;
 
-    # kernel/ changes
-    ## kernel/trace
-    ### kernel/trace/bpf_trace.c
-    kernel/trace/bpf_trace.c)
-        if [ "$KERNEL_VERSION" == "5.4" ]; then
-            sed -i 's/\bstrncpy_from_unsafe_user\b/strncpy_from_user_nofault/g' kernel/trace/bpf_trace.c
-        fi
+    # security/
+    ## selinux/hooks.c
+    security/selinux/hooks.c)
+        sed -i 's/inode->i_security/selinux_inode(inode)/g' security/selinux/hooks.c
         ;;
-    ### kernel/trace/trace_kprobe.c
-    kernel/trace/trace_kprobe.c)
-        if [ "$KERNEL_VERSION" == "5.4" ]; then
-            sed -i 's/\bstrncpy_from_unsafe_user\b/strncpy_from_user_nofault/g' kernel/trace/trace_kprobe.c
-        fi
+    ## selinux/selinuxfs.c
+    security/selinux/selinuxfs.c)
+        sed -i 's/(struct inode_security_struct \*)inode->i_security/selinux_inode(inode)/g' security/selinux/selinuxfs.c
         ;;
-
-    # include/ changes
-    ## include/linux/uaccess.h
-    include/linux/uaccess.h)
-        if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 18 ]; then
-            sed -i '/#endif\t\t\/\* ARCH_HAS_NOCACHE_UACCESS \*\//a long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr, long count);' include/linux/uaccess.h
-        else
-            sed -i 's/^extern long strncpy_from_unsafe_user/long strncpy_from_user_nofault/' include/linux/uaccess.h
-        fi
-        ;;
-
-    # mm/ changes
-    ## mm/maccess.c
-    mm/maccess.c)
-        if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 18 ]; then
-            cat <<EOF >> mm/maccess.c
-long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr, long count)
-{
-	mm_segment_t old_fs = get_fs();
-	long ret;
-
-	if (unlikely(count <= 0))
-		return 0;
-
-	set_fs(USER_DS);
-	pagefault_disable();
-	ret = strncpy_from_user(dst, unsafe_addr, count);
-	pagefault_enable();
-	set_fs(old_fs);
-
-	if (ret >= count) {
-		ret = count;
-		dst[ret - 1] = '\0';
-	} else if (ret > 0) {
-		ret++;
-	}
-
-	return ret;
-}
-EOF
-
-        else
-            sed -i 's/\* strncpy_from_unsafe_user: - Copy a NUL terminated string from unsafe user/\* strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user/' mm/maccess.c
-            sed -i 's/long strncpy_from_unsafe_user(char \*dst, const void __user \*unsafe_addr,/long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,/' mm/maccess.c
-        fi
+    ## selinux/include/objsec.h
+    security/selinux/include/objsec.h)
+        sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct inode_security_struct *selinux_inode(\n\t\t\t\t\t\tconst struct inode *inode)\n{\n\treturn inode->i_security;\n}' security/selinux/include/objsec.h
         ;;
 
     # include/ changes
