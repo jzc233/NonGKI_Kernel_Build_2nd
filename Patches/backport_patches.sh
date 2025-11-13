@@ -9,7 +9,6 @@ patch_files=(
     security/selinux/hooks.c
     security/selinux/selinuxfs.c
     security/selinux/include/objsec.h
-    include/linux/seccomp.h
 )
 
 KERNEL_VERSION=$(head -n 3 Makefile | grep -E 'VERSION|PATCHLEVEL' | awk '{print $3}' | paste -sd '.')
@@ -62,15 +61,6 @@ for i in "${patch_files[@]}"; do
     ## selinux/include/objsec.h
     security/selinux/include/objsec.h)
         sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct inode_security_struct *selinux_inode(\n\t\t\t\t\t\tconst struct inode *inode)\n{\n\treturn inode->i_security;\n}' security/selinux/include/objsec.h
-        ;;
-
-    # include/ changes
-    ## linux/seccomp.h
-    include/linux/seccomp.h)
-        if grep "atomic_t filter_count;" "include/linux/seccomp.h"; then
-            sed -i '/int mode;/a\	atomic_t filter_count;' include/linux/seccomp.h
-            sed -i '/#include <linux\/thread_info.h>/a\#include <linux/atomic.h>' include/linux/seccomp.h
-        fi
         ;;
     esac
 
