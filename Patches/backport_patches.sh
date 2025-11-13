@@ -52,7 +52,8 @@ for i in "${patch_files[@]}"; do
     # security/
     ## selinux/hooks.c
     security/selinux/hooks.c)
-        sed -i 's/inode->i_security/selinux_inode(inode)/g' security/selinux/hooks.c
+        sed -i 's/struct inode_security_struct \*isec = inode->i_security/struct inode_security_struct *isec = selinux_inode(inode)/g' security/selinux/hooks.c
+        sed -i 's/return inode->i_security/return selinux_inode(inode)/g' security/selinux/hooks.c
         ;;
     ## selinux/selinuxfs.c
     security/selinux/selinuxfs.c)
@@ -66,7 +67,7 @@ for i in "${patch_files[@]}"; do
     # include/ changes
     ## linux/seccomp.h
     include/linux/seccomp.h)
-        if grep "atomic_t filter_count;" "/include/linux/seccomp.h"; then
+        if grep "atomic_t filter_count;" "include/linux/seccomp.h"; then
             sed -i '/int mode;/a\	atomic_t filter_count;' include/linux/seccomp.h
             sed -i '/#include <linux\/thread_info.h>/a\#include <linux/atomic.h>' include/linux/seccomp.h
         fi
