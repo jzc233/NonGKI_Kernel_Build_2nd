@@ -21,13 +21,13 @@ SECOND_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $2}')
 for i in "${patch_files[@]}"; do
 
     if grep -q "path_umount" "$i"; then
-        echo "Warning: $i contains KernelSU"
+        echo "Warning: $i contains Backport"
         continue
     elif grep -q "get_cred_rcu" "$i"; then
-        echo "Warning: $i contains KernelSU"
+        echo "Warning: $i contains Backport"
         continue
     elif grep -q "strncpy_from_user_nofault" "$i"; then
-        echo "Warning: $i contains KernelSU"
+        echo "Warning: $i contains Backport"
         continue
     fi
 
