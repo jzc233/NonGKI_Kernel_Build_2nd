@@ -32,7 +32,7 @@ env:
   KERNELSU_SOURCE : ""
   KERNELSU_BRANCH : ""
 
-  KERNELSU_AUTO_GET : "false"
+  KERNELSU_AUTO_GET : "true"
   KERNELSU_AUTO_FORK : "magic" # magic, rsuntk , next and sukisu
 
   SUSFS_ENABLE : false
