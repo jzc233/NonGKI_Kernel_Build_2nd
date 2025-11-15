@@ -186,6 +186,8 @@ jobs:
           echo "CONFIG_CRYPTO_LZ4KD=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Simple LMK
+          sed -i '/obj-\$(CONFIG_ANDROID_BINDER_IPC_SELFTEST) += binder_alloc_selftest.o/a obj-\$(CONFIG_ANDROID_SIMPLE_LMK)\t+= simple_lmk.o' drivers/android/Makefile
+
           echo "# CONFIG_MEMCG is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "# CONFIG_MEMCG_SWAP is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "# CONFIG_MEMCG_SWAP_ENABLED is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
