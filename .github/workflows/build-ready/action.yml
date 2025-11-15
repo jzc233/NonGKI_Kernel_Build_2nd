@@ -284,7 +284,8 @@ runs:
             if [ -f "include/linux/sched/signal.h" ]; then
                 echo "[+] Skipped it!"
             else
-                sed -i 's|<linux/sched/signal.h>|<linux/signal.h>|g' drivers/kernelsu/core_hook.c
+                sed -i 's|<linux/sched/signal.h>|<linux/signal.h>|g' drivers/kernelsu/setuid_hook.c
+                sed -i 's|<linux/sched/signal.h>|<linux/signal.h>|g' drivers/kernelsu/app_profile.c
                 echo "[+] Changed successfully!"
             fi
           fi
