@@ -56,7 +56,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/SYSCALL_DEFINE3(execve,/i \#ifdef CONFIG_KSU\nextern __attribute__((hot)) int ksu_handle_execve_sucompat(int \*fd,\n\t\t\t\tconst char __user \*\*filename_user,\n\t\t\t\tvoid \*__never_use_argv,\n\t\t\t\tvoid \*__never_use_envp,\n\t\t\t\tint \*__never_use_flags);\n#endif' fs/exec.c
             sed -i '/struct filename \*path = getname(filename);/i \#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int \*)AT_FDCWD, &filename, NULL, NULL, NULL);\n#endif' fs/exec.c
         else
-            sed -i '/^SYSCALL_DEFINE3(execve,/i\#ifdef CONFIG_KSU\n__attribute__((hot))\nextern int ksu_handle_execve_sucompat(int *fd, const char __user **filename_user,\n\t\t\t\tvoid *__never_use_argv, void *__never_use_envp,\n\t\t\t\tint *__never_use_flags);\n#endif\n' fs/exec.c
+            sed -i '/^SYSCALL_DEFINE3(execve,/i\#ifdef CONFIG_KSU\n__attribute__((hot))\nextern int ksu_handle_execve_sucompat(int *fd,  const char __user **filename_user,\n\t\t\t\tvoid *__never_use_argv, void *__never_use_envp,\n\t\t\t\tint *__never_use_flags);\n#endif\n' fs/exec.c
             sed -i '/return do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
             sed -i '/return compat_do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
         fi
@@ -192,7 +192,7 @@ for i in "${patch_files[@]}"; do
     # kernel/ changes
     ## kernel/reboot.c
     kernel/reboot.c)
-        if [ -f "drivers/kernelsu/core_hook.c" ]; then
+        if [ -f "drivers/kernelsu/supercalls.c" ] || [ -f "drivers/kernelsu/core_hook.c" ]; then
             if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c"; then
                 sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
@@ -202,9 +202,7 @@ for i in "${patch_files[@]}"; do
                 else
                     echo "[-] kernel/reboot.c repair failed for unknown reasons, please provide feedback in time."
                 fi
-            fi
-        elif [ -f "drivers/kernelsu/supercalls.c" ]; then
-            if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c"; then
+            elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c"; then
                 sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
@@ -214,6 +212,8 @@ for i in "${patch_files[@]}"; do
                     echo "[-] kernel/reboot.c repair failed for unknown reasons, please provide feedback in time."
                 fi
             fi
+        else
+            echo "KernelSU have no sys_reboot, Skipped."
         fi
         ;;
     esac
