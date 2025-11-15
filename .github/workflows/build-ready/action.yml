@@ -404,12 +404,6 @@ runs:
             fi
 
           fi
+          echo "=================================="
+          cat device_kernel/arch/arm64/configs/vendor/xiaomi/mi845_defconfig
           false
-
-      - name: Upload Defconfig to debugging
-        if: env.BUILD_DEBUGGER == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: patch_rejected_files
-          path: |
-            device_kernel/arch/arm64/configs/vendor/xiaomi/mi845_defconfig
