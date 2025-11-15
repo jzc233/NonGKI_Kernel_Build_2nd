@@ -27,7 +27,7 @@ echo "Current patch version:$PATCH_LEVEL"
 for i in "${patch_files[@]}"; do
 
     if grep -q "ksu" "$i"; then
-        grep -r "ksu" "$i"
+        grep -n "ksu" "$i"
         echo "Warning: $i contains KernelSU"
         continue
     fi
@@ -143,7 +143,7 @@ for i in "${patch_files[@]}"; do
                 # sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
                 echo "Skipped."
             fi
-        elif [ -f "kernel/supercalls.c" ]; then
+        elif [ -f "drivers/kernelsu/supercalls.c" ]; then
             if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c"; then
                 # sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 # sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
