@@ -217,7 +217,7 @@ runs:
           REJ_FOUND "1.5.9"
 
           # Upgrade 1.5.10
-          if grep -q "CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING" "drivers/kernelsu/core_hook.c"; then
+          if grep -q "CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING" "drivers/kernelsu/core_hook.c" || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
             cp /tmp/Patches/Patch/susfs_upgrade_to_1510_${{ env.KERNEL_VERSION }}.patch ./
             patch -p1 < susfs_upgrade_to_1510_${{ env.KERNEL_VERSION }}.patch || true
             echo "================="
@@ -232,7 +232,7 @@ runs:
           fi
 
           # Upgrade 1.5.11
-          if grep -q "susfs_reorder_mnt_id" "drivers/kernelsu/core_hook.c"; then
+          if grep -q "susfs_reorder_mnt_id" "drivers/kernelsu/core_hook.c" || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
             cp /tmp/Patches/Patch/susfs_upgrade_to_1511_${{ env.KERNEL_VERSION }}.patch ./
             patch -p1 < susfs_upgrade_to_1511_${{ env.KERNEL_VERSION }}.patch || true
             echo "================="
@@ -247,7 +247,7 @@ runs:
           fi
 
           # Upgrade 1.5.12
-          if grep -q "susfs_reorder_mnt_id" "drivers/kernelsu/core_hook.c"; then
+          if grep -q "susfs_reorder_mnt_id" "drivers/kernelsu/core_hook.c" || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
             cp /tmp/Patches/Patch/susfs_upgrade_to_1512_${{ env.KERNEL_VERSION }}.patch ./
             patch -p1 < susfs_upgrade_to_1512_${{ env.KERNEL_VERSION }}.patch || true
             echo "================="
@@ -262,7 +262,7 @@ runs:
           fi
 
           # Upgrade 1.5.13
-          if grep -q "CMD_SUSFS_ADD_SUS_MAP" "drivers/kernelsu/core_hook.c"; then
+          if grep -q "CMD_SUSFS_ADD_SUS_MAP" "drivers/kernelsu/core_hook.c" || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
             cp /tmp/Patches/Patch/susfs_upgrade_to_1513_${{ env.KERNEL_VERSION }}.patch ./
             patch -p1 < susfs_upgrade_to_1513_${{ env.KERNEL_VERSION }}.patch || true
             echo "================="
