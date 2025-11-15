@@ -23,10 +23,7 @@ for i in "${patch_files[@]}"; do
     if grep -q "path_umount" "$i"; then
         echo "Warning: $i contains Backport"
         continue
-    elif grep -q "selinux_inode" "$i"; then
-        echo "Warning: $i contains Backport"
-        continue
-    elif grep -q "selinux_cred" "$i"; then
+    elif grep -q "selinux_inode(inode)" "$i"; then
         echo "Warning: $i contains Backport"
         continue
     fi
