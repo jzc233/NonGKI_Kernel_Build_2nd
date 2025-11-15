@@ -405,5 +405,5 @@ runs:
 
           fi
           echo "=================================="
-          cat device_kernel/arch/arm64/configs/vendor/xiaomi/mi845_defconfig
+          cat arch/arm64/configs/vendor/xiaomi/mi845_defconfig
           false
