@@ -41,7 +41,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/asmlinkage int sys_execve(const char __user \*filenamei,/i \#ifdef CONFIG_KSU\nextern int __attribute__((hot)) ksu_handle_execve_sucompat(int \*fd,\n\t\t\t\tconst char __user \*\*filename_user,\n\t\t\t\tvoid \*__never_use_argv, void \*__never_use_envp,\n\t\t\t\tint \*__never_use_flags);\n#endif' arch/arm/kernel/sys_arm.c
             sed -i '/filename = getname(filenamei);/i \#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int \*)AT_FDCWD, &filenamei, NULL, NULL, NULL);\n#endif' arch/arm/kernel/sys_arm.c
 
-            if grep "ksu_handle_execve_sucompat" "arch/arm/kernel/sys_arm.c"; then
+            if grep -q "ksu_handle_execve_sucompat" "arch/arm/kernel/sys_arm.c"; then
                 echo "[+] arch/arm/kernel/sys_arm.c Patched!"
             else
                 echo "[-] arch/arm/kernel/sys_arm.c repair failed for unknown reasons, please provide feedback in time."
@@ -61,7 +61,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/return compat_do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
         fi
 
-        if grep "ksu_handle_execve_sucompat" "fs/exec.c"; then
+        if grep -q "ksu_handle_execve_sucompat" "fs/exec.c"; then
             echo "[+] fs/exec.c Patched!"
         else
             echo "[-] fs/exec.c repair failed for unknown reasons, please provide feedback in time."
@@ -78,7 +78,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/return do_faccessat(dfd, filename, mode);/i \#ifdef CONFIG_KSU\n\tksu_handle_faccessat(&dfd, &filename, &mode, NULL);\n#endif' fs/open.c
         fi
 
-        if grep "ksu_handle_faccessat" "fs/open.c"; then
+        if grep -q "ksu_handle_faccessat" "fs/open.c"; then
             echo "[+] fs/open.c Patched!"
         else
             echo "[-] fs/open.c repair failed for unknown reasons, please provide feedback in time."
@@ -95,7 +95,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/return ksys_read(fd, buf, count);/i\#ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, &buf, &count);\n#endif' fs/read_write.c
         fi
 
-        if grep "ksu_handle_sys_read" "fs/read_write.c"; then
+        if grep -q "ksu_handle_sys_read" "fs/read_write.c"; then
             echo "[+] fs/read_write.c Patched!"
         else
             echo "[-] fs/read_write.c repair failed for unknown reasons, please provide feedback in time."
@@ -105,9 +105,9 @@ for i in "${patch_files[@]}"; do
     ## stat.c
     fs/stat.c)
         sed -i '/^#if !defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_SYS_NEWFSTATAT)/i\#ifdef CONFIG_KSU\n__attribute__((hot))\nextern int ksu_handle_stat(int *dfd, const char __user **filename_user,\n\t\t\t\tint *flags);\n#endif\n' fs/stat.c
-        ed -i '/error = vfs_fstatat(dfd, filename, \&stat, flag);/i\#ifdef CONFIG_KSU\n\tksu_handle_stat(\&dfd, \&filename, \&flag);\n#endif' fs/stat.c
+        sed -i '/error = vfs_fstatat(dfd, filename, \&stat, flag);/i\#ifdef CONFIG_KSU\n\tksu_handle_stat(\&dfd, \&filename, \&flag);\n#endif' fs/stat.c
 
-        if grep "ksu_handle_stat" "fs/stat.c"; then
+        if grep -q "ksu_handle_stat" "fs/stat.c"; then
             echo "[+] fs/stat.c Patched!"
         else
             echo "[-] fs/stat.c repair failed for unknown reasons, please provide feedback in time."
@@ -119,7 +119,7 @@ for i in "${patch_files[@]}"; do
         if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 5 ]; then
             sed -i '/err = lookup_slow(nd, name, path);/c \ \t\tif (strstr(current->comm, "throne_tracker") == NULL)\n\t\t\terr = lookup_slow(nd, name, path);\n\t\telse\n\t\t\terr = -ENOENT;\n' fs/namei.c
 
-            if grep "throne_tracker" "fs/namei.c"; then
+            if grep -q "throne_tracker" "fs/namei.c"; then
                 echo "[+] fs/namei.c Patched!"
             else
                 echo "[-] fs/namei.c repair failed for unknown reasons, please provide feedback in time."
@@ -127,7 +127,7 @@ for i in "${patch_files[@]}"; do
         elif [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
             sed -i '/if (unlikely(err)) {/a \#ifdef CONFIG_KSU\n\t\tif (unlikely(strstr(current->comm, "throne_tracker"))) {\n\t\t\terr = -ENOENT;\n\t\t\tgoto out_err;\n\t\t}\n#endif' fs/namei.c
 
-            if grep "throne_tracker" "fs/namei.c"; then
+            if grep -q "throne_tracker" "fs/namei.c"; then
                 echo "[+] fs/namei.c Patched!"
             else
                 echo "[-] fs/namei.c repair failed for unknown reasons, please provide feedback in time."
@@ -141,7 +141,7 @@ for i in "${patch_files[@]}"; do
         sed -i '/^void input_event(struct input_dev \*dev,/i \#ifdef CONFIG_KSU\nextern bool ksu_input_hook __read_mostly;\nextern __attribute__((cold)) int ksu_handle_input_handle_event(\n\t\t\tunsigned int *type, unsigned int *code, int *value);\n#endif' drivers/input/input.c
         sed -i '0,/\tif (is_event_supported(type, dev->evbit, EV_MAX)) {/s//#ifdef CONFIG_KSU\n\tif (unlikely(ksu_input_hook))\n\t\tksu_handle_input_handle_event(\&type, \&code, \&value);\n#endif\n&/' drivers/input/input.c
 
-        if grep "ksu_handle_input_handle_event" "drivers/input/input.c"; then
+        if grep -q "ksu_handle_input_handle_event" "drivers/input/input.c"; then
             echo "[+] drivers/input/input.c Patched!"
         else
             echo "[-] drivers/input/input.c repair failed for unknown reasons, please provide feedback in time."
@@ -158,7 +158,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/return security_ops->task_fix_setuid(new, old, flags);/i \#ifdef CONFIG_KSU\n\tksu_handle_setuid(new, old);\n\#endif' security/security.c
             sed -i '/return security_ops->key_permission(key_ref, cred, perm);/i \#ifdef CONFIG_KSU\n\tksu_key_permission(key_ref, cred, perm);\n\#endif' security/security.c
 
-            if grep "ksu_handle_setuid" "security/security.c"; then
+            if grep -q "ksu_handle_setuid" "security/security.c"; then
                 echo "[+] security/security.c Patched!"
             else
                 echo "[-] security/security.c repair failed for unknown reasons, please provide feedback in time."
@@ -172,7 +172,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/^static int selinux_bprm_set_creds(struct linux_binprm \*bprm)/i \#ifdef CONFIG_KSU\nextern bool is_ksu_transition(const struct task_security_struct *old_tsec,\n\t\t\t\tconst struct task_security_struct *new_tsec);\n#endif' security/selinux/hooks.c
             sed -i '/^\s*new_tsec->exec_sid = 0;/a \#ifdef CONFIG_KSU\n\t\tif (is_ksu_transition(old_tsec, new_tsec))\n\t\t\treturn 0;\n#endif' security/selinux/hooks.c
 
-            if grep "is_ksu_transition" "security/selinux/hooks.c"; then
+            if grep -q "is_ksu_transition" "security/selinux/hooks.c"; then
                 echo "[+] security/selinux/hooks.c Patched!"
             else
                 echo "[-] security/selinux/hooks.c repair failed for unknown reasons, please provide feedback in time."
@@ -181,7 +181,7 @@ for i in "${patch_files[@]}"; do
             sed -i '/^static int check_nnp_nosuid(const struct linux_binprm \*bprm,/i\#ifdef CONFIG_KSU\nextern bool is_ksu_transition(const struct task_security_struct *old_tsec,\n\t\t\t\tconst struct task_security_struct *new_tsec);\n#endif\n' security/selinux/hooks.c
             sed -i '/rc = security_bounded_transition(old_tsec->sid, new_tsec->sid);/i\#ifdef CONFIG_KSU\n\tif (is_ksu_transition(old_tsec, new_tsec))\n\t\treturn 0;\n#endif\n' security/selinux/hooks.c
 
-            if grep "is_ksu_transition" "security/selinux/hooks.c"; then
+            if grep -q "is_ksu_transition" "security/selinux/hooks.c"; then
                 echo "[+] security/selinux/hooks.c Patched!"
             else
                 echo "[-] security/selinux/hooks.c repair failed for unknown reasons, please provide feedback in time."
@@ -197,7 +197,7 @@ for i in "${patch_files[@]}"; do
                 sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
-                if grep "ksu_handle_sys_reboot" "kernel/reboot.c"; then
+                if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
                     echo "[+] kernel/reboot.c Patched!"
                 else
                     echo "[-] kernel/reboot.c repair failed for unknown reasons, please provide feedback in time."
@@ -208,7 +208,7 @@ for i in "${patch_files[@]}"; do
                 sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
-                if grep "ksu_handle_sys_reboot" "kernel/reboot.c"; then
+                if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
                     echo "[+] kernel/reboot.c Patched!"
                 else
                     echo "[-] kernel/reboot.c repair failed for unknown reasons, please provide feedback in time."
