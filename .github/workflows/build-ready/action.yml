@@ -404,6 +404,7 @@ runs:
             fi
 
           fi
+          false
 
       - name: Upload Defconfig to debugging
         uses: actions/upload-artifact@v4
