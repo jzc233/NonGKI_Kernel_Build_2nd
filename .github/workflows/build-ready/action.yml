@@ -159,7 +159,6 @@ runs:
             fi
 
             if [[ "${{ env.KERNELSU_METHOD }}" == "shell" ]]; then
-                echo "https://raw.githubusercontent.com/${KERNELSU_AUTHOR}/${KERNELSU_NAME}/refs/heads/${KERNELSU_ORIGIN_BRANCH}/kernel/setup.sh"
                 curl -sSL "https://raw.githubusercontent.com/${KERNELSU_AUTHOR}/${KERNELSU_NAME}/refs/heads/${KERNELSU_ORIGIN_BRANCH}/kernel/setup.sh" | bash -s "$KERNELSU_BRANCH"
             elif [[ "${{ env.KERNELSU_METHOD }}" == "manual" ]]; then
                 rm -rf *KernelSU*
@@ -405,3 +404,10 @@ runs:
             fi
 
           fi
+
+      - name: Upload Defconfig to debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: patch_rejected_files
+          path: |
+            device_kernel/arch/arm64/configs/vendor/xiaomi/mi845_defconfig
