@@ -407,6 +407,7 @@ runs:
           false
 
       - name: Upload Defconfig to debugging
+        if: env.BUILD_DEBUGGER == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: patch_rejected_files
