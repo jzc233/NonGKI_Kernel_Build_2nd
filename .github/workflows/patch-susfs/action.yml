@@ -263,7 +263,7 @@ runs:
 
           # Upgrade 1.5.13
           if grep -q "CMD_SUSFS_ADD_SUS_MAP" "drivers/kernelsu/core_hook.c" || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
-            cp /tmp/Patches/Patch/susfs_upgrade_to_1513_${{ env.KERNEL_VERSION }}.patch ./
+            cp /tmp/Patches/Patch/susfs_upgrade_to_2000_${{ env.KERNEL_VERSION }}.patch ./
             patch -p1 < susfs_upgrade_to_1513_${{ env.KERNEL_VERSION }}.patch || true
             echo "================="
             echo "=Upgraded 1.5.13="
@@ -272,7 +272,7 @@ runs:
             REJ_FOUND "1.5.13"
           else
             echo "============================================================"
-            echo "=Your KernelSU fork doesn't support SuSFS 1.5.13, skipping.="
+            echo "=Your KernelSU fork doesn't support SuSFS 2.0.00, skipping.="
             echo "============================================================"
           fi
 
