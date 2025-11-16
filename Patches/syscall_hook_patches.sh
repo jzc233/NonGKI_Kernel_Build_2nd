@@ -15,6 +15,7 @@ patch_files=(
     security/security.c
     security/selinux/hooks.c
     kernel/reboot.c
+    kernel/sys.c
 )
 
 PATCH_LEVEL="1.6"
@@ -22,7 +23,7 @@ KERNEL_VERSION=$(head -n 3 Makefile | grep -E 'VERSION|PATCHLEVEL' | awk '{print
 FIRST_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $1}')
 SECOND_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $2}')
 
-echo "Current patch version:$PATCH_LEVEL"
+echo "Current syscall patch version:$PATCH_LEVEL"
 
 for i in "${patch_files[@]}"; do
 
@@ -46,6 +47,8 @@ for i in "${patch_files[@]}"; do
             sed -i '/return do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tif (unlikely(ksu_execveat_hook))\n\t\tksu_handle_execve_ksud(filename, argv);\n\telse\n\t\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
             sed -i '/return compat_do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tif (!ksu_execveat_hook)\n\t\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
         else
+            echo "[-] KernelSU have no execve_ksud."
+
             sed -i '/^SYSCALL_DEFINE3(execve,/i\#ifdef CONFIG_KSU\n__attribute__((hot))\nextern int ksu_handle_execve_sucompat(int *fd,  const char __user **filename_user,\n\t\t\t\tvoid *__never_use_argv, void *__never_use_envp,\n\t\t\t\tint *__never_use_flags);\n#endif\n' fs/exec.c
             sed -i '/return do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
             sed -i '/return compat_do_execve(getname(filename), argv, envp);/i\#ifdef CONFIG_KSU\n\tksu_handle_execve_sucompat((int *)AT_FDCWD, \&filename, NULL, NULL, NULL);\n#endif' fs/exec.c
@@ -150,6 +153,8 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] drivers/tty/pty.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] KernelSU have no devpts, Skipped."
         fi
         ;;
 
@@ -203,6 +208,8 @@ for i in "${patch_files[@]}"; do
     kernel/reboot.c)
         if [ -f "drivers/kernelsu/supercalls.c" ] || [ -f "drivers/kernelsu/core_hook.c" ]; then
             if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c"; then
+                echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
+
                 sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
@@ -212,6 +219,8 @@ for i in "${patch_files[@]}"; do
                     echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
                 fi
             elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c"; then
+                echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
+
                 sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
                 sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
@@ -222,7 +231,22 @@ for i in "${patch_files[@]}"; do
                 fi
             fi
         else
-            echo "KernelSU have no sys_reboot, Skipped."
+            echo "[-] KernelSU have no sys_reboot, Skipped."
+        fi
+        ;;
+    kernel/sys.c)
+        if [ -f "drivers/kernelsu/setuid_hook.c" ] && grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c"; then
+            if grep -q "__sys_setresuid" "kernel/sys.c"; then
+                echo "[+] Checked ksu_handle_setresuid existed in KernelSU!"
+
+                sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
+                sed -i '/return __sys_setresuid(ruid, euid, suid);/i\#ifdef CONFIG_KSU\n\tif (ksu_handle_setresuid(ruid, euid, suid)) {\n\t\tpr_info("Something wrong with ksu_handle_setresuid()\\");\n\t}\n#endif' kernel/sys.c
+            else
+                sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
+                ed -i '0,/\tif ((ruid != (uid_t) -1) && !uid_valid(kruid))/b; /\tif ((ruid != (uid_t) -1) && !uid_valid(kruid))/i\#ifdef CONFIG_KSU_SUSFS\n\tif (ksu_handle_setresuid(ruid, euid, suid)) {\n\t\tpr_info("Something wrong with ksu_handle_setresuid()\\");\n\t}\n#endif' kernel/sys.c
+            fi
+        else
+            echo "[-] KernelSU have no setresuid, Skipped."
         fi
         ;;
     esac
