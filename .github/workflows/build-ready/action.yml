@@ -121,7 +121,7 @@ runs:
                 if [[ "${{ env.SUSFS_ENABLE }}" == "true" ]]; then
                     KERNELSU_BRANCH="susfs-main"
                 else
-                    KERNELSU_BRANCH="nongki"
+                    KERNELSU_BRANCH="susfs-main"
                 fi
             elif [[ "${{ env.KERNELSU_AUTO_FORK }}" == "next" ]]; then
                 KERNELSU_AUTHOR="KernelSU-Next"
@@ -259,44 +259,37 @@ runs:
         run: |
           cd $GITHUB_WORKSPACE/device_kernel
 
-          # Some Kernel could not support selinux_cred
-          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
-            if grep -q "selinux_cred" "security/selinux/include/objsec.h"; then
-                echo "[+] Detected selinux_cred in objsec.h!"
+          if [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KERNELSU_AUTO_FORK }}" == "true" ]]; then
+            echo "======================================================================================================="
+            echo "=                                                                                                     ="
+            echo "= SukiSU-Ultra has a large number of problems with the Non-GKI kernel that cause compilation failures ="
+            echo "=         ,and the project will refuse to compile it by default until everything is resolved.         ="
+            echo "=                                                                                                     ="
+            echo "=        If you recognize these but still need to compile, enable the BUILD_DEBUGGER function.        ="
+            echo "=                                                                                                     ="
+            echo "======================================================================================================="
+            if [[ "${{ env.BUILD_DEBUGGER }}" == "true" ]]; then
+                echo ">>>>>>>>>>>>>Warning<<<<<<<<<<<<<"
+                echo "Detected BUILD_DEBUGGER enabled !"
+                echo ">>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<"
             else
-                sed -i 's/selinux_cred(cred)/cred->security/g' drivers/kernelsu/selinux/selinux.c
-                echo "[+] Changed successfully!"
+                false
             fi
-          fi
-
-          # Fixed too many arguments to function call
-          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
-            if [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
-                sed -i 's/fsnotify_init_mark(m, g, m_free)/fsnotify_init_mark(m, m_free)/g' drivers/kernelsu/pkg_observer.c
-                echo "[+] Changed successfully!"
+          elif [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]]
+            echo "======================================================================================================="
+            echo "=                                                                                                     ="
+            echo "= SukiSU-Ultra has a large number of problems with the Non-GKI kernel that cause compilation failures ="
+            echo "=         ,and the project will refuse to compile it by default until everything is resolved.         ="
+            echo "=                                                                                                     ="
+            echo "=        If you recognize these but still need to compile, enable the BUILD_DEBUGGER function.        ="
+            echo "=                                                                                                     ="
+            echo "======================================================================================================="
+            if [[ "${{ env.BUILD_DEBUGGER }}" == "true" ]]; then
+                echo ">>>>>>>>>>>>>Warning<<<<<<<<<<<<<"
+                echo "Detected BUILD_DEBUGGER enabled !"
+                echo ">>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<"
             else
-                echo "[+] Skipped it!"
-            fi
-          fi
-
-          # Fixed not found signal.h
-          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
-            if [ -f "include/linux/sched/signal.h" ]; then
-                echo "[+] Skipped it!"
-            else
-                sed -i 's|<linux/sched/signal.h>|<linux/signal.h>|g' drivers/kernelsu/setuid_hook.c
-                sed -i 's|<linux/sched/signal.h>|<linux/signal.h>|g' drivers/kernelsu/app_profile.c
-                echo "[+] Changed successfully!"
-            fi
-          fi
-
-          # Fixed no member named security
-          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
-            if grep -q "security" "include/linux/sched/signal.h" && [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
-                echo "[+] Detected security in signal.h!"
-            else
-                sed -i '/DEFINE_MEMBER(task_struct, security)/d' drivers/kernelsu/kpm/super_access.c
-                echo "[+] Changed successfully!"
+                false
             fi
           fi
 
@@ -403,4 +396,7 @@ runs:
                 echo "CONFIG_KSU_THRONE_TRACKER_LEGACY=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
             fi
 
+            if [[ "${{ env.SUSFS_ENABLE }}" != true ]]; then
+                echo "CONFIG_KSU_SUSFS=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+            fi
           fi
