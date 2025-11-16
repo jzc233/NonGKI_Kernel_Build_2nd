@@ -66,24 +66,12 @@ runs:
 
           # Check syscall hook
           elif [[ ${{ env.HOOK_METHOD }} == "syscall" ]]; then
-            if [[ "${{ env.HOOK_OLDER }}" == "true" ]]; then
-                cp /tmp/Patches/syscall_hook_patches_older.sh ./
-                bash syscall_hook_patches_older.sh ./
+            cp /tmp/Patches/syscall_hook_patches.sh ./
+            bash syscall_hook_patches.sh ./
 
-                echo "executed syscall hook older successfully."
-            else
-                cp /tmp/Patches/syscall_hook_patches.sh ./
-                bash syscall_hook_patches.sh ./
+            echo "executed syscall hook successfully."
 
-                echo "executed syscall hook successfully."
-            fi
-
-            if [[ ${{ env.FIRST_VERSION }} -le 3 ]] && [[ ${{ env.SECOND_VERSION }} -le 10 ]]; then
-                cp /tmp/Patches/backport_patches_early.sh ./
-                bash backport_patches_early.sh
-
-                echo "kernel ${{ env.KERNEL_VERSION }} doesn't kernel_write and kernel_read, so only executed backport patch older."
-            elif [[ ${{ env.FIRST_VERSION }} -le 4 ]] && [[ ${{ env.SECOND_VERSION }} -le 9 ]]; then
+            if [[ ${{ env.FIRST_VERSION }} -le 4 ]] && [[ ${{ env.SECOND_VERSION }} -le 9 ]]; then
                 cp /tmp/Patches/backport_patches.sh ./
 
                 if [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 4 ]]; then
@@ -134,12 +122,7 @@ runs:
 
             echo "executed tracepoint hook successfully."
 
-            if [[ ${{ env.FIRST_VERSION }} -le 3 ]] && [[ ${{ env.SECOND_VERSION }} -le 10 ]]; then
-                cp /tmp/Patches/backport_patches_early.sh ./
-                bash backport_patches_early.sh
-
-                echo "kernel ${{ env.KERNEL_VERSION }} doesn't patch kernel_write and kernel_read, so only executed backport patch older."
-            elif [[ ${{ env.FIRST_VERSION }} -le 4 ]] && [[ ${{ env.SECOND_VERSION }} -le 9 ]]; then
+            if [[ ${{ env.FIRST_VERSION }} -le 4 ]] && [[ ${{ env.SECOND_VERSION }} -le 9 ]]; then
                 cp /tmp/Patches/backport_patches.sh ./
 
                 bash backport_patches.sh
