@@ -117,8 +117,12 @@ jobs:
         run: |
           # Only ${{ env.DEVICE_NAME }} use it.
           cd $GITHUB_WORKSPACE/device_kernel
-          # Nothing
 
+          # SukiSU-Ultra fix seccomp which was backported from newer kernel version
+          cd KernelSU
+          sed -i '/atomic_set(&current->seccomp.filter_count, 0);/d' kernel/app_profile.c
+          cd ../
+  
       - name: 🧰 Patch Kernel of Re:Kernel
         uses: ./.github/workflows/patch-rekernel
 
