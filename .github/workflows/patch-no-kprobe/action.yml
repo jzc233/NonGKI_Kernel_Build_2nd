@@ -69,15 +69,15 @@ runs:
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
                 else
                     if [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
-                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18 ./
+                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_3.18.patch || true
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 4 ]]; then
-                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4 ./
+                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.4.patch || true
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 9 ]]; then
-                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9 ./
+                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
                     else
@@ -127,15 +127,15 @@ runs:
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
                 else
                     if [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
-                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18 ./
+                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_3.18.patch || true
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 4 ]]; then
-                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4 ./
+                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.4.patch || true
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 9 ]]; then
-                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9 ./
+                        cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
                     else
