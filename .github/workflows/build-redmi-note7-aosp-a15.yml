@@ -69,7 +69,7 @@ env:
   BASEBAND_GUARD_ENABLE: "false" #if u want prevent unauthorized writes to critical partitions/device nodes.
   BASEBAND_GUARD_BOOT: "false" #if u want to protect boot partition.
 
-  HOOK_METHOD: "syscall" # manual hook method,can choice : normal, syscall and tracepoint.
+  HOOK_METHOD: "syscall" # Manual hook method ->  syscall and tracepoint.
   HOOK_OLDER: "false" # contain backport older patch and syscall older patch.
 
   KPM_ENABLE: "false" # Only use it for SukiSU-Ultra.
