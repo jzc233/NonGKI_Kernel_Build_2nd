@@ -11,7 +11,10 @@ patch_files=(
     fs/read_write.c
     fs/stat.c
     drivers/input/input.c
+    security/security.c
     security/selinux/hooks.c
+    kernel/reboot.c
+    kernel/sys.c
 )
 
 PATCH_LEVEL="1.1"
@@ -75,7 +78,6 @@ awk '
             echo "[-] fs/exec.c patch failed for unknown reasons, please provide feedback in time."
         fi
         ;;
-
     ## open.c
     fs/open.c)
         if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 19 ]; then
@@ -92,7 +94,6 @@ awk '
             echo "[-] fs/open.c patch failed for unknown reasons, please provide feedback in time."
         fi
         ;;
-
     ## read_write.c
     fs/read_write.c)
         if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 19 ]; then
@@ -110,7 +111,6 @@ awk '
             echo "[-] fs/read_write.c patch failed for unknown reasons, please provide feedback in time."
         fi
         ;;
-
     ## stat.c
     fs/stat.c)
         sed -i '/#include <asm\/unistd.h>/a \#if defined(CONFIG_KSU) && defined(CONFIG_KSU_TRACEPOINT_HOOK)\n#include <..\/drivers\/kernelsu\/ksu_trace.h>\n#endif' fs/stat.c
@@ -136,7 +136,7 @@ awk '
         fi
         ;;
 
-    # drivers
+    # drivers/ changes
     ## input/input.c
     drivers/input/input.c)
         sed -i '/#include "input-compat.h"/a \#if defined(CONFIG_KSU) && defined(CONFIG_KSU_TRACEPOINT_HOOK)\n#include <..\/..\/drivers\/kernelsu\/ksu_trace.h>\n#endif' drivers/input/input.c
@@ -150,6 +150,22 @@ awk '
         fi
         ;;
 
+    # security/ changes
+    ## security.c
+    security/security.c)
+        if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
+            sed -i '/int security_binder_set_context_mgr(struct task_struct/i \#ifdef CONFIG_KSU\n\extern int ksu_bprm_check(struct linux_binprm *bprm);\n\extern int ksu_handle_rename(struct dentry *old_dentry, struct dentry *new_dentry);\n\extern int ksu_handle_setuid(struct cred *new, const struct cred *old);\n\#endif' security/security.c
+            sed -i '/ret = security_ops->bprm_check_security(bprm);/i \#ifdef CONFIG_KSU\n\tksu_bprm_check(bprm);\n\#endif' security/security.c
+            sed -i '/if (unlikely(IS_PRIVATE(old_dentry->d_inode) ||/i \#ifdef CONFIG_KSU\n\tksu_handle_rename(old_dentry, new_dentry);\n\#endif' security/security.c
+            sed -i '/return security_ops->task_fix_setuid(new, old, flags);/i \#ifdef CONFIG_KSU\n\tksu_handle_setuid(new, old);\n\#endif' security/security.c
+
+            if grep -q "ksu_handle_setuid" "security/security.c"; then
+                echo "[+] security/security.c Patched!"
+            else
+                echo "[-] security/security.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        fi
+        ;;
     ## selinux/hooks.c
     security/selinux/hooks.c)
         if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 18 ]; then
@@ -177,6 +193,59 @@ awk '
         fi
         ;;
 
+    # kernel/ changes
+    ## kernel/reboot.c
+    kernel/reboot.c)
+        if [ -f "drivers/kernelsu/supercalls.c" ] || [ -f "drivers/kernelsu/core_hook.c" ]; then
+            if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c"; then
+                echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
+
+                sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
+                sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
+
+                if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
+                    echo "[+] kernel/reboot.c Patched!"
+                else
+                    echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
+                fi
+            elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c"; then
+                echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
+
+                sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
+                sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
+
+                if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
+                    echo "[+] kernel/reboot.c Patched!"
+                else
+                    echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
+                fi
+            fi
+        else
+            echo "[-] KernelSU have no sys_reboot, Skipped."
+        fi
+        ;;
+    ## kernel/sys.c
+    kernel/sys.c)
+        if [ -f "drivers/kernelsu/setuid_hook.c" ] && grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c"; then
+            if grep -q "__sys_setresuid" "kernel/sys.c"; then
+                echo "[+] Checked ksu_handle_setresuid existed in KernelSU!"
+
+                sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
+                sed -i '/return __sys_setresuid(ruid, euid, suid);/i\#ifdef CONFIG_KSU\n\tif (ksu_handle_setresuid(ruid, euid, suid)) {\n\t\tpr_info("Something wrong with ksu_handle_setresuid()\\");\n\t}\n#endif' kernel/sys.c
+            else
+                sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
+                ed -i '0,/\tif ((ruid != (uid_t) -1) && !uid_valid(kruid))/b; /\tif ((ruid != (uid_t) -1) && !uid_valid(kruid))/i\#ifdef CONFIG_KSU_SUSFS\n\tif (ksu_handle_setresuid(ruid, euid, suid)) {\n\t\tpr_info("Something wrong with ksu_handle_setresuid()\\");\n\t}\n#endif' kernel/sys.c
+            fi
+
+            if grep -q "ksu_handle_setresuid" "kernel/sys.c"; then
+                echo "[+] kernel/sys.c Patched!"
+            else
+                echo "[-] kernel/sys.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        else
+            echo "[-] KernelSU have no setresuid, Skipped."
+        fi
+        ;;
     esac
 
 done
