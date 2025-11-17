@@ -10,6 +10,7 @@ patch_files=(
     fs/open.c
     fs/read_write.c
     fs/stat.c
+    fs/namei.c
     drivers/input/input.c
     security/security.c
     security/selinux/hooks.c
@@ -26,10 +27,10 @@ echo "Current tracepoint patch version:$PATCH_LEVEL"
 
 for i in "${patch_files[@]}"; do
 
-    if grep -q "ksu" "$i"; then
+    if grep -q "trace_ksu" "$i"; then
         echo "[-] Warning: $i contains KernelSU"
         echo "[+] Code in here:"
-        grep -n "ksu" "$i"
+        grep -n "trace_ksu" "$i"
         echo "[-] End of file."
         continue
     fi
@@ -135,6 +136,23 @@ awk '
             echo "[-] fs/stat.c patch failed for unknown reasons, please provide feedback in time."
         fi
         ;;
+    ## namei.c
+    fs/namei.c)
+        if grep "throne_tracker" "fs/namei.c"; then
+            echo "[-] Warning: fs/namei.c contains KernelSU"
+            echo "[+] Code in here:"
+            grep -n "throne_tracker" "fs/namei.c"
+            echo "[-] End of file."
+        elif [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
+            sed -i '/if (unlikely(err)) {/a \#ifdef CONFIG_KSU\n\t\tif (unlikely(strstr(current->comm, "throne_tracker"))) {\n\t\t\terr = -ENOENT;\n\t\t\tgoto out_err;\n\t\t}\n#endif' fs/namei.c
+
+            if grep -q "throne_tracker" "fs/namei.c"; then
+                echo "[+] fs/namei.c Patched!"
+            else
+                echo "[-] fs/namei.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        fi
+        ;;
 
     # drivers/ changes
     ## input/input.c
@@ -153,7 +171,12 @@ awk '
     # security/ changes
     ## security.c
     security/security.c)
-        if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
+        if grep "ksu_handle_setuid" "security/security.c"; then
+            echo "[-] Warning: security/security.c contains KernelSU"
+            echo "[+] Code in here:"
+            grep -n "ksu_handle" "security/security.c"
+            echo "[-] End of file."
+        elif [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
             sed -i '/int security_binder_set_context_mgr(struct task_struct/i \#ifdef CONFIG_KSU\n\extern int ksu_bprm_check(struct linux_binprm *bprm);\n\extern int ksu_handle_rename(struct dentry *old_dentry, struct dentry *new_dentry);\n\extern int ksu_handle_setuid(struct cred *new, const struct cred *old);\n\#endif' security/security.c
             sed -i '/ret = security_ops->bprm_check_security(bprm);/i \#ifdef CONFIG_KSU\n\tksu_bprm_check(bprm);\n\#endif' security/security.c
             sed -i '/if (unlikely(IS_PRIVATE(old_dentry->d_inode) ||/i \#ifdef CONFIG_KSU\n\tksu_handle_rename(old_dentry, new_dentry);\n\#endif' security/security.c

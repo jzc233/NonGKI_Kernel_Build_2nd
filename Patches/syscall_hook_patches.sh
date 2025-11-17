@@ -27,10 +27,10 @@ echo "Current syscall patch version:$PATCH_LEVEL"
 
 for i in "${patch_files[@]}"; do
 
-    if grep -q "ksu" "$i"; then
+    if grep -q "ksu_handle" "$i"; then
         echo "[-] Warning: $i contains KernelSU"
         echo "[+] Code in here:"
-        grep -n "ksu" "$i"
+        grep -n "ksu_handle" "$i"
         echo "[-] End of file."
         continue
     fi
@@ -105,7 +105,12 @@ for i in "${patch_files[@]}"; do
         ;;
     ## namei.c
     fs/namei.c)
-        if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
+        if grep "throne_tracker" "fs/namei.c"; then
+            echo "[-] Warning: fs/namei.c contains KernelSU"
+            echo "[+] Code in here:"
+            grep -n "throne_tracker" "fs/namei.c"
+            echo "[-] End of file."
+        elif [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
             sed -i '/if (unlikely(err)) {/a \#ifdef CONFIG_KSU\n\t\tif (unlikely(strstr(current->comm, "throne_tracker"))) {\n\t\t\terr = -ENOENT;\n\t\t\tgoto out_err;\n\t\t}\n#endif' fs/namei.c
 
             if grep -q "throne_tracker" "fs/namei.c"; then
