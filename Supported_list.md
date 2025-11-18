@@ -5,7 +5,7 @@
 | Redmi K20 Pro | All | raphael | [4.14/SOVIET-ANDROID/SOVIET-STAR-OSS](https://github.com/SOVIET-ANDROID/kernel_xiaomi_raphael) | Based-AOSP | 15 | AnyKernel3 | rsuntk | ✅ | Syscall | ❌ | ❌ | ❌ | Stable |  
 | Samsung Note 10 Plus | EU | d2s | [4.14/Ocin4ever/ExtremeKernel](https://github.com/Ocin4ever/ExtremeKernel) | OneUI 7 | 15 | AnyKernel3 | SukiSU(U) | ✅ | Tracepoint | ❌ | ❌ | ❌ | Stable |  
 | Xiaomi 11 | All | venus | [5.4/kamikaonashi/venus](https://github.com/kamikaonashi/kernel_xiaomi_venus) | Evolution X 11.X | 16 | AnyKernel3 | SukiSU(U) | ✅ | Tracepoint | ✅ | ✅ | ❌ | Stable |  
-| Xiaomi Mix2s | All | polaris | [4.19/duckyduckG/sdm845_419](https://github.com/duckyduckG/android_kernel_xiaomi_sdm845_419) | Based AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | Tracepoint | ❌ | ❌ | ❌ | Testing |  
+| Xiaomi Mix2s | All | polaris | [4.19/duckyduckG/sdm845_419](https://github.com/duckyduckG/android_kernel_xiaomi_sdm845_419) | Based AOSP | 16 | AnyKernel3 | SukiSU(U) | ✅ | Tracepoint | ❌ | ❌ | ❌ | Testing |  
 | Smartisan U3 Pro | CN | osborn | [4.4/anrui2032/LineageOS](https://github.com/anrui2032/android_kernel_smartisan_sdm660) | Lineage OS 18 | 11 | AnyKernel3 | SukiSU(U) | ❌ | Syscall | ❌ | ❌ | ❌ | Stable |  
 | Redmi 8 | All | olive | [4.19/blazey66/sdm439-4.19](https://github.com/blazey66/android_kernel_xiaomi_sdm439-4.19) | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | Syscall | ✅ | ✅ | ✅ | Stable |  
 | Redmi Note 7 | CN | lavender | [4.19/pix106/southwest](https://github.com/pix106/android_kernel_xiaomi_southwest-4.19) | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | Syscall | ❌ | ❌ | ❌ | Stable |  
