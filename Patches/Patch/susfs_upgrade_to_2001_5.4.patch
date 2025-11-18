@@ -1,8 +1,34 @@
 diff --git a/fs/namespace.c b/fs/namespace.c
-index cc7a3ad..ff235c1 100644
+index cc7a3ad..14f6904 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
-@@ -1130,7 +1130,8 @@ struct vfsmount *vfs_create_mount(struct fs_context *fc)
+@@ -30,20 +30,22 @@
+ #include <uapi/linux/mount.h>
+ #include <linux/fs_context.h>
+ #include <linux/shmem_fs.h>
+-#if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_TRY_UMOUNT)
++#if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_TRY_UMOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT)
+ #include <linux/susfs_def.h>
+ #endif
+ 
+ #include "pnode.h"
+ #include "internal.h"
+ 
+-#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
++#if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_TRY_UMOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT)
+ extern bool susfs_is_current_ksu_domain(void);
+ extern bool susfs_is_current_zygote_domain(void);
+ extern bool susfs_is_boot_completed_triggered;
++#endif // #if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_TRY_UMOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT)
+ 
+-static DEFINE_IDA(susfs_ksu_mnt_id_ida);
++#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+ static DEFINE_IDA(susfs_ksu_mnt_group_ida);
++static atomic64_t susfs_ksu_mounts = ATOMIC64_INIT(0);
+ 
+ #define CL_COPY_MNT_NS BIT(25) /* used by copy_mnt_ns() */
+ #endif
+@@ -1130,8 +1132,10 @@ struct vfsmount *vfs_create_mount(struct fs_context *fc)
  	if (susfs_is_boot_completed_triggered) {
  		goto orig_flow;
  	}
@@ -10,9 +36,11 @@ index cc7a3ad..ff235c1 100644
 +	// We keep checking for ksu process only until boot-completed stage is triggered
 +	if (!susfs_is_boot_completed_triggered && susfs_is_current_ksu_domain()) {
  		mnt = susfs_alloc_sus_vfsmnt(fc->source ?: "none");
++		atomic64_add(1, &susfs_ksu_mounts);
  		goto bypass_orig_flow;
  	}
-@@ -2639,8 +2640,8 @@ static int do_loopback(struct path *path, const char *old_name,
+ orig_flow:
+@@ -2639,8 +2643,8 @@ static int do_loopback(struct path *path, const char *old_name,
  	}
  #if defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT) || defined(CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT)
  	// Check if bind mounted path should be hidden and umounted automatically.
@@ -23,8 +51,37 @@ index cc7a3ad..ff235c1 100644
  #if defined(CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT)
  		if (susfs_is_auto_add_sus_bind_mount_enabled) {
  			susfs_auto_add_sus_bind_mount(old_name, &old_path);
+@@ -4405,6 +4409,11 @@ void susfs_reorder_mnt_id(void) {
+ 		return;
+ 	}
+ 
++	// Do not reorder the mnt_id if there is no any ksu mount at all
++	if (atomic64_read(&susfs_ksu_mounts) == 0) {
++		return;
++	}
++
+ 	get_mnt_ns(mnt_ns);
+ 	first_mnt_id = list_first_entry(&mnt_ns->list, struct mount, mnt_list)->mnt_id;
+ 	list_for_each_entry(mnt, &mnt_ns->list, mnt_list) {
+@@ -4418,16 +4427,3 @@ void susfs_reorder_mnt_id(void) {
+ 	put_mnt_ns(mnt_ns);
+ }
+ #endif
+-#ifdef CONFIG_KSU_SUSFS
+-bool susfs_is_mnt_devname_ksu(struct path *path) {
+-	struct mount *mnt;
+-
+-	if (path && path->mnt) {
+-		mnt = real_mount(path->mnt);
+-		if (mnt && mnt->mnt_devname && !strcmp(mnt->mnt_devname, "KSU")) {
+-			return true;
+-		}
+-	}
+-	return false;
+-}
+-#endif
 diff --git a/fs/susfs.c b/fs/susfs.c
-index 543144c..456dd4f 100644
+index 543144c..767026f 100644
 --- a/fs/susfs.c
 +++ b/fs/susfs.c
 @@ -17,8 +17,6 @@
@@ -353,14 +410,16 @@ index 543144c..456dd4f 100644
  out_copy_to_user:
  	if (copy_to_user(&((struct st_susfs_sus_kstat __user*)*user_info)->err, &info.err, sizeof(info.err))) {
  		info.err = -EFAULT;
-@@ -890,6 +853,7 @@ void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned
+@@ -890,7 +853,8 @@ void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned
  
  /* try_umount */
  #ifdef CONFIG_KSU_SUSFS_TRY_UMOUNT
+-extern void try_umount(const char *mnt, bool check_mnt, int flags);
 +static DEFINE_SPINLOCK(susfs_spin_lock_try_umount);
- extern void try_umount(const char *mnt, bool check_mnt, int flags);
++extern void try_umount(const char *mnt, int flags);
  static LIST_HEAD(LH_TRY_UMOUNT_PATH);
  void susfs_add_try_umount(void __user **user_info) {
+ 	struct st_susfs_try_umount info = {0};
 @@ -920,9 +884,9 @@ void susfs_add_try_umount(void __user **user_info) {
  	memcpy(&new_list->info, &info, sizeof(info));
  
@@ -373,6 +432,15 @@ index 543144c..456dd4f 100644
  	SUSFS_LOGI("target_pathname: '%s', umount options: %d, is successfully added to LH_TRY_UMOUNT_PATH\n", new_list->info.target_pathname, new_list->info.mnt_mode);
  	info.err = 0;
  out_copy_to_user:
+@@ -937,7 +901,7 @@ void susfs_try_umount(void) {
+ 
+ 	// We should umount in reversed order
+ 	list_for_each_entry_reverse(cursor, &LH_TRY_UMOUNT_PATH, list) {
+-		try_umount(cursor->info.target_pathname, false, cursor->info.mnt_mode);
++		try_umount(cursor->info.target_pathname, cursor->info.mnt_mode);
+ 	}
+ }
+ 
 @@ -991,9 +955,9 @@ add_to_new_list:
  	new_list->info.mnt_mode = MNT_DETACH;
  
