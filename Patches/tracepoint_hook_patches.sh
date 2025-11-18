@@ -152,7 +152,7 @@ awk '
         ;;
     ## namei.c
     fs/namei.c)
-        if grep "throne_tracker" "fs/namei.c" > /dev/null; then
+        if grep "throne_tracker" "fs/namei.c">/dev/null 2>&1; then
             echo "[-] Warning: fs/namei.c contains KernelSU"
             echo "[+] Code in here:"
             grep -n "throne_tracker" "fs/namei.c"
@@ -193,7 +193,7 @@ awk '
     # security/ changes
     ## security.c
     security/security.c)
-        if grep "ksu_handle_setuid" "security/security.c" > /dev/null; then
+        if grep "ksu_handle_setuid" "security/security.c">/dev/null 2>&1; then
             echo "[-] Warning: security/security.c contains KernelSU"
             echo "[+] Code in here:"
             grep -n "ksu_handle" "security/security.c"
@@ -259,7 +259,7 @@ awk '
     # kernel/ changes
     ## kernel/reboot.c
     kernel/reboot.c)
-        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c" > /dev/null; then
+        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c">/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
 
             sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
@@ -271,7 +271,7 @@ awk '
             else
                 echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
             fi
-        elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c" > /dev/null; then
+        elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c">/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
 
             sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
@@ -291,7 +291,7 @@ awk '
         ;;
     ## kernel/sys.c
     kernel/sys.c)
-        if grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c" > /dev/null; then
+        if grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c">/dev/null 2>&1; then
             if grep -q "__sys_setresuid" "kernel/sys.c"; then
                 echo "[+] Checked ksu_handle_setresuid existed in KernelSU!"
 

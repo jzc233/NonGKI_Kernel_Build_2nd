@@ -42,7 +42,7 @@ for i in "${patch_files[@]}"; do
     fs/exec.c)
         echo "======================================"
 
-        if grep -q "ksu_handle_execve_ksud" "drivers/kernelsu/ksud.c" > /dev/null; then
+        if grep -q "ksu_handle_execve_ksud" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_execve_ksud existed in KernelSU!"
 
             sed -i '/^SYSCALL_DEFINE3(execve,/i\#ifdef CONFIG_KSU\nextern bool ksu_execveat_hook __read_mostly;\nextern __attribute__((hot, always_inline)) int ksu_handle_execve_sucompat(int *fd, const char __user **filename_user,\n\t\t\t       void *__never_use_argv, void *__never_use_envp,\n\t\t\t       int *__never_use_flags);\nextern int ksu_handle_execve_ksud(const char __user *filename_user,\n\t\t\tconst char __user *const __user *__argv);\n#endif\n' fs/exec.c
@@ -119,7 +119,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## namei.c
     fs/namei.c)
-        if grep "throne_tracker" "fs/namei.c" > /dev/null; then
+        if grep "throne_tracker" "fs/namei.c" >/dev/null 2>&1; then
             echo "[-] Warning: fs/namei.c contains KernelSU"
             echo "[+] Code in here:"
             grep -n "throne_tracker" "fs/namei.c"
@@ -157,7 +157,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## tty/pty.c
     drivers/tty/pty.c)
-        if grep -q "ksu_handle_devpts" "kernel/sucompat.c" > /dev/null; then
+        if grep -q "ksu_handle_devpts" "kernel/sucompat.c" >/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_devpts existed in KernelSU!"
 
             sed -i '/^static struct tty_struct \*pts_unix98_lookup(struct tty_driver \*driver,/i\#ifdef CONFIG_KSU\nextern int ksu_handle_devpts(struct inode*);\n#endif\n' drivers/tty/pty.c
@@ -240,7 +240,7 @@ for i in "${patch_files[@]}"; do
     # kernel/ changes
     ## kernel/reboot.c
     kernel/reboot.c)
-        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c" > /dev/null; then
+        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c" >/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
 
             sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
@@ -252,7 +252,7 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
             fi
-        elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c" > /dev/null; then
+        elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
 
             sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
@@ -272,7 +272,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## kernel/sys.c
     kernel/sys.c)
-        if grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c" > /dev/null; then
+        if grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c" >/dev/null 2>&1; then
             if grep -q "__sys_setresuid" "kernel/sys.c"; then
                 echo "[+] Checked ksu_handle_setresuid existed in KernelSU!"
 

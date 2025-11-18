@@ -14,9 +14,12 @@ patch_files=(
     security/selinux/include/objsec.h
 )
 
+PATCH_DATE="2025-11-14"
 KERNEL_VERSION=$(head -n 3 Makefile | grep -E 'VERSION|PATCHLEVEL' | awk '{print $3}' | paste -sd '.')
 FIRST_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $1}')
 SECOND_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $2}')
+
+echo "Current backport patch version:$PATCH_DATE"
 
 for i in "${patch_files[@]}"; do
 
@@ -69,7 +72,7 @@ for i in "${patch_files[@]}"; do
     # include/ changes
     ## include/linux/uaccess.h
     include/linux/uaccess.h)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" > /dev/null; then
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
             sed -i 's/^extern long strncpy_from_unsafe_user/long strncpy_from_user_nofault/' include/linux/uaccess.h
 
             if grep -q "strncpy_from_user_nofault" "include/linux/uaccess.h"; then
@@ -88,7 +91,7 @@ for i in "${patch_files[@]}"; do
     # mm/ changes
     ## mm/maccess.c
     mm/maccess.c)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" > /dev/null; then
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
             sed -i 's/\* strncpy_from_unsafe_user: - Copy a NUL terminated string from unsafe user/\* strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user/' mm/maccess.c
             sed -i 's/long strncpy_from_unsafe_user(char \*dst, const void __user \*unsafe_addr,/long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,/' mm/maccess.c
 
@@ -108,7 +111,7 @@ for i in "${patch_files[@]}"; do
     # security/
     ## selinux/hooks.c
     security/selinux/hooks.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" > /dev/null; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
             sed -i 's/struct inode_security_struct \*isec = inode->i_security/struct inode_security_struct *isec = selinux_inode(inode)/g' security/selinux/hooks.c
             sed -i 's/return inode->i_security/return selinux_inode(inode)/g' security/selinux/hooks.c
             sed -i 's/\bisec = inode->i_security;/isec = selinux_inode(inode);/' security/selinux/hooks.c
@@ -123,7 +126,7 @@ for i in "${patch_files[@]}"; do
             echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
 
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" > /dev/null; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" >/dev/null 2>&1; then
             sed -i 's/tsec = cred->security;/tsec = selinux_cred(cred);/g' security/selinux/hooks.c
             sed -i 's/const struct task_security_struct \*tsec = cred->security;/const struct task_security_struct *tsec = selinux_cred(cred);/g' security/selinux/hooks.c
             sed -i 's/const struct task_security_struct \*tsec = current_security();/const struct task_security_struct *tsec = selinux_cred(current_cred());/g' security/selinux/hooks.c
@@ -153,7 +156,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## selinux/selinuxfs.c
     security/selinux/selinuxfs.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" > /dev/null; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
             sed -i 's/(struct inode_security_struct \*)inode->i_security/selinux_inode(inode)/g' security/selinux/selinuxfs.c
 
             if grep -q "selinux_inode(inode)" "security/selinux/selinuxfs.c"; then
@@ -168,7 +171,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## selinux/xfrm.c
     security/selinux/xfrm.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" > /dev/null; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" >/dev/null 2>&1; then
             sed -i 's/const struct task_security_struct \*tsec = current_security();/const struct task_security_struct *tsec = selinux_cred(current_cred());/g' security/selinux/xfrm.c
 
             if grep -q "selinux_cred" "security/selinux/xfrm.c"; then
@@ -183,27 +186,27 @@ for i in "${patch_files[@]}"; do
         ;;
     ## selinux/include/objsec.h
     security/selinux/include/objsec.h)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" > /dev/null; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
             sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct inode_security_struct *selinux_inode(\n\t\t\t\t\t\tconst struct inode *inode)\n{\n\treturn inode->i_security;\n}\n' security/selinux/include/objsec.h
 
-            if grep -q "selinux_inode(inode)" "security/selinux/include/objsec.h"; then
-                echo "[+] security/selinux/include/objsec.h Patched!"
+            if grep -q "selinux_inode" "security/selinux/include/objsec.h"; then
+                echo "[+] security/selinux/include/objsec.h Part I Patched!"
                 echo "[+] Count: $(grep -c "selinux_inode" "security/selinux/include/objsec.h")"
             else
-                echo "[-] security/selinux/include/objsec.h patch failed for unknown reasons, please provide feedback in time."
+                echo "[-] security/selinux/include/objsec.h Part I patch failed for unknown reasons, please provide feedback in time."
             fi
         else
             echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
 
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" > /dev/null; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" >/dev/null 2>&1; then
             sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct task_security_struct *selinux_cred(const struct cred *cred)\n{\n\treturn cred->security;\n}\n' security/selinux/include/objsec.h
 
             if grep -q "selinux_cred" "security/selinux/include/objsec.h"; then
-                echo "[+] security/selinux/include/objsec.h Patched!"
+                echo "[+] security/selinux/include/objsec.h Part II Patched!"
                 echo "[+] Count: $(grep -c "selinux_cred" "security/selinux/include/objsec.h")"
             else
-                echo "[-] security/selinux/include/objsec.h patch failed for unknown reasons, please provide feedback in time."
+                echo "[-] security/selinux/include/objsec.h Part II patch failed for unknown reasons, please provide feedback in time."
             fi
         fi
 
