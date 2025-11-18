@@ -40,7 +40,9 @@ for i in "${patch_files[@]}"; do
     # fs/ changes
     ## exec.c
     fs/exec.c)
-        if grep -q "ksu_handle_execve_ksud" "drivers/kernelsu/ksud.c"; then
+        echo "======================================"
+
+        if grep -q "ksu_handle_execve_ksud" "drivers/kernelsu/ksud.c" > /dev/null; then
             echo "[+] Checked ksu_handle_execve_ksud existed in KernelSU!"
 
             sed -i '/^SYSCALL_DEFINE3(execve,/i\#ifdef CONFIG_KSU\nextern bool ksu_execveat_hook __read_mostly;\nextern __attribute__((hot, always_inline)) int ksu_handle_execve_sucompat(int *fd, const char __user **filename_user,\n\t\t\t       void *__never_use_argv, void *__never_use_envp,\n\t\t\t       int *__never_use_flags);\nextern int ksu_handle_execve_ksud(const char __user *filename_user,\n\t\t\tconst char __user *const __user *__argv);\n#endif\n' fs/exec.c
@@ -56,9 +58,12 @@ for i in "${patch_files[@]}"; do
 
         if grep -q "ksu_handle_execve_sucompat" "fs/exec.c"; then
             echo "[+] fs/exec.c Patched!"
+            echo "[+] Count: $(grep -c "ksu_handle_execve_sucompat" "fs/exec.c")"
         else
             echo "[-] fs/exec.c patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
     ## open.c
     fs/open.c)
@@ -72,9 +77,12 @@ for i in "${patch_files[@]}"; do
 
         if grep -q "ksu_handle_faccessat" "fs/open.c"; then
             echo "[+] fs/open.c Patched!"
+            echo "[+] Count: $(grep -c "ksu_handle_faccessat" "fs/open.c")"
         else
             echo "[-] fs/open.c patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
     ## read_write.c
     fs/read_write.c)
@@ -88,9 +96,12 @@ for i in "${patch_files[@]}"; do
 
         if grep -q "ksu_handle_sys_read" "fs/read_write.c"; then
             echo "[+] fs/read_write.c Patched!"
+            echo "[+] Count: $(grep -c "ksu_handle_sys_read" "fs/read_write.c")"
         else
             echo "[-] fs/read_write.c patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
     ## stat.c
     fs/stat.c)
@@ -99,13 +110,16 @@ for i in "${patch_files[@]}"; do
 
         if grep -q "ksu_handle_stat" "fs/stat.c"; then
             echo "[+] fs/stat.c Patched!"
+            echo "[+] Count: $(grep -c "ksu_handle_stat" "fs/stat.c")"
         else
             echo "[-] fs/stat.c patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
     ## namei.c
     fs/namei.c)
-        if grep "throne_tracker" "fs/namei.c"; then
+        if grep "throne_tracker" "fs/namei.c" > /dev/null; then
             echo "[-] Warning: fs/namei.c contains KernelSU"
             echo "[+] Code in here:"
             grep -n "throne_tracker" "fs/namei.c"
@@ -115,10 +129,15 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "throne_tracker" "fs/namei.c"; then
                 echo "[+] fs/namei.c Patched!"
+                echo "[+] Count: $(grep -c "throne_tracker" "fs/namei.c")"
             else
                 echo "[-] fs/namei.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] Kernel needn't throne_tracker, Skipped."
         fi
+
+        echo "======================================"
         ;;
 
     # drivers changes
@@ -129,13 +148,16 @@ for i in "${patch_files[@]}"; do
 
         if grep -q "ksu_handle_input_handle_event" "drivers/input/input.c"; then
             echo "[+] drivers/input/input.c Patched!"
+            echo "[+] Count: $(grep -c "ksu_handle_input_handle_event" "drivers/input/input.c")"
         else
             echo "[-] drivers/input/input.c patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
     ## tty/pty.c
     drivers/tty/pty.c)
-        if grep -q "ksu_handle_devpts" "kernel/sucompat.c"; then
+        if grep -q "ksu_handle_devpts" "kernel/sucompat.c" > /dev/null; then
             echo "[+] Checked ksu_handle_devpts existed in KernelSU!"
 
             sed -i '/^static struct tty_struct \*pts_unix98_lookup(struct tty_driver \*driver,/i\#ifdef CONFIG_KSU\nextern int ksu_handle_devpts(struct inode*);\n#endif\n' drivers/tty/pty.c
@@ -143,12 +165,15 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "ksu_handle_devpts" "drivers/tty/pty.c"; then
                 echo "[+] drivers/tty/pty.c Patched!"
+                echo "[+] Count: $(grep -c "ksu_handle_devpts" "drivers/tty/pty.c")"
             else
                 echo "[-] drivers/tty/pty.c patch failed for unknown reasons, please provide feedback in time."
             fi
         else
             echo "[-] KernelSU have no devpts, Skipped."
         fi
+
+        echo "======================================"
         ;;
 
     # security/ changes
@@ -162,10 +187,15 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "ksu_handle_setuid" "security/security.c"; then
                 echo "[+] security/security.c Patched!"
+                echo "[+] Count: $(grep -c "ksu_handle_setuid" "security/security.c")"
             else
                 echo "[-] security/security.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] Kernel needn't setuid, Skipped."
         fi
+
+        echo "======================================"
         ;;
     ## selinux/hooks.c
     security/selinux/hooks.c)
@@ -175,6 +205,7 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "is_ksu_transition" "security/selinux/hooks.c"; then
                 echo "[+] security/selinux/hooks.c Patched!"
+                echo "[+] Count: $(grep -c "is_ksu_transition" "security/selinux/hooks.c")"
             else
                 echo "[-] security/selinux/hooks.c patch failed for unknown reasons, please provide feedback in time."
             fi
@@ -184,6 +215,7 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "is_ksu_transition" "security/selinux/hooks.c"; then
                 echo "[+] security/selinux/hooks.c Patched!"
+                echo "[+] Count: $(grep -c "is_ksu_transition" "security/selinux/hooks.c")"
             else
                 echo "[-] security/selinux/hooks.c patch failed for unknown reasons, please provide feedback in time."
             fi
@@ -191,43 +223,56 @@ for i in "${patch_files[@]}"; do
             sed -i '/int nnp = (bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS);/i\#ifdef CONFIG_KSU\n    static u32 ksu_sid;\n    char *secdata;\n#endif' security/selinux/hooks.c
             sed -i '/if (!nnp && !nosuid)/i\#ifdef CONFIG_KSU\n    int error;\n    u32 seclen;\n#endif' security/selinux/hooks.c
             sed -i '/return 0; \/\* No change in credentials \*\//a\\n#ifdef CONFIG_KSU\n    if (!ksu_sid)\n        security_secctx_to_secid("u:r:su:s0", strlen("u:r:su:s0"), &ksu_sid);\n\n    error = security_secid_to_secctx(old_tsec->sid, &secdata, &seclen);\n    if (!error) {\n        rc = strcmp("u:r:init:s0", secdata);\n        security_release_secctx(secdata, seclen);\n        if (rc == 0 && new_tsec->sid == ksu_sid)\n            return 0;\n    }\n#endif' security/selinux/hooks.c
+
+            if grep -q "security_secid_to_secctx" "security/selinux/hooks.c"; then
+                echo "[+] security/selinux/hooks.c Patched!"
+                echo "[+] Count: $(grep -c "security_secid_to_secctx" "security/selinux/hooks.c")"
+            else
+                echo "[-] security/selinux/hooks.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        else
+            echo "[-] Kernel needn't selinux fix, Skipped."
         fi
+
+        echo "======================================"
         ;;
 
     # kernel/ changes
     ## kernel/reboot.c
     kernel/reboot.c)
-        if [ -f "drivers/kernelsu/supercalls.c" ] || [ -f "drivers/kernelsu/core_hook.c" ]; then
-            if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c"; then
-                echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
+        if grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/core_hook.c" > /dev/null; then
+            echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
 
-                sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
-                sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
+            sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
+            sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
-                if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
-                    echo "[+] kernel/reboot.c Patched!"
-                else
-                    echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
-                fi
-            elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c"; then
-                echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
+            if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
+                echo "[+] kernel/reboot.c Patched!"
+                echo "[+] Count: $(grep -c "ksu_handle_sys_reboot" "kernel/reboot.c")"
+            else
+                echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        elif grep -q "ksu_handle_sys_reboot" "drivers/kernelsu/supercalls.c" > /dev/null; then
+            echo "[+] Checked ksu_handle_sys_reboot existed in KernelSU!"
 
-                sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
-                sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
+            sed -i '/SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,/i \#ifdef CONFIG_KSU\n\extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);\n\#endif' kernel/reboot.c
+            sed -i '/int ret = 0;/a \#ifdef CONFIG_KSU\n\tksu_handle_sys_reboot(magic1, magic2, cmd, &arg);\n\#endif' kernel/reboot.c
 
-                if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
-                    echo "[+] kernel/reboot.c Patched!"
-                else
-                    echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
-                fi
+            if grep -q "ksu_handle_sys_reboot" "kernel/reboot.c"; then
+                echo "[+] kernel/reboot.c Patched!"
+                echo "[+] Count: $(grep -c "ksu_handle_sys_reboot" "kernel/reboot.c")"
+            else
+                echo "[-] kernel/reboot.c patch failed for unknown reasons, please provide feedback in time."
             fi
         else
             echo "[-] KernelSU have no sys_reboot, Skipped."
         fi
+
+        echo "======================================"
         ;;
     ## kernel/sys.c
     kernel/sys.c)
-        if [ -f "drivers/kernelsu/setuid_hook.c" ] && grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c"; then
+        if grep -q "ksu_handle_setresuid " "drivers/kernelsu/setuid_hook.c" > /dev/null; then
             if grep -q "__sys_setresuid" "kernel/sys.c"; then
                 echo "[+] Checked ksu_handle_setresuid existed in KernelSU!"
 
@@ -240,12 +285,15 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "ksu_handle_setresuid" "kernel/sys.c"; then
                 echo "[+] kernel/sys.c Patched!"
+                echo "[+] Count: $(grep -c "ksu_handle_setresuid" "kernel/sys.c")"
             else
                 echo "[-] kernel/sys.c patch failed for unknown reasons, please provide feedback in time."
             fi
         else
             echo "[-] KernelSU have no setresuid, Skipped."
         fi
+
+        echo "======================================"
         ;;
     esac
 

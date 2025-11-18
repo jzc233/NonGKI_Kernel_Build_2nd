@@ -39,13 +39,18 @@ for i in "${patch_files[@]}"; do
     # fs/ changes
     ## fs/namespace.c
     fs/namespace.c)
+        echo "======================================"
+
         sed -i '/^SYSCALL_DEFINE2(umount, char __user \*, name, int, flags)/i\static int can_umount(const struct path *path, int flags)\n{\n\tstruct mount *mnt = real_mount(path->mnt);\n\tif (!may_mount())\n\t\treturn -EPERM;\n\tif (path->dentry != path->mnt->mnt_root)\n\t\treturn -EINVAL;\n\tif (!check_mnt(mnt))\n\t\treturn -EINVAL;\n\tif (mnt->mnt.mnt_flags \& MNT_LOCKED) \/\* Check optimistically *\/\n\t\treturn -EINVAL;\n\tif (flags \& MNT_FORCE \&\& !capable(CAP_SYS_ADMIN))\n\t\treturn -EPERM;\n\treturn 0;\n}\n\/\/ caller is responsible for flags being sane\nint path_umount(struct path *path, int flags)\n{\n\tstruct mount *mnt = real_mount(path->mnt);\n\tint ret;\n\tret = can_umount(path, flags);\n\tif (!ret)\n\t\tret = do_umount(mnt, flags);\n\t\/\* we mustn'"'"'t call path_put() as that would clear mnt_expiry_mark *\/\n\tdput(path->dentry);\n\tmntput_no_expire(mnt);\n\treturn ret;\n}\n' fs/namespace.c
 
         if grep -q "can_umount" "fs/namespace.c"; then
             echo "[+] fs/namespace.c Patched!"
+            echo "[+] Count: $(grep -c "can_umount" "fs/namespace.c")"
         else
             echo "[-] fs/namespace.c patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
     ## fs/internal.h
     fs/internal.h)
@@ -53,44 +58,72 @@ for i in "${patch_files[@]}"; do
 
         if grep -q "path_umount" "fs/internal.h"; then
             echo "[+] fs/internal.h Patched!"
+            echo "[+] Count: $(grep -c "path_umount" "fs/internal.h")"
         else
             echo "[-] fs/internal.h patch failed for unknown reasons, please provide feedback in time."
         fi
+
+        echo "======================================"
         ;;
 
     # include/ changes
     ## include/linux/uaccess.h
     include/linux/uaccess.h)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c"; then
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" > /dev/null; then
             sed -i 's/^extern long strncpy_from_unsafe_user/long strncpy_from_user_nofault/' include/linux/uaccess.h
+
+            if grep -q "strncpy_from_user_nofault" "include/linux/uaccess.h"; then
+                echo "[+] include/linux/uaccess.h Patched!"
+                echo "[+] Count: $(grep -c "strncpy_from_user_nofault" "include/linux/uaccess.h")"
+            else
+                echo "[-] include/linux/uaccess.h patch failed for unknown reasons, please provide feedback in time."
+            fi
+        else
+            echo "[-] KernelSU have no strncpy_from_user_nofault, Skipped."
         fi
+
+        echo "======================================"
         ;;
 
     # mm/ changes
     ## mm/maccess.c
     mm/maccess.c)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c"; then
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" > /dev/null; then
             sed -i 's/\* strncpy_from_unsafe_user: - Copy a NUL terminated string from unsafe user/\* strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user/' mm/maccess.c
             sed -i 's/long strncpy_from_unsafe_user(char \*dst, const void __user \*unsafe_addr,/long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,/' mm/maccess.c
+
+            if grep -q "strncpy_from_user_nofault" "mm/maccess.c"; then
+                echo "[+] mm/maccess.c Patched!"
+                echo "[+] Count: $(grep -c "strncpy_from_user_nofault" "mm/maccess.c")"
+            else
+                echo "[-] mm/maccess.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        else
+            echo "[-] KernelSU have no strncpy_from_user_nofault, Skipped."
         fi
+
+        echo "======================================"
         ;;
 
     # security/
     ## selinux/hooks.c
     security/selinux/hooks.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c"; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" > /dev/null; then
             sed -i 's/struct inode_security_struct \*isec = inode->i_security/struct inode_security_struct *isec = selinux_inode(inode)/g' security/selinux/hooks.c
             sed -i 's/return inode->i_security/return selinux_inode(inode)/g' security/selinux/hooks.c
             sed -i 's/\bisec = inode->i_security;/isec = selinux_inode(inode);/' security/selinux/hooks.c
 
             if grep -q "selinux_inode(inode)" "security/selinux/hooks.c"; then
                 echo "[+] security/selinux/hooks.c Part I Patched!"
+                echo "[+] Count: $(grep -c "selinux_inode" "security/selinux/hooks.c")"
             else
                 echo "[-] security/selinux/hooks.c Part I patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
 
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c"; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" > /dev/null; then
             sed -i 's/tsec = cred->security;/tsec = selinux_cred(cred);/g' security/selinux/hooks.c
             sed -i 's/const struct task_security_struct \*tsec = cred->security;/const struct task_security_struct *tsec = selinux_cred(cred);/g' security/selinux/hooks.c
             sed -i 's/const struct task_security_struct \*tsec = current_security();/const struct task_security_struct *tsec = selinux_cred(current_cred());/g' security/selinux/hooks.c
@@ -108,56 +141,73 @@ for i in "${patch_files[@]}"; do
 
             if grep -q "selinux_cred" "security/selinux/hooks.c"; then
                 echo "[+] security/selinux/hooks.c Part II Patched!"
+                echo "[+] Count: $(grep -c "selinux_cred" "security/selinux/hooks.c")"
             else
                 echo "[-] security/selinux/hooks.c Part II patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] KernelSU have no selinux_cred, Skipped."
         fi
+
+        echo "======================================"
         ;;
     ## selinux/selinuxfs.c
     security/selinux/selinuxfs.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c"; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" > /dev/null; then
             sed -i 's/(struct inode_security_struct \*)inode->i_security/selinux_inode(inode)/g' security/selinux/selinuxfs.c
 
             if grep -q "selinux_inode(inode)" "security/selinux/selinuxfs.c"; then
                 echo "[+] security/selinux/selinuxfs.c Patched!"
+                echo "[+] Count: $(grep -c "selinux_inode" "security/selinux/selinuxfs.c")"
             else
                 echo "[-] security/selinux/selinuxfs.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
         ;;
     ## selinux/xfrm.c
     security/selinux/xfrm.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c"; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" > /dev/null; then
             sed -i 's/const struct task_security_struct \*tsec = current_security();/const struct task_security_struct *tsec = selinux_cred(current_cred());/g' security/selinux/xfrm.c
 
             if grep -q "selinux_cred" "security/selinux/xfrm.c"; then
                 echo "[+] security/selinux/xfrm.c Patched!"
+                echo "[+] Count: $(grep -c "selinux_cred" "security/selinux/xfrm.c")"
             else
                 echo "[-] security/selinux/xfrm.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] KernelSU have no selinux_cred, Skipped."
         fi
         ;;
     ## selinux/include/objsec.h
     security/selinux/include/objsec.h)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c"; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" > /dev/null; then
             sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct inode_security_struct *selinux_inode(\n\t\t\t\t\t\tconst struct inode *inode)\n{\n\treturn inode->i_security;\n}\n' security/selinux/include/objsec.h
 
-            if grep -q "selinux_inode(inode)" "security/selinux/selinuxfs.c"; then
-                echo "[+] security/selinux/selinuxfs.c Patched!"
+            if grep -q "selinux_inode(inode)" "security/selinux/include/objsec.h"; then
+                echo "[+] security/selinux/include/objsec.h Patched!"
+                echo "[+] Count: $(grep -c "selinux_inode" "security/selinux/include/objsec.h")"
             else
-                echo "[-] security/selinux/selinuxfs.c patch failed for unknown reasons, please provide feedback in time."
+                echo "[-] security/selinux/include/objsec.h patch failed for unknown reasons, please provide feedback in time."
             fi
+        else
+            echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
 
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c"; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" > /dev/null; then
             sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct task_security_struct *selinux_cred(const struct cred *cred)\n{\n\treturn cred->security;\n}\n' security/selinux/include/objsec.h
 
-            if grep -q "selinux_cred" "security/selinux/xfrm.c"; then
-                echo "[+] security/selinux/xfrm.c Patched!"
+            if grep -q "selinux_cred" "security/selinux/include/objsec.h"; then
+                echo "[+] security/selinux/include/objsec.h Patched!"
+                echo "[+] Count: $(grep -c "selinux_cred" "security/selinux/include/objsec.h")"
             else
-                echo "[-] security/selinux/xfrm.c patch failed for unknown reasons, please provide feedback in time."
+                echo "[-] security/selinux/include/objsec.h patch failed for unknown reasons, please provide feedback in time."
             fi
         fi
+
+        echo "======================================"
         ;;
     esac
 
