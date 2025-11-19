@@ -225,12 +225,13 @@ for i in "${patch_files[@]}"; do
             fi
         fi
 
-        echo "======================================"
         ;;
 
     # include/ changes
     ## linux/seccomp.h
     include/linux/seccomp.h)
+        echo "======================================"
+
         if grep -q "filter_count" "include/linux/seccomp.h" >/dev/null 2>&1; then
             echo "[-] Detected filter_count in kernel, Skipped."
         else
@@ -244,6 +245,8 @@ for i in "${patch_files[@]}"; do
                 echo "[-] include/linux/seccomp.h patch failed for unknown reasons, please provide feedback in time."
             fi
         fi
+
+        echo "======================================"
         ;;
     esac
 
