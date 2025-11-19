@@ -35,7 +35,7 @@ for i in "${patch_files[@]}"; do
         grep -n "selinux_inode(inode)" "$i"
         echo "[-] End of file."
         continue
-    elif grep -q "selinux_cred" "$i"; then
+    elif grep -q "selinux_cred(new)" "$i"; then
         echo "[-] Warning: $i contains Backport"
         echo "[+] Code in here:"
         grep -n "selinux_cred" "$i"
