@@ -259,10 +259,10 @@ runs:
         run: |
           cd $GITHUB_WORKSPACE/device_kernel
 
-          if [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KERNELSU_AUTO_FORK }}" == "true" ]]; then
+          if [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KERNELSU_AUTO_FORK }}" == "true" ]] && [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
             echo "======================================================================================================="
             echo "=                                                                                                     ="
-            echo "= SukiSU-Ultra has a large number of problems with the Non-GKI kernel that cause compilation failures ="
+            echo "= SukiSU-Ultra has a large number of problems with the kernel < 4.14 that cause compilation failures  ="
             echo "=         ,and the project will refuse to compile it by default until everything is resolved.         ="
             echo "=                                                                                                     ="
             echo "=        If you recognize these but still need to compile, enable the BUILD_DEBUGGER function.        ="
@@ -275,10 +275,10 @@ runs:
             else
                 false
             fi
-          elif [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]]; then
+          elif [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] && [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
             echo "======================================================================================================="
             echo "=                                                                                                     ="
-            echo "= SukiSU-Ultra has a large number of problems with the Non-GKI kernel that cause compilation failures ="
+            echo "= SukiSU-Ultra has a large number of problems with the kernel < 4.14 that cause compilation failures  ="
             echo "=         ,and the project will refuse to compile it by default until everything is resolved.         ="
             echo "=                                                                                                     ="
             echo "=        If you recognize these but still need to compile, enable the BUILD_DEBUGGER function.        ="
