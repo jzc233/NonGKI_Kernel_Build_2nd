@@ -1,5 +1,5 @@
 diff --git a/fs/namespace.c b/fs/namespace.c
-index cc7a3ad..14f6904 100644
+index cc7a3ad..ebd08bf 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
 @@ -30,20 +30,22 @@
@@ -63,14 +63,16 @@ index cc7a3ad..14f6904 100644
  	get_mnt_ns(mnt_ns);
  	first_mnt_id = list_first_entry(&mnt_ns->list, struct mount, mnt_list)->mnt_id;
  	list_for_each_entry(mnt, &mnt_ns->list, mnt_list) {
-@@ -4418,16 +4427,3 @@ void susfs_reorder_mnt_id(void) {
+@@ -4418,16 +4427,14 @@ void susfs_reorder_mnt_id(void) {
  	put_mnt_ns(mnt_ns);
  }
  #endif
 -#ifdef CONFIG_KSU_SUSFS
 -bool susfs_is_mnt_devname_ksu(struct path *path) {
 -	struct mount *mnt;
--
++void susfs_assign_fake_mnt_id(struct mount *mnt) {
++	lock_mount_hash();
+ 
 -	if (path && path->mnt) {
 -		mnt = real_mount(path->mnt);
 -		if (mnt && mnt->mnt_devname && !strcmp(mnt->mnt_devname, "KSU")) {
@@ -78,7 +80,14 @@ index cc7a3ad..14f6904 100644
 -		}
 -	}
 -	return false;
--}
++	ida_free(&mnt_id_ida, mnt->mnt_id);
++
++	mnt->mnt_id = DEFAULT_KSU_MNT_ID;
++	mnt->mnt_group_id = ida_alloc_min(&susfs_ksu_mnt_group_ida, DEFAULT_KSU_MNT_GROUP_ID, GFP_KERNEL);
++	atomic64_add(1, &susfs_ksu_mounts);
++
++	unlock_mount_hash();
+ }
 -#endif
 diff --git a/fs/susfs.c b/fs/susfs.c
 index 543144c..767026f 100644
