@@ -12,6 +12,7 @@ patch_files=(
     security/selinux/selinuxfs.c
     security/selinux/xfrm.c
     security/selinux/include/objsec.h
+    include/linux/seccomp.h
 )
 
 PATCH_DATE="2025-11-14"
@@ -225,6 +226,24 @@ for i in "${patch_files[@]}"; do
         fi
 
         echo "======================================"
+        ;;
+
+    # include/ changes
+    ## linux/seccomp.h
+    include/linux/seccomp.h)
+        if grep -q "filter_count" "include/linux/seccomp.h" >/dev/null 2>&1; then
+            echo "[-] Detected filter_count in kernel, Skipped."
+        else
+            sed -i '/#include <linux\/thread_info.h>/a\#include <linux\/atomic.h>' include/linux/seccomp.h
+            sed -i '/struct seccomp_filter \*filter;/i\ \tatomic_t filter_count;' include/linux/seccomp.h
+
+            if grep -q "filter_count" "include/linux/seccomp.h"; then
+                echo "[+] include/linux/seccomp.h Patched!"
+                echo "[+] Count: $(grep -c "filter_count" "include/linux/seccomp.h")"
+            else
+                echo "[-] include/linux/seccomp.h patch failed for unknown reasons, please provide feedback in time."
+            fi
+        fi
         ;;
     esac
 
