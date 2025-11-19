@@ -187,7 +187,11 @@ for i in "${patch_files[@]}"; do
     ## selinux/include/objsec.h
     security/selinux/include/objsec.h)
         if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
-            sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct inode_security_struct *selinux_inode(\n\t\t\t\t\t\tconst struct inode *inode)\n{\n\treturn inode->i_security;\n}\n' security/selinux/include/objsec.h
+            if grep -q "selinux_inode" "security/selinux/include/objsec.h"; then
+                echo "[-] Detected selinux_inode in kernel, Skipped."
+            else
+                sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct inode_security_struct *selinux_inode(\n\t\t\t\t\t\tconst struct inode *inode)\n{\n\treturn inode->i_security;\n}\n' security/selinux/include/objsec.h
+            fi
 
             if grep -q "selinux_inode" "security/selinux/include/objsec.h"; then
                 echo "[+] security/selinux/include/objsec.h Part I Patched!"
@@ -200,7 +204,11 @@ for i in "${patch_files[@]}"; do
         fi
 
         if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_cred" "drivers/kernelsu/selinux/selinux.c" >/dev/null 2>&1; then
-            sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct task_security_struct *selinux_cred(const struct cred *cred)\n{\n\treturn cred->security;\n}\n' security/selinux/include/objsec.h
+            if grep -q "selinux_cred" "security/selinux/include/objsec.h"; then
+                echo "[-] Detected selinux_cred in kernel, Skipped."
+            else
+                sed -i '/#endif \/\* _SELINUX_OBJSEC_H_ \*\//i\static inline struct task_security_struct *selinux_cred(const struct cred *cred)\n{\n\treturn cred->security;\n}\n' security/selinux/include/objsec.h
+            fi
 
             if grep -q "selinux_cred" "security/selinux/include/objsec.h"; then
                 echo "[+] security/selinux/include/objsec.h Part II Patched!"
