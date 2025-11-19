@@ -89,6 +89,19 @@ index cc7a3ad..ebd08bf 100644
 +	unlock_mount_hash();
  }
 -#endif
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index e40c649..7561e50 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -22,7 +22,7 @@
+ #include "internal.h"
+ 
+ #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+-bool susfs_hide_sus_mnts_for_all_procs = true; // hide sus mounts for all processes by default
++extern bool susfs_hide_sus_mnts_for_all_procs;
+ #endif
+ 
+ static __poll_t mounts_poll(struct file *file, poll_table *wait)
 diff --git a/fs/susfs.c b/fs/susfs.c
 index 543144c..767026f 100644
 --- a/fs/susfs.c
