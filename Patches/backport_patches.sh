@@ -129,6 +129,8 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] security/selinux/hooks.c Part I patch failed for unknown reasons, please provide feedback in time."
             fi
+        elif [ "$FIRST_VERSION" == 5 ] && [ "$SECOND_VERSION" == 4 ]; then
+            echo "[-] Kernel Version ${KERNEL_VERSION} > 5.1, Skipped."
         else
             echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
@@ -155,6 +157,8 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] security/selinux/hooks.c Part II patch failed for unknown reasons, please provide feedback in time."
             fi
+        elif [ "$FIRST_VERSION" == 5 ] && [ "$SECOND_VERSION" == 4 ]; then
+            echo "[-] Kernel Version ${KERNEL_VERSION} > 5.1, Skipped."
         else
             echo "[-] KernelSU have no selinux_cred, Skipped."
         fi
@@ -172,6 +176,8 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] security/selinux/selinuxfs.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        elif [ "$FIRST_VERSION" == 5 ] && [ "$SECOND_VERSION" == 4 ]; then
+            echo "[-] Kernel Version ${KERNEL_VERSION} > 5.1, Skipped."
         else
             echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
@@ -187,6 +193,8 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] security/selinux/xfrm.c patch failed for unknown reasons, please provide feedback in time."
             fi
+        elif [ "$FIRST_VERSION" == 5 ] && [ "$SECOND_VERSION" == 4 ]; then
+            echo "[-] Kernel Version ${KERNEL_VERSION} > 5.1, Skipped."
         else
             echo "[-] KernelSU have no selinux_cred, Skipped."
         fi
@@ -206,6 +214,8 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] security/selinux/include/objsec.h Part I patch failed for unknown reasons, please provide feedback in time."
             fi
+        elif [ "$FIRST_VERSION" == 5 ] && [ "$SECOND_VERSION" == 4 ]; then
+            echo "[-] Kernel Version ${KERNEL_VERSION} > 5.1, Skipped."
         else
             echo "[-] KernelSU have no selinux_inode, Skipped."
         fi
@@ -223,6 +233,10 @@ for i in "${patch_files[@]}"; do
             else
                 echo "[-] security/selinux/include/objsec.h Part II patch failed for unknown reasons, please provide feedback in time."
             fi
+        elif [ "$FIRST_VERSION" == 5 ] && [ "$SECOND_VERSION" == 4 ]; then
+            echo "[-] Kernel Version ${KERNEL_VERSION} > 5.1, Skipped."
+        else
+            echo "[-] KernelSU have no selinux_cred, Skipped."
         fi
 
         ;;
