@@ -388,6 +388,7 @@ runs:
             fi
 
             if [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
+                echo "CONFIG_DEBUG_KERNEL=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
                 echo "CONFIG_KALLSYMS=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
                 echo "CONFIG_KALLSYMS_ALL=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
             fi
