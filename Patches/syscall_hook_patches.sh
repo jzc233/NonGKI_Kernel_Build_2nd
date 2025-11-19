@@ -42,7 +42,7 @@ for i in "${patch_files[@]}"; do
     fs/exec.c)
         echo "======================================"
 
-        if grep -q "ksu_handle_execveat_ksud" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
+        if grep -q "ksu_handle_execve_ksud" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
             echo "[+] Checked ksu_handle_execve_ksud existed in KernelSU!"
 
             sed -i '/^SYSCALL_DEFINE3(execve,/i\#ifdef CONFIG_KSU\nextern bool ksu_execveat_hook __read_mostly;\nextern __attribute__((hot, always_inline)) int ksu_handle_execve_sucompat(int *fd, const char __user **filename_user,\n\t\t\t       void *__never_use_argv, void *__never_use_envp,\n\t\t\t       int *__never_use_flags);\nextern int ksu_handle_execve_ksud(const char __user *filename_user,\n\t\t\tconst char __user *const __user *__argv);\n#endif\n' fs/exec.c
