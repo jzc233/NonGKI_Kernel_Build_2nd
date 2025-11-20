@@ -47,7 +47,7 @@ for i in "${patch_files[@]}"; do
         echo "======================================"
 
         sed -i '/#include <linux\/vmalloc.h>/a\#ifdef CONFIG_KSU_SUSFS\n#include <linux/susfs_def.h>\n#endif' fs/exec.c
-        sed -i '/^static int do_execveat_common(int fd, struct filename \*filename,/i\n#ifdef CONFIG_KSU\nextern bool ksu_execveat_hook __read_mostly;\nextern bool __ksu_is_allow_uid_for_current(uid_t uid);\nextern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv,\n\t\t\tvoid *envp, int *flags);\nextern int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,\n\t\t\t\t void *argv, void *envp, int *flags);\n#endif\n' fs/exec.c
+        sed -i '/^static int do_execveat_common(int fd, struct filename \*filename,/i\#ifdef CONFIG_KSU\nextern bool ksu_execveat_hook __read_mostly;\nextern bool __ksu_is_allow_uid_for_current(uid_t uid);\nextern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv,\n\t\t\tvoid *envp, int *flags);\nextern int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,\n\t\t\t\t void *argv, void *envp, int *flags);\n#endif\n' fs/exec.c
         sed -i '/return PTR_ERR(filename);/a\#ifdef CONFIG_KSU_SUSFS\n\tif (likely(susfs_is_current_proc_umounted())) {\n\t\tgoto orig_flow;\n\t}\n\tif (unlikely(ksu_execveat_hook)) {\n\t\tksu_handle_execveat(\&fd, \&filename, \&argv, \&envp, \&flags);\n\t} else if ((__ksu_is_allow_uid_for_current(current_uid().val))) {\n\t\tksu_handle_execveat_sucompat(\&fd, \&filename, \&argv, \&envp, \&flags);\n\t}\norig_flow:\n#endif' fs/exec.c
 
         if grep -q "ksu_handle_execve_sucompat" "fs/exec.c"; then
@@ -63,7 +63,7 @@ for i in "${patch_files[@]}"; do
     fs/open.c)
         sed -i '/#include <linux\/compat.h>/a #ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs_def.h>\n#endif' fs/open.c
         sed -i '/SYSCALL_DEFINE3(faccessat/i #ifdef CONFIG_KSU\nextern bool __ksu_is_allow_uid_for_current(uid_t uid);\nextern int ksu_handle_faccessat(int *dfd, const char __user **filename_user, int *mode,\n             int *flags);\n#endif' fs/open.c
-        if grep "do_faccessat" "fs/open.c"; then
+        if grep -q "do_faccessat" "fs/open.c" >/dev/null 2>&1; then
             sed -i '/return do_faccessat(dfd, filename, mode);/i #ifdef CONFIG_KSU\n    if (likely(susfs_is_current_proc_umounted())) {\n        goto orig_flow;\n    }\n\n    if (unlikely(__ksu_is_allow_uid_for_current(current_uid().val))) {\n        ksu_handle_faccessat(&dfd, &filename, &mode, NULL);\n    }\n\norig_flow:\n#endif' fs/open.c
         else
             sed -i '/if (mode & ~S_IRWXO)/i #ifdef CONFIG_KSU\n    if (likely(susfs_is_current_proc_umounted())) {\n        goto orig_flow;\n    }\n\n    if (unlikely(__ksu_is_allow_uid_for_current(current_uid().val))) {\n        ksu_handle_faccessat(&dfd, &filename, &mode, NULL);\n    }\n\norig_flow:\n#endif' fs/open.c
@@ -81,7 +81,7 @@ for i in "${patch_files[@]}"; do
     ## read_write.c
     fs/read_write.c)
         sed -i '/SYSCALL_DEFINE3(read,/i #ifdef CONFIG_KSU\nextern bool ksu_vfs_read_hook __read_mostly;\nextern __attribute__((cold)) int ksu_handle_sys_read(unsigned int fd,\n\t\t\tchar __user **buf_ptr, size_t *count_ptr);\n#endif' fs/read_write.c
-        if grep "ksys_read" "fs/read_write.c"; then
+        if grep -q "ksys_read" "fs/read_write.c" >/dev/null 2>&1; then
             sed -i '/return ksys_read(fd, buf, count);/i #ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, &buf, &count);\n#endif' fs/open.c
         else
             sed -i '0,/if (f\.file) {/{s/if (f\.file) {/\n#ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, \&buf, \&count);\n#endif\n\tif (f.file) {/}' fs/read_write.c
@@ -241,7 +241,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## sys.c
     kernel/sys.c)
-        if grep -q "__sys_setresuid" "kernel/sys.c"; then
+        if grep -q "__sys_setresuid" "kernel/sys.c" >/dev/null 2>&1; then
             sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
             sed -i '/return __sys_setresuid(ruid, euid, suid);/i\#ifdef CONFIG_KSU\n\tif (ksu_handle_setresuid(ruid, euid, suid)) {\n\t\tpr_info("Something wrong with ksu_handle_setresuid()\\");\n\t}\n#endif' kernel/sys.c
         else
