@@ -12,7 +12,7 @@ env:
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
 
-  KERNEL_SOURCE : "https://github.com/SOVIET-ANDROID/kernel_xiaomi_raphael.git"
+  KERNEL_SOURCE : "https://github.com/JackA1ltman/kernel_xiaomi_raphael_noksu.git"
   KERNEL_BRANCH : "15.0"
 
   CLANG_SOURCE : "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman"
@@ -54,7 +54,7 @@ env:
 
   PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
 
-  KERNELSU_METHOD: "only" # shell, manual and only.
+  KERNELSU_METHOD: "shell" # shell, manual and only.
 
   PATCHES_SOURCE: "JackA1ltman/NonGKI_Kernel_Patches" # [your_name]/[your_patch] -> gooder123/NonGKI_Patcher
   PATCHES_BRANCH: "mi_kernel" # [your_branch] -> main
