@@ -32,6 +32,7 @@ for i in "${patch_files[@]}"; do
         echo "[+] Code in here:"
         grep -n "ksu_handle" "$i"
         echo "[-] End of file."
+        echo "======================================"
         continue
     fi
 
