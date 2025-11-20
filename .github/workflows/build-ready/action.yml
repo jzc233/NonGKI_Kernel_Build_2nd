@@ -303,7 +303,11 @@ runs:
 
           # Fork
           if [[ "${{ env.KERNELSU_SOURCE }}" == *rsuntk* ]] || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "rsuntk" ]]; then
-            echo "CONFIG_KSU_MANUAL_HOOK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+            if [[ ${{ env.SUSFS_ENABLE }} == "true" ]] && [[ ${{ env.SUSFS_UPDATE }} == "true" ]]; then
+                echo "CONFIG_KSU_MANUAL_HOOK=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+            else
+                echo "CONFIG_KSU_MANUAL_HOOK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+            fi
           fi
 
           if [[ "${{ env.KERNELSU_SOURCE }}" == *next* ]] || [[ "${{ env.KERNELSU_SOURCE }}" == *wild* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "wild" ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "next" ]]; then
