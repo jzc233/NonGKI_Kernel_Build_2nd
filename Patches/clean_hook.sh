@@ -11,6 +11,6 @@ for file in "${CLEAN_FILES[@]}"; do
     if grep "CONFIG_KSU" "${file}"; then
         echo "[-] Could not remove hook from ${file}"
     else
-        echo "Cleaned Hook for ${file}."
+        echo "[+] Cleaned Hook for ${file}."
     fi
 done
