@@ -54,7 +54,7 @@ jobs:
         | Xiaomi 11 | venus | 5.4 | Evolution X 11.X | 16 | AnyKernel3 | SukiSU(U) | ✅ | ✅ | ✅ | ❌ | Inline |
         | Smartisan U3 Pro | osborn | 4.4 | Lineage OS 18 | 11 | AnyKernel3 | Magic | ❌ | ❌ | ❌ | ❌ | Syscall |
         | Redmi 8 | olive | 4.19 | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | ✅ | ✅ | ✅ | Inline |
-        | Redmi Note 7 | lavender | 4.19 | Based-AOSP | 15 | AnyKernel3 | Next | ✅ | ❌ | ❌ | ❌ | Inline |
+        | Redmi Note 7 | lavender | 4.19 | Based-AOSP | 15 | AnyKernel3 | Next | ✅ | ❌ | ❌ | ❌ | Syscall |
         | Samsung Note 10 | d1 | 4.14 | OneUI 7 | 15 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ❌ | ❌ | Inline |
         | Redmi Note 11 Pro 5G | veux | 5.4 | Based-AOSP | 16 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ✅ | ❌ | Inline |
         | OnePlus 8 | instantnoodle | 4.19 | Color OS 15 | 13 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ✅ | ✅ | Inline |
