@@ -15,7 +15,7 @@ for file in "${KSU_CLEAN_FILES[@]}"; do
     sed -i '/#ifdef CONFIG_KSU/,/#endif/d' "${file}"
 
     if grep "CONFIG_KSU" "${file}"; then
-        echo "[-] Could not remove hook from ${file}"
+        echo "[-] Could not remove hook from ${file}."
     else
         echo "[+] Cleaned Hook for ${file}."
     fi
@@ -27,7 +27,7 @@ for file in "${SUSFS_CLEAN_FILES[@]}"; do
     sed -i '/#ifdef CONFIG_KSU_SUSFS/,/#endif/d' "${file}"
 
     if grep "CONFIG_KSU_SUSFS/" "${file}"; then
-        echo "[-] Could not remove hook from ${file}"
+        echo "[-] Could not remove hook from ${file}."
     else
         echo "[+] Cleaned Hook for ${file}."
     fi
@@ -37,7 +37,7 @@ for file in "${SUSFS_REMAIN_CLEAN_FILES[@]}"; do
     rm -f "${file}"
 
     if [ -f "${file}" ]; then
-        echo "[-] Could not remove file ${file}"
+        echo "[-] Could not remove file ${file}."
     else
         echo "[+] Removed file ${file}."
     fi
@@ -45,6 +45,11 @@ done
 
 if grep -q "CONFIG_KSU_SUSFS" "fs/Makefile"; then
     sed -i '/CONFIG_KSU_SUSFS/d' fs/Makefile
+    if grep -q "CONFIG_KSU_SUSFS" "fs/Makefile"; then
+        echo "[-] Could not remove code from fs/Makefile."
+    else
+        echo "[+] Removed code for fs/Makefile."
+    fi
 else
     echo "[-] Have no CONFIG_KSU_SUSFS in fs/Makefile"
 fi
