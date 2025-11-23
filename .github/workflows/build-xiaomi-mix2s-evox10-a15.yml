@@ -135,10 +135,6 @@ jobs:
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/cgroup_workingset.patch
           patch -p1 < cgroup_workingset.patch
 
-          # Patch get_cred_rcu
-          # wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/get_cred.patch
-          # patch -p1 < get_cred.patch
-
           # Patch LZ4 Updated
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/lz4_1100_to_49.patch
           patch -p1 < lz4_1100_to_49.patch
