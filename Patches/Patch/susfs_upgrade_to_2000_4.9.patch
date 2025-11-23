@@ -178,7 +178,7 @@ index 4e2e1ae..3ef498e 100644
  	drop_super(s);
  	return err;
 diff --git a/fs/susfs.c b/fs/susfs.c
-index 6ee395d..962cadc 100644
+index 6ee395d..cf2727f 100644
 --- a/fs/susfs.c
 +++ b/fs/susfs.c
 @@ -17,13 +17,7 @@
@@ -680,43 +680,17 @@ index 6ee395d..962cadc 100644
 -		spin_unlock(&inode->i_lock);
 -	}
 -	path_put(&p);
-+static DEFINE_SPINLOCK(susfs_spin_lock_sus_mount);
-+bool susfs_hide_sus_mnts_for_all_procs = true; // hide sus mounts for all processes by default
-+
-+void susfs_set_hide_sus_mnts_for_all_procs(void __user **user_info) {
-+	struct st_susfs_hide_sus_mnts_for_all_procs info = {0};
-+
-+	if (copy_from_user(&info, (struct st_susfs_hide_sus_mnts_for_all_procs __user*)*user_info, sizeof(info))) {
-+		info.err = -EFAULT;
-+		goto out_copy_to_user;
-+	}
-+	spin_lock(&susfs_spin_lock_sus_mount);
-+	susfs_hide_sus_mnts_for_all_procs = info.enabled;
-+	spin_unlock(&susfs_spin_lock_sus_mount);
-+	SUSFS_LOGI("susfs_hide_sus_mnts_for_all_procs: %d\n", info.enabled);
-+	info.err = 0;
-+out_copy_to_user:
-+	if (copy_to_user(&((struct st_susfs_hide_sus_mnts_for_all_procs __user*)*user_info)->err, &info.err, sizeof(info.err))) {
-+		info.err = -EFAULT;
-+	}
-+	SUSFS_LOGI("CMD_SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS -> ret: %d\n", info.err);
- }
- 
+-}
+-
 -int susfs_add_sus_mount(struct st_susfs_sus_mount* __user user_info) {
 -	struct st_susfs_sus_mount_list *cursor = NULL, *temp = NULL;
 -	struct st_susfs_sus_mount_list *new_list = NULL;
 -	struct st_susfs_sus_mount info;
-+bool susfs_is_umount_for_zygote_iso_service_enabled = false;
-+void susfs_set_umount_for_zygote_iso_service(void __user **user_info) {
-+	struct st_susfs_umount_for_zygote_iso_service info = {0};
- 
+-
 -	if (copy_from_user(&info, user_info, sizeof(info))) {
 -		SUSFS_LOGE("failed copying from userspace\n");
 -		return 1;
-+	if (copy_from_user(&info, (struct st_susfs_umount_for_zygote_iso_service __user*)*user_info, sizeof(info))) {
-+		info.err = -EFAULT;
-+		goto out_copy_to_user;
- 	}
+-	}
 -
 -#if defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_COMPAT_STAT64)
 -#ifdef CONFIG_MIPS
@@ -738,15 +712,7 @@ index 6ee395d..962cadc 100644
 -			spin_unlock(&susfs_spin_lock);
 -			return 0;
 -		}
-+	spin_lock(&susfs_spin_lock_sus_mount);
-+	susfs_is_umount_for_zygote_iso_service_enabled = info.enabled;
-+	spin_unlock(&susfs_spin_lock_sus_mount);
-+	SUSFS_LOGI("susfs_is_umount_for_zygote_iso_service_enabled: %d\n", info.enabled);
-+	info.err = 0;
-+out_copy_to_user:
-+	if (copy_to_user(&((struct st_susfs_umount_for_zygote_iso_service __user*)*user_info)->err, &info.err, sizeof(info.err))) {
-+		info.err = -EFAULT;
- 	}
+-	}
 -
 -	new_list = kmalloc(sizeof(struct st_susfs_sus_mount_list), GFP_KERNEL);
 -	if (!new_list) {
@@ -785,15 +751,38 @@ index 6ee395d..962cadc 100644
 -		spin_unlock(&inode->i_lock);
 -		SUSFS_LOGI("set SUS_MOUNT inode state for source bind mount path '%s'\n", pathname);
 -	}
--}
++static DEFINE_SPINLOCK(susfs_spin_lock_sus_mount);
++bool susfs_hide_sus_mnts_for_all_procs = true; // hide sus mounts for all processes by default
++
++void susfs_set_hide_sus_mnts_for_all_procs(void __user **user_info) {
++	struct st_susfs_hide_sus_mnts_for_all_procs info = {0};
++
++	if (copy_from_user(&info, (struct st_susfs_hide_sus_mnts_for_all_procs __user*)*user_info, sizeof(info))) {
++		info.err = -EFAULT;
++		goto out_copy_to_user;
++	}
++	spin_lock(&susfs_spin_lock_sus_mount);
++	susfs_hide_sus_mnts_for_all_procs = info.enabled;
++	spin_unlock(&susfs_spin_lock_sus_mount);
++	SUSFS_LOGI("susfs_hide_sus_mnts_for_all_procs: %d\n", info.enabled);
++	info.err = 0;
++out_copy_to_user:
++	if (copy_to_user(&((struct st_susfs_hide_sus_mnts_for_all_procs __user*)*user_info)->err, &info.err, sizeof(info.err))) {
++		info.err = -EFAULT;
++	}
++	SUSFS_LOGI("CMD_SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS -> ret: %d\n", info.err);
+ }
 -#endif // #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT
--
+ 
 -#ifdef CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT
 -void susfs_auto_add_sus_ksu_default_mount(const char __user *to_pathname) {
 -	char *pathname = NULL;
 -	struct path path;
 -	struct inode *inode;
--
++bool susfs_is_umount_for_zygote_iso_service_enabled = false;
++void susfs_set_umount_for_zygote_iso_service(void __user **user_info) {
++	struct st_susfs_umount_for_zygote_iso_service info = {0};
+ 
 -	pathname = kmalloc(SUSFS_MAX_LEN_PATHNAME, GFP_KERNEL);
 -	if (!pathname) {
 -		SUSFS_LOGE("no enough memory\n");
@@ -821,13 +810,24 @@ index 6ee395d..962cadc 100644
 -	if (!inode) {
 -		goto out_path_put;
 -		return;
--	}
++	if (copy_from_user(&info, (struct st_susfs_umount_for_zygote_iso_service __user*)*user_info, sizeof(info))) {
++		info.err = -EFAULT;
++		goto out_copy_to_user;
+ 	}
 -	if (!(inode->i_mapping->flags & BIT_SUS_MOUNT)) {
 -		spin_lock(&inode->i_lock);
 -		set_bit(AS_FLAGS_SUS_MOUNT, &inode->i_mapping->flags);
 -		spin_unlock(&inode->i_lock);
 -		SUSFS_LOGI("set SUS_MOUNT inode state for default KSU mount path '%s'\n", pathname);
--	}
++	spin_lock(&susfs_spin_lock_sus_mount);
++	susfs_is_umount_for_zygote_iso_service_enabled = info.enabled;
++	spin_unlock(&susfs_spin_lock_sus_mount);
++	SUSFS_LOGI("susfs_is_umount_for_zygote_iso_service_enabled: %d\n", info.enabled);
++	info.err = 0;
++out_copy_to_user:
++	if (copy_to_user(&((struct st_susfs_umount_for_zygote_iso_service __user*)*user_info)->err, &info.err, sizeof(info.err))) {
++		info.err = -EFAULT;
+ 	}
 -out_path_put:
 -	path_put(&path);
 -out_free_pathname:
@@ -1028,7 +1028,7 @@ index 6ee395d..962cadc 100644
  }
  
  void susfs_sus_ino_for_generic_fillattr(unsigned long ino, struct kstat *stat) {
-@@ -824,135 +603,76 @@ void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned
+@@ -824,135 +603,77 @@ void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned
  
  /* try_umount */
  #ifdef CONFIG_KSU_SUSFS_TRY_UMOUNT
@@ -1106,8 +1106,10 @@ index 6ee395d..962cadc 100644
 -			SUSFS_LOGE("failed umounting '%s' for uid: %d, mnt_mode '%d' not supported\n",
 -							cursor->info.target_pathname, target_uid, cursor->info.mnt_mode);
 -		}
--	}
--}
++		SUSFS_LOGI("umounting '%s' for uid: %u\n", cursor->info.target_pathname, uid);
++		try_umount(cursor->info.target_pathname, cursor->info.mnt_mode);
+ 	}
+ }
 -
 -#ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
 -void susfs_auto_add_try_umount_for_bind_mount(struct path *path) {
@@ -1119,9 +1121,7 @@ index 6ee395d..962cadc 100644
 -	if (path->dentry->d_inode->i_mapping->flags & BIT_SUS_KSTAT) {
 -		SUSFS_LOGI("skip adding path to try_umount list as its inode is flagged INODE_STATE_SUS_KSTAT already\n");
 -		return;
-+		SUSFS_LOGI("umounting '%s' for uid: %u\n", cursor->info.target_pathname, uid);
-+		try_umount(cursor->info.target_pathname, cursor->info.mnt_mode);
- 	}
+-	}
 -#endif
 -
 -	pathname = kmalloc(PAGE_SIZE, GFP_KERNEL);
@@ -1200,7 +1200,7 @@ index 6ee395d..962cadc 100644
  	if (!strcmp(info.release, "default")) {
  		strncpy(my_uname.release, utsname()->release, __NEW_UTS_LEN);
  	} else {
-@@ -963,68 +683,104 @@ int susfs_set_uname(struct st_susfs_uname* __user user_info) {
+@@ -963,68 +684,104 @@ int susfs_set_uname(struct st_susfs_uname* __user user_info) {
  	} else {
  		strncpy(my_uname.version, info.version, __NEW_UTS_LEN);
  	}
@@ -1334,7 +1334,7 @@ index 6ee395d..962cadc 100644
  		seq_puts(m, fake_cmdline_or_bootconfig);
  		return 0;
  	}
-@@ -1034,7 +790,9 @@ int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m) {
+@@ -1034,7 +791,9 @@ int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m) {
  
  /* open_redirect */
  #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
@@ -1344,7 +1344,7 @@ index 6ee395d..962cadc 100644
  static int susfs_update_open_redirect_inode(struct st_susfs_open_redirect_hlist *new_entry) {
  	struct path path_target;
  	struct inode *inode_target;
-@@ -1049,7 +807,7 @@ static int susfs_update_open_redirect_inode(struct st_susfs_open_redirect_hlist
+@@ -1049,7 +808,7 @@ static int susfs_update_open_redirect_inode(struct st_susfs_open_redirect_hlist
  	inode_target = d_inode(path_target.dentry);
  	if (!inode_target) {
  		SUSFS_LOGE("inode_target is NULL\n");
@@ -1353,7 +1353,7 @@ index 6ee395d..962cadc 100644
  		goto out_path_put_target;
  	}
  
-@@ -1062,33 +820,19 @@ out_path_put_target:
+@@ -1062,33 +821,19 @@ out_path_put_target:
  	return err;
  }
  
@@ -1395,7 +1395,7 @@ index 6ee395d..962cadc 100644
  	}
  
  	new_entry->target_ino = info.target_ino;
-@@ -1097,20 +841,21 @@ int susfs_add_open_redirect(struct st_susfs_open_redirect* __user user_info) {
+@@ -1097,20 +842,21 @@ int susfs_add_open_redirect(struct st_susfs_open_redirect* __user user_info) {
  	if (susfs_update_open_redirect_inode(new_entry)) {
  		SUSFS_LOGE("failed adding path '%s' to OPEN_REDIRECT_HLIST\n", new_entry->target_pathname);
  		kfree(new_entry);
@@ -1428,7 +1428,7 @@ index 6ee395d..962cadc 100644
  }
  
  struct filename* susfs_get_redirected_path(unsigned long ino) {
-@@ -1128,39 +873,66 @@ struct filename* susfs_get_redirected_path(unsigned long ino) {
+@@ -1128,39 +874,66 @@ struct filename* susfs_get_redirected_path(unsigned long ino) {
  
  /* sus_map */
  #ifdef CONFIG_KSU_SUSFS_SUS_MAP
@@ -1509,7 +1509,7 @@ index 6ee395d..962cadc 100644
  static int copy_config_to_buf(const char *config_string, char *buf_ptr, size_t *copied_size, size_t bufsize) {
  	size_t tmp_size = strlen(config_string);
  
-@@ -1173,106 +945,124 @@ static int copy_config_to_buf(const char *config_string, char *buf_ptr, size_t *
+@@ -1173,106 +946,124 @@ static int copy_config_to_buf(const char *config_string, char *buf_ptr, size_t *
  	return 0;
  }
  

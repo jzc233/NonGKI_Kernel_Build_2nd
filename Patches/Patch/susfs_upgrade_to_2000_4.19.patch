@@ -141,7 +141,7 @@ index d77ca40..4c4712f 100644
  	drop_super(s);
  	return err;
 diff --git a/fs/susfs.c b/fs/susfs.c
-index bf8e9cc..962cadc 100644
+index bf8e9cc..cf2727f 100644
 --- a/fs/susfs.c
 +++ b/fs/susfs.c
 @@ -17,13 +17,7 @@
@@ -982,7 +982,7 @@ index bf8e9cc..962cadc 100644
  }
  
  void susfs_sus_ino_for_generic_fillattr(unsigned long ino, struct kstat *stat) {
-@@ -824,134 +603,76 @@ void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned
+@@ -824,134 +603,77 @@ void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned
  
  /* try_umount */
  #ifdef CONFIG_KSU_SUSFS_TRY_UMOUNT
@@ -1060,9 +1060,7 @@ index bf8e9cc..962cadc 100644
 -			SUSFS_LOGE("failed umounting '%s' for uid: %d, mnt_mode '%d' not supported\n",
 -							cursor->info.target_pathname, target_uid, cursor->info.mnt_mode);
 -		}
-+		SUSFS_LOGI("umounting '%s' for uid: %u\n", cursor->info.target_pathname, uid);
-+		try_umount(cursor->info.target_pathname, cursor->info.mnt_mode);
- 	}
+-	}
 -}
 -
 -#ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
@@ -1075,7 +1073,9 @@ index bf8e9cc..962cadc 100644
 -	if (path->dentry->d_inode->i_mapping->flags & BIT_SUS_KSTAT) {
 -		SUSFS_LOGI("skip adding path to try_umount list as its inode is flagged INODE_STATE_SUS_KSTAT already\n");
 -		return;
--	}
++		SUSFS_LOGI("umounting '%s' for uid: %u\n", cursor->info.target_pathname, uid);
++		try_umount(cursor->info.target_pathname, cursor->info.mnt_mode);
+ 	}
 -#endif
 -
 -	pathname = kmalloc(PAGE_SIZE, GFP_KERNEL);
@@ -1122,7 +1122,7 @@ index bf8e9cc..962cadc 100644
 -					new_list->info.target_pathname, path->dentry->d_inode->i_ino, new_list->info.mnt_mode);
 -out_free_pathname:
 -	kfree(pathname);
--}
+ }
 -#endif // #ifdef CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
  #endif // #ifdef CONFIG_KSU_SUSFS_TRY_UMOUNT
  
@@ -1153,7 +1153,7 @@ index bf8e9cc..962cadc 100644
  	if (!strcmp(info.release, "default")) {
  		strncpy(my_uname.release, utsname()->release, __NEW_UTS_LEN);
  	} else {
-@@ -962,68 +683,104 @@ int susfs_set_uname(struct st_susfs_uname* __user user_info) {
+@@ -962,68 +684,104 @@ int susfs_set_uname(struct st_susfs_uname* __user user_info) {
  	} else {
  		strncpy(my_uname.version, info.version, __NEW_UTS_LEN);
  	}
@@ -1287,7 +1287,7 @@ index bf8e9cc..962cadc 100644
  		seq_puts(m, fake_cmdline_or_bootconfig);
  		return 0;
  	}
-@@ -1033,7 +790,9 @@ int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m) {
+@@ -1033,7 +791,9 @@ int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m) {
  
  /* open_redirect */
  #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
@@ -1297,7 +1297,7 @@ index bf8e9cc..962cadc 100644
  static int susfs_update_open_redirect_inode(struct st_susfs_open_redirect_hlist *new_entry) {
  	struct path path_target;
  	struct inode *inode_target;
-@@ -1048,7 +807,7 @@ static int susfs_update_open_redirect_inode(struct st_susfs_open_redirect_hlist
+@@ -1048,7 +808,7 @@ static int susfs_update_open_redirect_inode(struct st_susfs_open_redirect_hlist
  	inode_target = d_inode(path_target.dentry);
  	if (!inode_target) {
  		SUSFS_LOGE("inode_target is NULL\n");
@@ -1306,7 +1306,7 @@ index bf8e9cc..962cadc 100644
  		goto out_path_put_target;
  	}
  
-@@ -1061,33 +820,19 @@ out_path_put_target:
+@@ -1061,33 +821,19 @@ out_path_put_target:
  	return err;
  }
  
@@ -1348,7 +1348,7 @@ index bf8e9cc..962cadc 100644
  	}
  
  	new_entry->target_ino = info.target_ino;
-@@ -1096,20 +841,21 @@ int susfs_add_open_redirect(struct st_susfs_open_redirect* __user user_info) {
+@@ -1096,20 +842,21 @@ int susfs_add_open_redirect(struct st_susfs_open_redirect* __user user_info) {
  	if (susfs_update_open_redirect_inode(new_entry)) {
  		SUSFS_LOGE("failed adding path '%s' to OPEN_REDIRECT_HLIST\n", new_entry->target_pathname);
  		kfree(new_entry);
@@ -1381,7 +1381,7 @@ index bf8e9cc..962cadc 100644
  }
  
  struct filename* susfs_get_redirected_path(unsigned long ino) {
-@@ -1127,39 +873,66 @@ struct filename* susfs_get_redirected_path(unsigned long ino) {
+@@ -1127,39 +874,66 @@ struct filename* susfs_get_redirected_path(unsigned long ino) {
  
  /* sus_map */
  #ifdef CONFIG_KSU_SUSFS_SUS_MAP
@@ -1462,7 +1462,7 @@ index bf8e9cc..962cadc 100644
  static int copy_config_to_buf(const char *config_string, char *buf_ptr, size_t *copied_size, size_t bufsize) {
  	size_t tmp_size = strlen(config_string);
  
-@@ -1172,106 +945,124 @@ static int copy_config_to_buf(const char *config_string, char *buf_ptr, size_t *
+@@ -1172,106 +946,124 @@ static int copy_config_to_buf(const char *config_string, char *buf_ptr, size_t *
  	return 0;
  }
  
