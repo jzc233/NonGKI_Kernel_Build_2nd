@@ -160,8 +160,8 @@ jobs:
           patch -p1 < zstd_157_to_49.patch || true
 
           # Patch Blu Scheduitl and Pixel Scheduitl
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sched_blu_pixutil_schedhorizon.patch
-          patch -p1 < sched_blu_pixutil_schedhorizon.patch || true
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sched_blu_pixutil_schedhorizon_and_rcu.patch
+          patch -p1 < sched_blu_pixutil_schedhorizon_and_rcu.patch || true
 
           # Patch USB Video Class Gadget driver
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/uvc.patch
@@ -204,6 +204,19 @@ jobs:
           # Block IO Controller
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_CGROUP_WRITEBACK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # RCU
+          echo "CONFIG_PREEMPT_RCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_SRCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_TREE_SRCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "# CONFIG_TASKS_RCU is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_RCU_STALL_COMMON=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_RCU_NEED_SEGCBLIST=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_RCU_FANOUT=64=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_RCU_FANOUT_LEAF=16=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_RCU_BOOST=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_RCU_BOOST_DELAY=500=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "# CONFIG_RCU_NOCB_CPU_ALL is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Simple LMK
           sed -i '/obj-\$(CONFIG_ANDROID_BINDER_IPC_SELFTEST) += binder_alloc_selftest.o/a obj-\$(CONFIG_ANDROID_SIMPLE_LMK)\t+= simple_lmk.o' drivers/android/Makefile
