@@ -159,6 +159,10 @@ jobs:
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/zstd_157_to_49.patch
           patch -p1 < zstd_157_to_49.patch || true
 
+          # Patch Blu Scheduitl and Pixel Scheduitl
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sched_blu_schedutil_and_pixutil.patch
+          patch -p1 < sched_blu_schedutil_and_pixutil.patch || true
+
           # Patch Wireguard Fixed
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/wireguard_fixed.patch
           patch -p1 < wireguard_fixed.patch || true
@@ -167,6 +171,10 @@ jobs:
           sed -i '/^CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"$/d' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           ## Binderfs
           echo "CONFIG_BINDERFS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # Scheduitl
+          echo "CONFIG_CPU_FREQ_GOV_BLU_SCHEDUTIL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_CPU_FREQ_GOV_PIXUTIL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Cgroup V2
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
