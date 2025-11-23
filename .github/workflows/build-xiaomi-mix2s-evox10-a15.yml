@@ -193,6 +193,8 @@ jobs:
 
           # USB Video Class Gadget driver
           echo "CONFIG_USB_CONFIGFS_F_UVC=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_VIDEO_V4L2=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_VIDEO_DEV=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Block IO Controller
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
