@@ -163,6 +163,10 @@ jobs:
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sched_blu_schedutil_and_pixutil.patch
           patch -p1 < sched_blu_schedutil_and_pixutil.patch || true
 
+          # Patch USB Video Class Gadget driver
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/uvc.patch
+          patch -p1 < uvc.patch || true
+
           # Patch Wireguard Fixed
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/wireguard_fixed.patch
           patch -p1 < wireguard_fixed.patch || true
@@ -186,6 +190,13 @@ jobs:
           echo "CONFIG_CRYPTO_LZ4K=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_CRYPTO_LZ4K_OPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_CRYPTO_LZ4KD=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # USB Video Class Gadget driver
+          echo "CONFIG_USB_CONFIGFS_F_UVC=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # Block IO Controller
+          echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_CGROUP_WRITEBACK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Simple LMK
           sed -i '/obj-\$(CONFIG_ANDROID_BINDER_IPC_SELFTEST) += binder_alloc_selftest.o/a obj-\$(CONFIG_ANDROID_SIMPLE_LMK)\t+= simple_lmk.o' drivers/android/Makefile
