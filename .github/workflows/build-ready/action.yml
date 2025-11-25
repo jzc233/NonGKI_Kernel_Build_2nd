@@ -259,13 +259,6 @@ runs:
           cp /tmp/Bin/clean_hook.sh ./
           bash clean_hook.sh
 
-          # Fixed MNT_DETACH not defined
-          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
-            sed -i '/#include "umount_manager.h"/a #define MNT_DETACH 0x00000002' drivers/kernelsu/umount_manager.c
-
-            echo "[+] Defined MNT_DETACH."
-          fi
-
       - name: KPM Function Support
         if: env.KPM_ENABLE == 'true'
         shell: bash
