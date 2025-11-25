@@ -67,6 +67,10 @@ runs:
             echo "[+] Detected SUS_MAP."
           fi
 
+          if grep -q "THREAD_INFO_IN_TASK" "drivers/kernelsu/Kconfig"; then
+            echo "CONFIG_THREAD_INFO_IN_TASK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+          fi
+
       - name: Patch SuSFS 155
         if: env.SUSFS_ENABLE == 'true'
         shell: bash
