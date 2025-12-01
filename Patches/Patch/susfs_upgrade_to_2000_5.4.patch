@@ -214,14 +214,13 @@ index e902bc0..4d475e4 100644
  {
  	const struct cred *old_cred;
 diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index 2581061..a3d75fb 100644
+index 2581061..5213af3 100644
 --- a/fs/proc/fd.c
 +++ b/fs/proc/fd.c
-@@ -59,42 +59,9 @@ static int seq_show(struct seq_file *m, void *v)
- 	if (ret)
+@@ -60,41 +60,9 @@ static int seq_show(struct seq_file *m, void *v)
  		return ret;
  #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
--	mnt = real_mount(file->f_path.mnt);
+ 	mnt = real_mount(file->f_path.mnt);
 -	if (likely(susfs_is_current_proc_umounted()) &&
 -				mnt->mnt_id >= DEFAULT_KSU_MNT_ID)
 -	{
@@ -259,7 +258,7 @@ index 2581061..a3d75fb 100644
 -bypass_orig_flow:
 +	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
 +			   (long long)file->f_pos, f_flags,
-+			   real_mount(path.mnt)->mnt_id);
++			   mnt->mnt_id);
  #else
  	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
  		   (long long)file->f_pos, f_flags,
