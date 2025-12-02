@@ -155,7 +155,7 @@ jobs:
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/zstd_157_to_49.patch
           patch -p1 < zstd_157_to_49.patch || true
 
-          # Patch Blu Scheduitl and Pixel Scheduitl
+          # Patch Blu Scheduitl and Pixel Schedutil
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sched_blu_pixutil_schedhorizon_and_rcu.patch
           patch -p1 < sched_blu_pixutil_schedhorizon_and_rcu.patch || true
 
@@ -175,6 +175,10 @@ jobs:
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/mem_optimize.patch
           patch -p1 < mem_optimize.patch || true
 
+          # Patch Srandom
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/srandom.patch
+          patch -p1 < srandom.patch || true
+
           # Patch Wireguard Fixed
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/wireguard_fixed.patch
           patch -p1 < wireguard_fixed.patch || true
@@ -189,7 +193,7 @@ jobs:
           ## Binderfs
           echo "CONFIG_BINDERFS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
-          # Scheduitl
+          # Schedutil
           echo "CONFIG_CPU_FREQ_GOV_BLU_SCHEDUTIL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_CPU_FREQ_GOV_PIXUTIL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_CPU_FREQ_GOV_SCHEDHORIZON=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
@@ -209,6 +213,10 @@ jobs:
           echo "CONFIG_USB_CONFIGFS_F_UVC=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_VIDEO_V4L2=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_VIDEO_DEV=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # Srandom
+          sed -i 's/^CONFIG_HW_RANDOM=y$/# CONFIG_HW_RANDOM is not set/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          sed -i 's/^CONFIG_HW_RANDOM_MSM_LEGACY=y$/CONFIG_SRANDOM=y/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Block IO Controller
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
