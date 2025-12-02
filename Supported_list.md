@@ -15,12 +15,12 @@
 
 **English**:  
 - OnePlus 8 OxygenOS/ColorOS 13.1 has been tested and can be used on the OnePlus 8, 8T, 8 Pro and 9R. Maintenance of this kernel will be suspended due to issues causing compilation failures.
-- Xiaomi Mix 2S EvolutionX 10 has been backported to Cgroup V2 (UID and Freezer), Cgroup Workingset, Binder (5.15-android13), LZ4 (Updated to 1.10.0, LZ4K, LZ4K_OPLUS, LZ4KD), Zstd (Updated to 1.5.7)、Schedutil (Optimize default, Blu, Pixel, SchedHorizon), UVC, Block IO Controller.
+- Xiaomi Mix 2S EvolutionX 10 has been backported to Cgroup V2 (UID and Freezer), Cgroup Workingset, Binder (5.15-android13), LZ4 (Updated to 1.10.0, LZ4K, LZ4K_OPLUS, LZ4KD), Zstd (Updated to 1.5.7)、Schedutil (Optimize default, Blu, Pixel, SchedHorizon), UVC (Host and Gadget), Block IO Controller, String Memory Optimize, Srandom.
 - Samsung Note 10 Plus is compatible with the Exynos 9850 processor for the EU region. Do not flash this kernel into Qualcomm-based devices.
 - Redmi 8 is also available for 7A, 8A and 8A Dual.
 
 **Chinese**:  
 - 一加 8 OxygenOS/ColorOS 13.1 经测试8、8T、8 Pro、9R 都可用，由于某些问题导致无法通过编译，该内核将暂停维护
-- 小米 Mix2s EvolutionX 10 已移植Cgroup V2 (UID 和 Freezer)、Cgroup Workingset、Binder (5.15-android13)、LZ4（更新至1.10.0、LZ4K、LZ4K_OPLUS、LZ4KD）、Zstd（更新至1.5.7）、调度（优化原生、Blu、Pixel、SchedHorizon）、UVC、Block IO 控制器
+- 小米 Mix2s EvolutionX 10 已移植Cgroup V2 (UID 和 Freezer)、Cgroup Workingset、Binder (5.15-android13)、LZ4（更新至1.10.0、LZ4K、LZ4K_OPLUS、LZ4KD）、Zstd（更新至1.5.7）、调度（优化原生、Blu、Pixel、SchedHorizon）、UVC（Host 和 Gadget）、Block IO 控制器、String内存优化、Srandom随机数
 - 三星 Note 10+ 适配处理器为猎户座9850，为欧盟地区版本，高通版本请勿将该内核刷入进设备中
 - 红米8 同样适用于 7A、8A 以及 8A Dual
