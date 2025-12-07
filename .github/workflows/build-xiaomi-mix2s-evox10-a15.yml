@@ -179,6 +179,14 @@ jobs:
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/srandom.patch
           patch -p1 < srandom.patch || true
 
+          # Patch Lotspeed
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/lotspeed.patch
+          patch -p1 < lotspeed.patch || true
+
+          # Patch BBRPLUS
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/bbrplus.patch
+          patch -p1 < bbrplus.patch || true
+
           # Patch Wireguard Fixed
           wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/wireguard_fixed.patch
           patch -p1 < wireguard_fixed.patch || true
@@ -217,6 +225,10 @@ jobs:
           # Srandom
           sed -i 's/^CONFIG_HW_RANDOM=y$/# CONFIG_HW_RANDOM is not set/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           sed -i 's/^CONFIG_HW_RANDOM_MSM_LEGACY=y$/CONFIG_SRANDOM=y/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # TCP
+          echo "CONFIG_TCP_CONG_LOTSPEED=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_TCP_CONG_BBRPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # Block IO Controller
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
