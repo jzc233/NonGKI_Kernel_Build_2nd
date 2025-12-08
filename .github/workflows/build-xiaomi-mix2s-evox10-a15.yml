@@ -229,6 +229,7 @@ jobs:
           # TCP
           echo "CONFIG_TCP_CONG_LOTSPEED=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_TCP_CONG_BBRPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_NET_SCH_FQ=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }} # Lotspeed need it
 
           # Block IO Controller
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
