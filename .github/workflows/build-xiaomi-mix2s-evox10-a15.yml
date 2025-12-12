@@ -209,6 +209,7 @@ jobs:
           # Cgroup V2
           echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_CGROUP_RDMA=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_CGROUP_WRITEBACK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           ## Cgroup Workingset
           echo "CONFIG_HW_CGROUP_WORKINGSET=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
@@ -231,10 +232,6 @@ jobs:
           echo "CONFIG_TCP_CONG_BBRPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_NET_SCH_FQ=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }} # Lotspeed need it
           sed -i 's/CONFIG_DEFAULT_FQ_CODEL=y/CONFIG_DEFAULT_FQ=y/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # Block IO Controller
-          echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CGROUP_WRITEBACK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
           # RCU
           echo "CONFIG_PREEMPT_RCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
