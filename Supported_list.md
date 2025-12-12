@@ -15,7 +15,7 @@
 **English**:  
 - OnePlus 8 OxygenOS/ColorOS 13.1 has been tested and can be used on the OnePlus 8, 8T, 8 Pro and 9R. Maintenance of this kernel will be suspended due to issues causing compilation failures.
 - OnePlus 8 ColorOS 15-16 has been backported to LZ4 (LZ4K, LZ4K_OPLUS, LZ4KD), Zstd (Updated to 1.5.7)
-- Xiaomi Mix 2S EvolutionX 10 has been backported to Cgroup V2 (UID and Freezer), Cgroup Workingset, Binder (5.15-android13), LZ4 (Updated to 1.10.0, LZ4K, LZ4K_OPLUS, LZ4KD), Zstd (Updated to 1.5.7), Schedutil (Optimize default, Blu, Pixel, SchedHorizon), UVC (Host and Gadget), Block IO Controller, String Memory Optimize, Srandom.
+- Xiaomi Mix 2S EvolutionX 10 has been backported to Cgroup V2 (UID and Freezer), Cgroup Workingset, Binder (5.15-android13), LZ4 (Updated to 1.10.0, LZ4K, LZ4K_OPLUS, LZ4KD), Zstd (Updated to 1.5.7), Schedutil (Optimize default, Blu, Pixel, SchedHorizon), UVC (Host and Gadget), Block IO Controller, String Memory Optimize, Srandom, NTFS3.
 - Samsung Note 10 Plus is compatible with the Exynos 9850 processor for the EU region. Do not flash this kernel into Qualcomm-based devices.
 - Redmi 8 is also available for 7A, 8A and 8A Dual.
 
