@@ -12,8 +12,8 @@ env:
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
 
-  KERNEL_SOURCE : "https://github.com/Evolution-X-Devices/kernel_xiaomi_sdm845.git"
-  KERNEL_BRANCH : "vic"
+  KERNEL_SOURCE : "https://github.com/JackA1ltman/kernel_xiaomi_sdm845_binder_cgroup_v2.git"
+  KERNEL_BRANCH : "staging"
 
   CLANG_SOURCE : "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
   CLANG_BRANCH : "lineage-20.0"
@@ -114,153 +114,12 @@ jobs:
       - name: 🔗 Patch for no-kprobe
         uses: ./.github/workflows/patch-no-kprobe
 
-      - name: 🪛 Extra Kernel Patches
-        run: |
-          # Only ${{ env.DEVICE_NAME }} use it.
-          cd $GITHUB_WORKSPACE/device_kernel
-
-          # Patch Cgroup V2
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/cgroupv2_fork_to_49.patch
-          patch -p1 < cgroupv2_fork_to_49.patch
-
-          # Patch Binder 54 A11
-          # wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/binder_5_4_a11_to_49.patch
-          # patch -p1 < binder_5_4_a11_to_49.patch
-
-          # Patch Binder 515 A13
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/binder_5_15_to_49.patch
-          patch -p1 < binder_5_15_to_49.patch
-
-          # Patch Cgroup Workingset
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/cgroup_workingset.patch
-          patch -p1 < cgroup_workingset.patch
-
-          # Patch LZ4 Updated
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/lz4_1100_to_49.patch
-          patch -p1 < lz4_1100_to_49.patch
-
-          # Patch LZ4K LZ4OPLUS LZ4K
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/lz4k_kd_oplus_to_49.patch
-          patch -p1 < lz4k_kd_oplus_to_49.patch || true
-
-          # Patch LZ4 Fixed
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/lz4_fixed.patch
-          patch -p1 < lz4_fixed.patch || true
-
-          # Patch Simple LMK
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/simple_lmk_to_49.patch
-          patch -p1 < simple_lmk_to_49.patch || true
-
-          # Patch Zstd Updated
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/zstd_157_to_49.patch
-          patch -p1 < zstd_157_to_49.patch || true
-
-          # Patch Blu Scheduitl and Pixel Schedutil
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sched_blu_pixutil_schedhorizon_and_rcu.patch
-          patch -p1 < sched_blu_pixutil_schedhorizon_and_rcu.patch || true
-
-          # Patch USB Video Class Gadget driver
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/uvc.patch
-          patch -p1 < uvc.patch || true
-
-          # Patch DriveDroid Support
-          # wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/drivedroid.patch
-          # patch -p1 < drivedroid.patch || true
-
-          # Patch CPU Boost
-          # wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/cpu_boost.patch
-          # patch -p1 < cpu_boost.patch || true
-
-          # Patch Memory Optimize
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/mem_optimize.patch
-          patch -p1 < mem_optimize.patch || true
-
-          # Patch Srandom
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/srandom.patch
-          patch -p1 < srandom.patch || true
-
-          # Patch Lotspeed
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/lotspeed.patch
-          patch -p1 < lotspeed.patch || true
-
-          # Patch BBRPLUS
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/bbrplus.patch
-          patch -p1 < bbrplus.patch || true
-
-          # Patch Wireguard Fixed
-          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/wireguard_fixed.patch
-          patch -p1 < wireguard_fixed.patch || true
-
       - name: 🪛 Extra Kernel Options
         run: |
           # Only ${{ env.DEVICE_NAME }} use it.
           cd $GITHUB_WORKSPACE/device_kernel
 
-          # Binder
-          sed -i '/^CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"$/d' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          ## Binderfs
-          # echo "CONFIG_ANDROID_BINDERFS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # Schedutil
-          echo "CONFIG_CPU_FREQ_GOV_BLU_SCHEDUTIL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CPU_FREQ_GOV_PIXUTIL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CPU_FREQ_GOV_SCHEDHORIZON=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # Cgroup V2
-          echo "CONFIG_BLK_CGROUP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CGROUP_RDMA=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CGROUP_WRITEBACK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          ## Cgroup Workingset
-          echo "CONFIG_HW_CGROUP_WORKINGSET=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # LZ4KD
-          echo "CONFIG_CRYPTO_LZ4K=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CRYPTO_LZ4K_OPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_CRYPTO_LZ4KD=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # USB Video Class Gadget driver
-          echo "CONFIG_USB_CONFIGFS_F_UVC=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_VIDEO_V4L2=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_VIDEO_DEV=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # Srandom
-          sed -i 's/^CONFIG_HW_RANDOM=y$/# CONFIG_HW_RANDOM is not set/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          sed -i 's/^CONFIG_HW_RANDOM_MSM_LEGACY=y$/CONFIG_SRANDOM=y/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # TCP
-          echo "CONFIG_TCP_CONG_LOTSPEED=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_TCP_CONG_BBRPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_NET_SCH_FQ=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }} # Lotspeed need it
-          sed -i 's/CONFIG_DEFAULT_FQ_CODEL=y/CONFIG_DEFAULT_FQ=y/' ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # RCU
-          echo "CONFIG_PREEMPT_RCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_SRCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_TREE_SRCU=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "# CONFIG_TASKS_RCU is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_RCU_STALL_COMMON=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_RCU_NEED_SEGCBLIST=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_RCU_FANOUT=64=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_RCU_FANOUT_LEAF=16=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_RCU_BOOST=y=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_RCU_BOOST_DELAY=500=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "# CONFIG_RCU_NOCB_CPU_ALL is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # Simple LMK
-          sed -i '/obj-\$(CONFIG_ANDROID_BINDER_IPC_SELFTEST) += binder_alloc_selftest.o/a obj-\$(CONFIG_ANDROID_SIMPLE_LMK)\t+= simple_lmk.o' drivers/android/Makefile
-
-          echo "# CONFIG_MEMCG is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "# CONFIG_MEMCG_SWAP is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "# CONFIG_MEMCG_SWAP_ENABLED is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "# CONFIG_ANDROID_LOW_MEMORY_KILLER is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "# CONFIG_PSI is not set" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_ANDROID_SIMPLE_LMK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_ANDROID_SIMPLE_LMK_AGGRESSION=1" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          echo "CONFIG_ANDROID_SIMPLE_LMK_MINFREE=100" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-
-          # Zram Writeback
-          # echo "CONFIG_ZRAM_WRITEBACK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-          # echo "CONFIG_ZRAM_ENTROPY=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          # Nothing
 
       - name: 🧰 Patch Kernel of Re:Kernel
         uses: ./.github/workflows/patch-rekernel
