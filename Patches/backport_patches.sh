@@ -122,8 +122,7 @@ for i in "${patch_files[@]}"; do
     ## mm/maccess.c
     mm/maccess.c)
         if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
-            sed -i 's/\* strncpy_from_unsafe_user: - Copy a NUL terminated string from unsafe user/\* strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user/' mm/maccess.c
-            sed -i 's/long strncpy_from_unsafe_user(char \*dst, const void __user \*unsafe_addr,/long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,/' mm/maccess.c
+            sed -i 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' mm/maccess.c
 
             if grep -q "strncpy_from_user_nofault" "mm/maccess.c"; then
                 echo "[+] mm/maccess.c Patched!"
