@@ -9,8 +9,8 @@ env:
   DEVICE_NAME : "oneplus_8"
   DEVICE_CODENAME : "instantnoodle"
 
-  CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu- BRAND_SHOW_FLAG=oneplus"
-  EXTRA_CMDS : "NM=llvm-nm OBJDUMP=llvm-objdump STRIP=llvm-strip"
+  CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
+  EXTRA_CMDS : "BRAND_SHOW_FLAG=oneplus NM=llvm-nm OBJDUMP=llvm-objdump STRIP=llvm-strip"
 
   KERNEL_SOURCE : "https://github.com/JackA1ltman/android_kernel_oneplus_sm8250_los_noksu.git"
   KERNEL_BRANCH : "staging"
