@@ -7,6 +7,7 @@ patch_files=(
     fs/namespace.c
     fs/internal.h
     include/linux/uaccess.h
+    kernel/trace/trace_kprobe.c
     mm/maccess.c
     security/selinux/hooks.c
     security/selinux/selinuxfs.c
@@ -98,6 +99,25 @@ for i in "${patch_files[@]}"; do
         echo "======================================"
         ;;
 
+    # kernel/ changes
+    # trace/trace_kprobe.c
+    kernel/trace/trace_kprobe.c)
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
+            sed -i 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' kernel/trace/trace_kprobe.c
+
+            if grep -q "strncpy_from_user_nofault" "kernel/trace/trace_kprobe.c"; then
+                echo "[+] kernel/trace/trace_kprobe.c Patched!"
+                echo "[+] Count: $(grep -c "strncpy_from_user_nofault" "kernel/trace/trace_kprobe.c")"
+            else
+                echo "[-] kernel/trace/trace_kprobe.c patch failed for unknown reasons, please provide feedback in time."
+            fi
+        else
+            echo "[-] KernelSU have no strncpy_from_user_nofault, Skipped."
+        fi
+
+        echo "======================================"
+        ;;
+
     # mm/ changes
     ## mm/maccess.c
     mm/maccess.c)
@@ -118,7 +138,7 @@ for i in "${patch_files[@]}"; do
         echo "======================================"
         ;;
 
-    # security/
+    # security/ changes
     ## selinux/hooks.c
     security/selinux/hooks.c)
         if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
