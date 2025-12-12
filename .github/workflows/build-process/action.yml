@@ -79,6 +79,17 @@ runs:
             fi
           fi
 
+          # Detect
+          if [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
+            sed -i 's/# CONFIG_KPM is not set/CONFIG_KPM=y/' out/.config
+
+            if grep -q "CONFIG_KPM=y" "out/.config"; then
+                echo "[+] Detected KPM."
+            else
+                echo "[-] Could not detect KPM."
+            fi
+          fi
+
           if [[ "$BUILD_CLANG" == "true" ]]; then
             echo "======================"
             echo "=Execuate Clang Build="
