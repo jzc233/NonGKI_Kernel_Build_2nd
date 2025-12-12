@@ -83,7 +83,7 @@ for i in "${patch_files[@]}"; do
     # include/ changes
     ## include/linux/uaccess.h
     include/linux/uaccess.h)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" && [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] >/dev/null 2>&1; then
             sed -i 's/^extern long strncpy_from_unsafe_user/long strncpy_from_user_nofault/' include/linux/uaccess.h
 
             if grep -q "strncpy_from_user_nofault" "include/linux/uaccess.h"; then
@@ -99,29 +99,10 @@ for i in "${patch_files[@]}"; do
         echo "======================================"
         ;;
 
-    # kernel/ changes
-    # trace/trace_kprobe.c
-    kernel/trace/trace_kprobe.c)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
-            sed -i 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' kernel/trace/trace_kprobe.c
-
-            if grep -q "strncpy_from_user_nofault" "kernel/trace/trace_kprobe.c"; then
-                echo "[+] kernel/trace/trace_kprobe.c Patched!"
-                echo "[+] Count: $(grep -c "strncpy_from_user_nofault" "kernel/trace/trace_kprobe.c")"
-            else
-                echo "[-] kernel/trace/trace_kprobe.c patch failed for unknown reasons, please provide feedback in time."
-            fi
-        else
-            echo "[-] KernelSU have no strncpy_from_user_nofault, Skipped."
-        fi
-
-        echo "======================================"
-        ;;
-
     # mm/ changes
     ## mm/maccess.c
     mm/maccess.c)
-        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" >/dev/null 2>&1; then
+        if grep -q "strncpy_from_user_nofault" "drivers/kernelsu/ksud.c" && [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] >/dev/null 2>&1; then
             sed -i 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' mm/maccess.c
 
             if grep -q "strncpy_from_user_nofault" "mm/maccess.c"; then
