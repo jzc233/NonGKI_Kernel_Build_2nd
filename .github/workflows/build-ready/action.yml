@@ -298,6 +298,7 @@ runs:
           # Neccssary
           echo "CONFIG_KSU=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
           echo "# CONFIG_KPROBES is not set" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_HAVE_SYSCALL_TRACEPOINTS=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
 
           # Fork
           if [[ "${{ env.KERNELSU_SOURCE }}" == *rsuntk* ]] || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "rsuntk" ]]; then
