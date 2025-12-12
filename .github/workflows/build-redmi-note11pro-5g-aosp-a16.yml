@@ -123,10 +123,10 @@ jobs:
           echo "CONFIG_SHADOW_CALL_STACK=n" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_LTO_NONE=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
-          # Revert strncpy_from_unsafe_user
-          sed 's/strncpy_from_user_nofault/strncpy_from_unsafe_user/g' ./include/linux/uaccess.h
-          sed 's/strncpy_from_user_nofault/strncpy_from_unsafe_user/g' ./kernel/trace/trace_kprobe.c
-          sed 's/strncpy_from_user_nofault/strncpy_from_unsafe_user/g' ./mm/maccess.c
+          # Revert strncpy_from_user_nofault
+          sed 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' ./include/linux/uaccess.h
+          sed 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' ./kernel/trace/trace_kprobe.c
+          sed 's/strncpy_from_unsafe_user/strncpy_from_user_nofault/g' ./mm/maccess.c
 
           # Remove ksu_handle_setresuid
           sed -i '/#ifdef CONFIG_KSU/,/#endif/d' ./kernel/sys.c
