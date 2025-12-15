@@ -292,7 +292,7 @@ awk '
         ;;
     ## kernel/sys.c
     kernel/sys.c)
-        if grep -q "ksu_handle_setresuid" "kernel/setuid_hook.c" >/dev/null 2>&1; then
+        if grep -q "ksu_handle_setresuid" "drivers/kernelsu/setuid_hook.c" >/dev/null 2>&1; then
 
             if grep -q "__sys_setresuid" "kernel/sys.c" >/dev/null 2>&1; then
                 sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
@@ -309,7 +309,7 @@ awk '
                 echo "[-] kernel/sys.c patch failed for unknown reasons, please provide feedback in time."
             fi
         else
-            echo "[-] Kernel needn't ksu_handle_setresuid, Skipped."
+            echo "[-] KernelSU have no ksu_handle_setresuid, Skipped."
         fi
 
         echo "======================================"
