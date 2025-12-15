@@ -248,6 +248,7 @@ for i in "${patch_files[@]}"; do
     ## sys.c
     kernel/sys.c)
         if grep -q "ksu_handle_setresuid" "kernel/setuid_hook.c" >/dev/null 2>&1; then
+
             if grep -q "__sys_setresuid" "kernel/sys.c" >/dev/null 2>&1; then
                 sed -i '/^SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)/i\#ifdef CONFIG_KSU\nextern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);\n#endif\n' kernel/sys.c
                 sed -i '/return __sys_setresuid(ruid, euid, suid);/i\#ifdef CONFIG_KSU_SUSFS\n\tif (ksu_handle_setresuid(ruid, euid, suid)) {\n\t\tpr_info("Something wrong with ksu_handle_setresuid()\\\\n");\n\t}\n#endif\n' kernel/sys.c
