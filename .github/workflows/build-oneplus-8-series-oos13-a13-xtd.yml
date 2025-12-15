@@ -9,7 +9,7 @@ env:
   DEVICE_NAME : "oneplus_8_cn"
   DEVICE_CODENAME : "instantnoodle"
 
-  CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
+  CUSTOM_CMDS : "BRAND_SHOW_FLAG=oneplus CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
 
   KERNEL_SOURCE : "https://github.com/ppajda/android_kernel_oneplus_sm8250.git"
