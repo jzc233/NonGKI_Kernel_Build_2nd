@@ -271,10 +271,8 @@ runs:
 
           # Fork
           if [[ "${{ env.KERNELSU_SOURCE }}" == *rsuntk* ]] || [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "rsuntk" ]]; then
-            if [[ ${{ env.SUSFS_ENABLE }} == "true" ]] && [[ ${{ env.SUSFS_UPDATE }} == "true" ]]; then
-                echo "CONFIG_KSU_MANUAL_HOOK=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-                echo "CONFIG_KSU_NONE_HOOK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-            else
+            if [[ ${{ env.SUSFS_ENABLE }} != "true" ]]; then
+
                 echo "CONFIG_KSU_MANUAL_HOOK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
             fi
           fi
@@ -290,20 +288,17 @@ runs:
           fi
 
           if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
-            if [[ "${{ env.HOOK_METHOD }}" == "tracepoint" ]]; then
-                echo "CONFIG_KSU_TRACEPOINT_HOOK=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-                echo "Enabled tracepoint."
-            fi
+            echo "CONFIG_KSU_MANUAL_SU=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
 
             if [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
                 echo "CONFIG_KALLSYMS_ALL=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
             fi
 
-            if [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 5 ]; then
-                echo "CONFIG_KSU_THRONE_TRACKER_LEGACY=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-            fi
-
             if [[ "${{ env.SUSFS_ENABLE }}" != true ]]; then
                 echo "CONFIG_KSU_SUSFS=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+
+            elif [[ "${{ env.SUSFS_ENABLE }}" == true ]]; then
+                echo "CONFIG_KSU_MANUAL_HOOK=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+                echo "CONFIG_KSU_NONE_HOOK=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
             fi
           fi
