@@ -120,6 +120,9 @@ jobs:
 
           echo "CONFIG_TECHPACK_CAMERA_ONEPLUS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
+          cd KernelSU
+          git checkout a7b37149678ef852c246b7f044a9ec4b14911fbb
+
       - name: 🧰 Patch Kernel of Re:Kernel
         uses: ./.github/workflows/patch-rekernel
 
