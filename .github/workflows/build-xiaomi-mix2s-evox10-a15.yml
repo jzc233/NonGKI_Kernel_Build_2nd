@@ -120,6 +120,8 @@ jobs:
           cd $GITHUB_WORKSPACE/device_kernel
 
           # Nothing
+          cd KernelSU
+          git checkout f71f861f96c45f8467709d6e020db527fc6b6a6a
 
       - name: 🧰 Patch Kernel of Re:Kernel
         uses: ./.github/workflows/patch-rekernel
