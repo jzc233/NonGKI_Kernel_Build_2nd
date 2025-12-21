@@ -120,6 +120,8 @@ jobs:
           cd $GITHUB_WORKSPACE/device_kernel
 
           # Nothing
+          wget https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Patches/refs/heads/mi_kernel/mix2s_evox_a15/sukisu_patch.patch
+          patch -p1 < sukisu_patch.patch
 
       - name: 🧰 Patch Kernel of Re:Kernel
         uses: ./.github/workflows/patch-rekernel
