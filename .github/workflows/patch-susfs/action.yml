@@ -107,11 +107,11 @@ runs:
                 done
             fi
 
-            if [[ "${{ env.SKIP_PATCH }}" == "true" ]] || [ -n "${{ env.SUSFS_FIXED }}" ]; then
+            if [[ "${{ env.SKIP_PATCH }}" == "true" ]] || [ -n "${{ env.SUSFS_PATCH_FIXED }}" ]; then
                 echo "[+] SuSFS Patch Version: v1.5.5. "
                 echo "[+] SKIP_PATCH enabled or found SuSFS v1.5.5 Fixed Patch, skipping."
                 PACK_FILES
-            elif [[ "${{ env.SKIP_PATCH }}" != "true" ]] || [ -z "${{ env.SUSFS_FIXED }}" ]; then
+            elif [[ "${{ env.SKIP_PATCH }}" != "true" ]] || [ -z "${{ env.SUSFS_PATCH_FIXED }}" ]; then
                 echo "[+] SuSFS Patch Version: v1.5.5. "
                 echo "[-] Found .rej files, Stopped! "
                 PACK_FILES
@@ -125,10 +125,10 @@ runs:
         run: |
           cd $GITHUB_WORKSPACE/device_kernel/
 
-          if [[ -z "${{ env.SUSFS_FIXED }}" ]]; then
+          if [[ -z "${{ env.SUSFS_PATCH_FIXED }}" ]]; then
             echo "You didn't provide any patch file."
           else
-            IFS=',' read -ra FIXED_LIST <<< "${{ env.SUSFS_FIXED }}"
+            IFS=',' read -ra FIXED_LIST <<< "${{ env.SUSFS_PATCH_FIXED }}"
             echo "<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>"
             for i in "${!FIXED_LIST[@]}"; do
               echo "Patching -> ${FIXED_LIST[$i]}"
