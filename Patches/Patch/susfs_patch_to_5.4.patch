@@ -2948,6 +2948,22 @@ index 0000000..c6222c9
 +/* No module exit is needed becuase it should never be a loadable kernel module */
 +//void __init susfs_exit(void)
 +
+diff --git a/include/linux/mount.h b/include/linux/mount.h
+index 40714c6..cae11fb 100644
+--- a/include/linux/mount.h
++++ b/include/linux/mount.h
+@@ -73,7 +73,11 @@ struct vfsmount {
+ 	ANDROID_KABI_RESERVE(1);
+ 	ANDROID_KABI_RESERVE(2);
+ 	ANDROID_KABI_RESERVE(3);
++#ifdef CONFIG_KSU_SUSFS
++	ANDROID_KABI_USE(4, u64 susfs_mnt_id_backup);
++#else
+ 	ANDROID_KABI_RESERVE(4);
++#endif
+ 	void *data;
+ } __randomize_layout;
+ 
 diff --git a/include/linux/susfs.h b/include/linux/susfs.h
 new file mode 100644
 index 0000000..e681536
