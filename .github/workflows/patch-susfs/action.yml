@@ -76,7 +76,7 @@ runs:
 
           # Patch .rej find
           if [[ "${{ env.BUILD_DEBUGGER }}" == "true" ]]; then
-            echo "[+] Checking SuSFS v1.5.5 rej files..."
+            echo "[+] Checking SuSFS v2.0.00 rej files..."
             mapfile -t REJ_FILES < <(find . -type f -name "*.rej")
             if [ ${#REJ_FILES[@]} -eq 0 ]; then
                 echo "[+] Your kernel have no any rej files, Skipped."
@@ -89,11 +89,11 @@ runs:
             fi
 
             if [[ "${{ env.SKIP_PATCH }}" == "true" ]] || [ -n "${{ env.SUSFS_PATCH_FIXED }}" ]; then
-                echo "[+] SuSFS Patch Version: v1.5.5. "
-                echo "[+] SKIP_PATCH enabled or found SuSFS v1.5.5 Fixed Patch, skipping."
+                echo "[+] SuSFS Patch Version: v2.0.00. "
+                echo "[+] SKIP_PATCH enabled or found SuSFS v2.0.00 Fixed Patch, skipping."
                 PACK_FILES
             elif [[ "${{ env.SKIP_PATCH }}" != "true" ]] || [ -z "${{ env.SUSFS_PATCH_FIXED }}" ]; then
-                echo "[+] SuSFS Patch Version: v1.5.5. "
+                echo "[+] SuSFS Patch Version: v2.0.00. "
                 echo "[-] Found .rej files, Stopped! "
                 PACK_FILES
                 false
