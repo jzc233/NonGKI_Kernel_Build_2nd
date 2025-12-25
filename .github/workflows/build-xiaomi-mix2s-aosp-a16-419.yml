@@ -116,8 +116,8 @@ jobs:
           cd $GITHUB_WORKSPACE/device_kernel
 
           # Get neccssary components
-          git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
-          git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
+          # git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
+          # git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
           # git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-dipper arch/arm64/boot/dts/xiaomi
 
           # Build config
