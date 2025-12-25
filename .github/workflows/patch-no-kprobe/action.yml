@@ -68,7 +68,7 @@ runs:
                     echo "Your kernel is already backported, skipping"
                     echo ">                                           <"
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
-                else
+                elif [[ "${{ env.KERNEL_PATCH }}" == "true" ]]; then
                     if [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
@@ -82,7 +82,7 @@ runs:
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
                     else
-                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18)"
+                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18) or Kernel Version >= 4.9."
                         false
                     fi
                     REJ_FOUND
@@ -114,7 +114,7 @@ runs:
                     echo "Your kernel is already backported, skipping"
                     echo ">                                           <"
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
-                else
+                elif [[ "${{ env.KERNEL_PATCH }}" == "true" ]]; then
                     if [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
@@ -128,7 +128,7 @@ runs:
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
                     else
-                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18)"
+                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18) or Kernel Version >= 4.9."
                         false
                     fi
                     REJ_FOUND
@@ -174,7 +174,7 @@ runs:
                     echo "Your kernel is already backported, skipping"
                     echo ">                                           <"
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
-                else
+                elif [[ "${{ env.KERNEL_PATCH }}" == "true" ]]; then
                     if [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
@@ -188,7 +188,7 @@ runs:
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
                     else
-                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18)"
+                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18) or Kernel Version >= 4.9."
                         false
                     fi
                     REJ_FOUND
