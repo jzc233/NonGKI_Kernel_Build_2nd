@@ -69,22 +69,28 @@ runs:
                     echo ">                                           <"
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
                 elif [[ "${{ env.KERNEL_PATCH }}" == "true" ]]; then
-                    if [[ ${{ env.FIRST_VERSION }} -lt 4 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
-                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18)."
+                    if [[ ${{ env.FIRST_VERSION }} -lt 4 ]] && [[ ${{ env.SECOND_VERSION }} -lt 18 ]]; then
+                        echo "[-] Could not support ARMV7A kernel(Kernel Version < 3.18)."
 
                         false
                     elif [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_3.18.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 4 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.4.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 9 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     fi
                     REJ_FOUND
                 fi
@@ -116,22 +122,28 @@ runs:
                     echo ">                                           <"
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
                 elif [[ "${{ env.KERNEL_PATCH }}" == "true" ]]; then
-                    if [[ ${{ env.FIRST_VERSION }} -lt 4 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
-                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18)."
+                    if [[ ${{ env.FIRST_VERSION }} -lt 4 ]] && [[ ${{ env.SECOND_VERSION }} -lt 18 ]]; then
+                        echo "[-] Could not support ARMV7A kernel(Kernel Version < 3.18)."
 
                         false
                     elif [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_3.18.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 4 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.4.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 9 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     fi
                     REJ_FOUND
                 fi
@@ -177,22 +189,28 @@ runs:
                     echo ">                                           <"
                     echo ">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<"
                 elif [[ "${{ env.KERNEL_PATCH }}" == "true" ]]; then
-                    if [[ ${{ env.FIRST_VERSION }} -lt 4 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
-                        echo "Could not support ARMV7A kernel(Kernel Version < 3.18)."
+                    if [[ ${{ env.FIRST_VERSION }} -lt 4 ]] && [[ ${{ env.SECOND_VERSION }} -lt 18 ]]; then
+                        echo "[-] Could not support ARMV7A kernel(Kernel Version < 3.18)."
 
                         false
                     elif [[ ${{ env.FIRST_VERSION }} == 3 ]] && [[ ${{ env.SECOND_VERSION }} == 18 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_3.18.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_3.18.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 4 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.4.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.4.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     elif [[ ${{ env.FIRST_VERSION }} == 4 ]] && [[ ${{ env.SECOND_VERSION }} == 9 ]]; then
                         cp /tmp/Patches/Patch/backport_kernel_read_and_kernel_write_4.9.patch ./
 
                         patch -p1 < backport_kernel_read_and_kernel_write_4.9.patch || true
+
+                        echo "[+] Patched kernel_write and kernel_read."
                     fi
                     REJ_FOUND
                 fi
