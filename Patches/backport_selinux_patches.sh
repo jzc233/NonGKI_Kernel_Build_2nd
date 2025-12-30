@@ -41,7 +41,7 @@ for i in "${patch_files[@]}"; do
     # security/ changes
     ## selinux/hooks.c
     security/selinux/hooks.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/file_wrapper.c" >/dev/null 2>&1; then
             sed -i 's/struct inode_security_struct \*isec = inode->i_security/struct inode_security_struct *isec = selinux_inode(inode)/g' security/selinux/hooks.c
             sed -i 's/return inode->i_security/return selinux_inode(inode)/g' security/selinux/hooks.c
             sed -i 's/\bisec = inode->i_security;/isec = selinux_inode(inode);/' security/selinux/hooks.c
@@ -90,7 +90,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## selinux/selinuxfs.c
     security/selinux/selinuxfs.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/file_wrapper.c" >/dev/null 2>&1; then
             sed -i 's/(struct inode_security_struct \*)inode->i_security/selinux_inode(inode)/g' security/selinux/selinuxfs.c
 
             if grep -q "selinux_inode(inode)" "security/selinux/selinuxfs.c"; then
@@ -124,7 +124,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## selinux/include/objsec.h
     security/selinux/include/objsec.h)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/supercalls.c" >/dev/null 2>&1; then
+        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 20 ] && grep -q "selinux_inode" "drivers/kernelsu/file_wrapper.c" >/dev/null 2>&1; then
             if grep -q "selinux_inode" "security/selinux/include/objsec.h"; then
                 echo "[-] Detected selinux_inode in kernel, Skipped."
             else
