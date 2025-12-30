@@ -126,6 +126,13 @@ jobs:
       - name: 🔒 Patch Kernel of Baseband Guard
         uses: ./.github/workflows/patch-baseband-guard
 
+      - name: ❗ Redmi 8 BBG Only
+        run: |
+          # Only ${{ env.DEVICE_NAME }} use it.
+          cd $GITHUB_WORKSPACE/device_kernel
+
+          sed -i "s/'#define DEFINE_LSM(lsm)'/\"\\\\#define DEFINE_LSM(lsm)\"/g" security/selinux/Makefile
+
       - name: 🔧 Patch Hide Stuff
         uses: ./.github/workflows/patch-hide-stuff
 
