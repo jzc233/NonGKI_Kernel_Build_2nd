@@ -102,7 +102,7 @@ jobs:
           KSU_RSUNTK_VERSION=$(cd KernelSU-rsuntk && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
           git clone -b builtin https://github.com/ShirkNeko/SukiSU-Ultra.git KernelSU-SukiSU-Ultra
           KSU_SUKISU_ULTRA_VERSION=$(cd KernelSU-SukiSU-Ultra && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
-          git clone -b next https://github.com/KernelSU-Next/KernelSU-Next.git KernelSU-Next
+          git clone -b legacy https://github.com/KernelSU-Next/KernelSU-Next.git KernelSU-Next
           KSU_NEXT_VERSION=$(cd KernelSU-Next && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
           git clone -b wild https://github.com/WildKernels/Wild_KSU.git KernelSU-Wild
           KSU_WILD_VERSION=$(cd KernelSU-Wild && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
