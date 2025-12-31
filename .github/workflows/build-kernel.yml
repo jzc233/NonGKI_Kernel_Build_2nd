@@ -32,6 +32,13 @@ jobs:
     uses: ./.github/workflows/build-xiaomi-11-evox-a16.yml
     secrets: inherit
 
+  build-xiaomi-mix2s-aosp-a16-419:
+    name: "Xiaomi Mix2s (AOSP A16) 4.19"
+    strategy:
+      fail-fast: true
+    uses: ./.github/workflows/build-xiaomi-mix2s-aosp-a16-419.yml
+    secrets: inherit
+
   ## Redmi
   build-redmi-k20pro-aosp-a15-sovietstaross:
     name: "Redmi K20 Pro (Soviet-Star-OSS)(Based-AOSP A15)"
