@@ -18,7 +18,7 @@ patch_files=(
     kernel/sys.c
 )
 
-PATCH_LEVEL="1.6"
+PATCH_LEVEL="1.7"
 KERNEL_VERSION=$(head -n 3 Makefile | grep -E 'VERSION|PATCHLEVEL' | awk '{print $3}' | paste -sd '.')
 FIRST_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $1}')
 SECOND_VERSION=$(echo "$KERNEL_VERSION" | awk -F '.' '{print $2}')
@@ -89,19 +89,23 @@ for i in "${patch_files[@]}"; do
         ;;
     ## read_write.c
     fs/read_write.c)
-        if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 19 ]; then
-            sed -i '/^SYSCALL_DEFINE3(read, unsigned int, fd, char __user \*, buf, size_t, count)/i \#ifdef CONFIG_KSU\nextern bool ksu_vfs_read_hook __read_mostly;\nextern __attribute__((cold)) int ksu_handle_sys_read(unsigned int fd,\n\t\t\tchar __user **buf_ptr, size_t *count_ptr);\n#endif' fs/read_write.c
-            sed -i '0,/if (f\.file) {/{s/if (f\.file) {/\n#ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, \&buf, \&count);\n#endif\n\tif (f.file) {/}' fs/read_write.c
-        else
-            sed -i '/^SYSCALL_DEFINE3(read, unsigned int, fd, char __user \*, buf, size_t, count)/i \#ifdef CONFIG_KSU\nextern bool ksu_vfs_read_hook __read_mostly;\nextern __attribute__((cold)) int ksu_handle_sys_read(unsigned int fd,\n\t\t\tchar __user **buf_ptr, size_t *count_ptr);\n#endif' fs/read_write.c
-            sed -i '/return ksys_read(fd, buf, count);/i\#ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, &buf, &count);\n#endif' fs/read_write.c
-        fi
+        if grep -q "sys_read" "drivers/kernelsu/arch.h" >/dev/null 2>&1; then
+            if [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 19 ]; then
+                sed -i '/^SYSCALL_DEFINE3(read, unsigned int, fd, char __user \*, buf, size_t, count)/i \#ifdef CONFIG_KSU\nextern bool ksu_vfs_read_hook __read_mostly;\nextern __attribute__((cold)) int ksu_handle_sys_read(unsigned int fd,\n\t\t\tchar __user **buf_ptr, size_t *count_ptr);\n#endif' fs/read_write.c
+                sed -i '0,/if (f\.file) {/{s/if (f\.file) {/\n#ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, \&buf, \&count);\n#endif\n\tif (f.file) {/}' fs/read_write.c
+            else
+                sed -i '/^SYSCALL_DEFINE3(read, unsigned int, fd, char __user \*, buf, size_t, count)/i \#ifdef CONFIG_KSU\nextern bool ksu_vfs_read_hook __read_mostly;\nextern __attribute__((cold)) int ksu_handle_sys_read(unsigned int fd,\n\t\t\tchar __user **buf_ptr, size_t *count_ptr);\n#endif' fs/read_write.c
+                sed -i '/return ksys_read(fd, buf, count);/i\#ifdef CONFIG_KSU\n\tif (unlikely(ksu_vfs_read_hook))\n\t\tksu_handle_sys_read(fd, &buf, &count);\n#endif' fs/read_write.c
+            fi
 
-        if grep -q "ksu_handle_sys_read" "fs/read_write.c"; then
-            echo "[+] fs/read_write.c Patched!"
-            echo "[+] Count: $(grep -c "ksu_handle_sys_read" "fs/read_write.c")"
+            if grep -q "ksu_handle_sys_read" "fs/read_write.c"; then
+                echo "[+] fs/read_write.c Patched!"
+                echo "[+] Count: $(grep -c "ksu_handle_sys_read" "fs/read_write.c")"
+            else
+                echo "[-] fs/read_write.c patch failed for unknown reasons, please provide feedback in time."
+            fi
         else
-            echo "[-] fs/read_write.c patch failed for unknown reasons, please provide feedback in time."
+            echo "[-] KernelSU have no sys_read, Skipped."
         fi
 
         echo "======================================"
@@ -183,9 +187,21 @@ for i in "${patch_files[@]}"; do
     ## security.c
     security/security.c)
         if [ "$FIRST_VERSION" -lt 4 ] && [ "$SECOND_VERSION" -lt 19 ]; then
-            sed -i '/int security_binder_set_context_mgr(struct task_struct/i \#ifdef CONFIG_KSU\n\extern int ksu_bprm_check(struct linux_binprm *bprm);\n\extern int ksu_handle_rename(struct dentry *old_dentry, struct dentry *new_dentry);\n\extern int ksu_handle_setuid(struct cred *new, const struct cred *old);\n\#endif' security/security.c
+            if grep -q "sys_read" "drivers/kernelsu/arch.h" >/dev/null 2>&1; then
+                echo "[+] Checked sys_read existed in KernelSU!"
+
+                sed -i '/int security_binder_set_context_mgr(struct task_struct/i \#ifdef CONFIG_KSU\n\extern int ksu_bprm_check(struct linux_binprm *bprm);\n\extern int ksu_handle_rename(struct dentry *old_dentry, struct dentry *new_dentry);\n\extern int ksu_handle_setuid(struct cred *new, const struct cred *old);\n\#endif' security/security.c
+            else
+                sed -i '/int security_binder_set_context_mgr(struct task_struct/i \#ifdef CONFIG_KSU\n\extern int ksu_bprm_check(struct linux_binprm *bprm);\n\extern int ksu_handle_rename(struct dentry *old_dentry, struct dentry *new_dentry);\n\extern int ksu_handle_setuid(struct cred *new, const struct cred *old);\nextern int ksu_file_permission(struct file *file, int mask);\n\#endif' security/security.c
+            fi
+
             sed -i '/ret = security_ops->bprm_check_security(bprm);/i \#ifdef CONFIG_KSU\n\tksu_bprm_check(bprm);\n\#endif' security/security.c
-            sed -i '/if (unlikely(IS_PRIVATE(old_dentry->d_inode) ||/i \#ifdef CONFIG_KSU\n\tksu_handle_rename(old_dentry, new_dentry);\n\#endif' security/security.c
+            sed -i '0,/if (unlikely(IS_PRIVATE(old_dentry->d_inode) ||/b; /if (unlikely(IS_PRIVATE(old_dentry->d_inode) ||/i\#ifdef CONFIG_KSU\n\tksu_handle_rename(old_dentry, new_dentry);\n#endif\n' security/security.c
+
+            if ! grep -q "sys_read" "drivers/kernelsu/arch.h" >/dev/null 2>&1; then
+                sed -i '/ret = security_ops->file_permission(file, mask);/i\#ifdef CONFIG_KSU\n\tksu_file_permission(file, mask);\n#endif\n' security/security.c
+            fi
+
             sed -i '/return security_ops->task_fix_setuid(new, old, flags);/i \#ifdef CONFIG_KSU\n\tksu_handle_setuid(new, old);\n\#endif' security/security.c
 
             if grep -q "ksu_handle_setuid" "security/security.c"; then
@@ -202,7 +218,7 @@ for i in "${patch_files[@]}"; do
         ;;
     ## selinux/hooks.c
     security/selinux/hooks.c)
-        if grep "security_secid_to_secctx" "security/selinux/hooks.c"; then
+        if grep -q "security_secid_to_secctx" "security/selinux/hooks.c" >/dev/null 2>&1; then
             echo "[-] Detected security_secid_to_secctx existed, security/selinux/hooks.c Patched!"
         elif [ "$FIRST_VERSION" -lt 5 ] && [ "$SECOND_VERSION" -lt 10 ] && grep -q "grab_transition_sids" "drivers/kernelsu/ksud.c"; then
             sed -i '/^static int check_nnp_nosuid(const struct linux_binprm \*bprm,/i\#ifdef CONFIG_KSU\nextern bool is_ksu_transition(const struct task_security_struct *old_tsec,\n\t\t\t\tconst struct task_security_struct *new_tsec);\n#endif\n' security/selinux/hooks.c
