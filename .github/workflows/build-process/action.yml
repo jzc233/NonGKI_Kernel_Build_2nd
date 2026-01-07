@@ -211,7 +211,7 @@ runs:
           bash pack_error_files.sh
 
       - name: KPM Patcher (Experiment)
-        if: env.KPM_ENABLE == 'true'
+        if: env.KPM_ENABLE == 'true' && env.KPM_INLINE == 'true'
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE/device_kernel/
