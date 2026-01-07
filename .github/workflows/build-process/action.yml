@@ -80,7 +80,7 @@ runs:
           fi
 
           # KPM Detect
-          if [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
+          if [[ "${{ env.KPM_ENABLE }}" == "true" ]] && [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
             if grep -q "CONFIG_KALLSYMS_ALL=y" "out/.config"; then
                 sed -i 's/# CONFIG_KPM is not set/CONFIG_KPM=y/' out/.config
                 echo "[+] Enabled KPM."
