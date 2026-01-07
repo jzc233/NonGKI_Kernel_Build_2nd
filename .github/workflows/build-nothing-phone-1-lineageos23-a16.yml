@@ -1,4 +1,4 @@
-name: Build Nothing Phone (1) (LineageOS 23.0)
+name: Build Nothing Phone (1) (LineageOS 23.0 A16)
 
 on:
   workflow_call:
@@ -90,7 +90,7 @@ env:
 
 jobs:
   build-kernel:
-    name: Build Kernel
+    name: Nothing Phone (1) (LineageOS 23.0 A16)
     runs-on: ubuntu-latest # u can changed to ubuntu 22.04, and need container set ubuntu-latest
     # container: archlinux/archlinux:latest # if u need use arch linux -> archlinux/archlinux:latest or ubuntu 20.04 -> ubuntu:focal
     env:
@@ -137,4 +137,5 @@ jobs:
         uses: ./.github/workflows/pack-process
 
       - name: ✏️ Upload Artifacts
+
         uses: ./.github/workflows/upload-files
