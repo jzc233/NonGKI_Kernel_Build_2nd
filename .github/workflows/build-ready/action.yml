@@ -84,6 +84,15 @@ runs:
             fi
           fi
 
+      - name: KernelSU Additional Process
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/device_kernel
+
+          # Clean Hook
+          cp /tmp/Bin/clean_hook.sh ./
+          bash clean_hook.sh
+
       - name: Set KernelSU
         shell: bash
         run: |
@@ -204,15 +213,6 @@ runs:
             KERNELSU_MANUAL
           fi
           echo "KERNELSU_METHOD=${{ env.KERNELSU_METHOD }}" >> $GITHUB_ENV
-
-      - name: KernelSU Additional Process
-        shell: bash
-        run: |
-          cd $GITHUB_WORKSPACE/device_kernel
-
-          # Clean Hook
-          cp /tmp/Bin/clean_hook.sh ./
-          bash clean_hook.sh
 
       - name: KPM Function Support
         if: env.KPM_ENABLE == 'true'
