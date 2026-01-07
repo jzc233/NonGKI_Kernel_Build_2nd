@@ -220,39 +220,53 @@ runs:
         run: |
           cd $GITHUB_WORKSPACE/device_kernel
 
-          if [[ -d "${{ env.KERNELSU_NAME }}/kernel/kpm" ]]; then
-            if [ -f "include/linux/set_memory.h" ]; then
+          ENABLE_KPM_CONFIGS(){
 
-                echo "CONFIG_KPM=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-                ${{ env.CURLX }} "${{ env.KPM_PATCH_SOURCE }}" patch
-                chmod a+x patch
-                echo "[+]Set KPM successfully !"
-            elif [ "${{ env.FIRST_VERSION }}" -lt 5 ] && [ "${{ env.SECOND_VERSION }}" -lt 10 ]; then
+            echo "CONFIG_KALLSYMS=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
+            echo "CONFIG_KALLSYMS_ALL=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
 
-                cp /tmp/Patches/Patch/set_memory_to_49_and_low.patch ./
-                patch -p1 < set_memory_to_49_and_low.patch || true
-                echo "CONFIG_KPM=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
-                ${{ env.CURLX }} "${{ env.KPM_PATCH_SOURCE }}" patch
-                chmod a+x patch
-                echo "[+]Patch set_memory successfully !"
-                echo "[-]If have patch error (.rej), manual fixed it."
+          }
+
+          GET_KPM_TOOLS(){
+
+            echo "[+] Detected set_memory."
+            echo "CONFIG_KPM=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+            ${{ env.CURLX }} "${{ env.KPM_PATCH_SOURCE }}" patch
+            chmod a+x patch
+
+            if [ -f "patch" ]; then
+                echo "[+] Set KPM successfully !"
             else
-
-                echo "===================Error==================="
-                echo "=                                         ="
-                echo "=Your kernel cannot support KPM function. ="
-                echo "=                                         ="
-                echo "==========================================="
+                echo "[-] Get KPM patch failed !"
                 false
             fi
-          else
 
-            echo "=============Error============="
-            echo "=                             ="
-            echo "=KernelSU cannot support KPM !="
-            echo "=                             ="
-            echo "==============================="
+          }
+
+          if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]] && [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
+            echo "[+] Detected SukiSU-Ultra and enabled KPM Inline."
+            ENABLE_KPM_CONFIGS
+
+            if [ -f "include/linux/set_memory.h" ]; then
+                GET_KPM_TOOLS
+
+            else
+                cp /tmp/Patches/Patch/set_memory_to_49_and_low.patch ./
+                patch -p1 < set_memory_to_49_and_low.patch || true
+                echo "[+] Patch set_memory successfully !"
+                echo "[-] If have patch error (.rej), manual fixed it."
+                GET_KPM_TOOLS
+
+            fi
+
+          elif [[ "${{ env.KERNELSU_SOURCE }}" != *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" != "sukisu" ]] && [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
+            echo "[-] KernelSU not supported KPM Inline!"
             false
+
+          else
+            ENABLE_KPM_CONFIGS
+            echo "[+] Necessary configuration items have been enabled for the KPM feature."
+
           fi
 
       - name: Set KSU and SUSFS for DEFCONFIG
@@ -285,10 +299,6 @@ runs:
 
           if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
             echo "CONFIG_KSU_MANUAL_SU=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-
-            if [[ "${{ env.KPM_ENABLE }}" == "true" ]]; then
-                echo "CONFIG_KALLSYMS_ALL=y" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-            fi
 
             if [[ "${{ env.SUSFS_ENABLE }}" != true ]]; then
                 echo "CONFIG_KSU_SUSFS=n" >> ./arch/${{ env.KERNEL_ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
