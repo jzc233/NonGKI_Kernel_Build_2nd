@@ -1,4 +1,4 @@
-#!/bin/bash
+# #!/bin/bash
 # Patches author: simonpunk @ Gitlab
 #                 backslashxx @ Github
 # Shell authon: JackA1ltman <cs2dtzq@163.com>
@@ -102,7 +102,11 @@ for i in "${patch_files[@]}"; do
         ;;
     ## stat.c
     fs/stat.c)
-        sed -i '/#include <asm\/uaccess.h>/i #ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs_def.h>\n#endif' fs/stat.c
+        if grep -q "unistd" "fs/stat.c"; then
+            sed -i '/#include <asm\/unistd.h>/a\#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs_def.h>\n#endif' fs/stat.c
+        else
+            sed -i '/#include <asm\/uaccess.h>/i #ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs_def.h>\n#endif' fs/stat.c
+        fi
         sed -i '/#if !defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_SYS_NEWFSTATAT)/i\#ifdef CONFIG_KSU_SUSFS\nextern bool ksu_init_rc_hook __read_mostly;\nextern void ksu_handle_sys_newfstatat(int fd, loff_t *kstat_size_ptr);\n#endif\n' fs/stat.c
         awk '/return cp_new_stat\(&stat, statbuf\);/{line=$0; lnum=NR} {lines[NR]=$0} END {for(i=1;i<=NR;i++) if(i==lnum) {print "#ifdef CONFIG_KSU_SUSFS"; print "\tif (unlikely(ksu_init_rc_hook)) {"; print "\t\tksu_handle_sys_newfstatat(dfd, &stat.size);"; print "\t}"; print "#endif"; print lines[i]} else print lines[i]}' fs/stat.c > fs/stat.c.tmp && mv fs/stat.c.tmp fs/stat.c
 
