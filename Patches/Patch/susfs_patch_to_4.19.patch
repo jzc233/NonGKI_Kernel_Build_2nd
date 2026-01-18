@@ -1,20 +1,3 @@
-diff --git a/.git/index b/.git/index
-index 15a88aa..7ffa10f 100644
-Binary files a/.git/index and b/.git/index differ
-diff --git a/.git/logs/HEAD b/.git/logs/HEAD
-index 6f87a07..2c2ac14 100644
---- a/.git/logs/HEAD
-+++ b/.git/logs/HEAD
-@@ -1 +1 @@
--0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1766631818 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
-+0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1763695795 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
-diff --git a/.git/logs/refs/heads/15.0-pipa b/.git/logs/refs/heads/15.0-pipa
-index 6f87a07..2c2ac14 100644
---- a/.git/logs/refs/heads/15.0-pipa
-+++ b/.git/logs/refs/heads/15.0-pipa
-@@ -1 +1 @@
--0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1766631818 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
-+0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1763695795 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
 diff --git a/fs/Makefile b/fs/Makefile
 index 0fc34ca..8f4b814 100644
 --- a/fs/Makefile
