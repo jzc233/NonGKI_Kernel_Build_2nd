@@ -121,8 +121,15 @@ for i in "${patch_files[@]}"; do
         fi
 
         if grep -q "ksu_handle_vfs_fstat" "drivers/kernelsu/ksud.c"; then
-            sed -i '/int vfs_statx_fd(unsigned int fd, struct kstat \*stat,/i\#ifdef CONFIG_KSU_SUSFS\nextern bool ksu_init_rc_hook __read_mostly;\nextern void ksu_handle_vfs_fstat(int fd, loff_t *kstat_size_ptr);\n#endif \/\/ #ifdef CONFIG_KSU_SUSFS' fs/stat.c
-            sed -i '/\t\tfdput(f);/i\#ifdef CONFIG_KSU_SUSFS\n\t\tif (unlikely(ksu_init_rc_hook)) {\n\t\t\tksu_handle_vfs_fstat(fd, \&stat->size);\n\t\t}\n#endif \/\/ #ifdef CONFIG_KSU_SUSFS' fs/stat.c
+            if grep -q "vfs_statx_fd" "fs/stat.c"; then
+                sed -i '/int vfs_statx_fd(unsigned int fd, struct kstat \*stat,/i\#ifdef CONFIG_KSU_SUSFS\nextern bool ksu_init_rc_hook __read_mostly;\nextern void ksu_handle_vfs_fstat(int fd, loff_t *kstat_size_ptr);\n#endif \/\/ #ifdef CONFIG_KSU_SUSFS' fs/stat.c
+                sed -i '/\t\tfdput(f);/i\#ifdef CONFIG_KSU_SUSFS\n\t\tif (unlikely(ksu_init_rc_hook)) {\n\t\t\tksu_handle_vfs_fstat(fd, \&stat->size);\n\t\t}\n#endif \/\/ #ifdef CONFIG_KSU_SUSFS' fs/stat.c
+
+            else
+                sed -i '/int vfs_fstat(unsigned int fd, struct kstat \*stat)/i\#ifdef CONFIG_KSU_SUSFS\nextern bool ksu_init_rc_hook __read_mostly;\nextern void ksu_handle_vfs_fstat(int fd, loff_t *kstat_size_ptr);\n#endif \/\/ #ifdef CONFIG_KSU_SUSFS' fs/stat.c
+                sed -i '/\t\tfdput(f);/i\#ifdef CONFIG_KSU_SUSFS\n\t\tif (unlikely(ksu_init_rc_hook)) {\n\t\t\tksu_handle_vfs_fstat(fd, \&stat->size);\n\t\t}\n#endif \/\/ #ifdef CONFIG_KSU_SUSFS' fs/stat.c
+
+            fi
 
         elif grep -q "ksu_init_rc_hook" "drivers/kernelsu/ksud.c"; then
             sed -i '/#if !defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_SYS_NEWFSTATAT)/i\#ifdef CONFIG_KSU_SUSFS\nextern bool ksu_init_rc_hook __read_mostly;\nextern void ksu_handle_sys_newfstatat(int fd, loff_t *kstat_size_ptr);\n#endif\n' fs/stat.c
