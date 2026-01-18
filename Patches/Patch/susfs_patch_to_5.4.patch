@@ -1,3 +1,38 @@
+diff --git a/.git/index b/.git/index
+index ad9e1aa..f63c995 100644
+Binary files a/.git/index and b/.git/index differ
+diff --git a/.git/logs/HEAD b/.git/logs/HEAD
+index a1078ee..53c55a5 100644
+--- a/.git/logs/HEAD
++++ b/.git/logs/HEAD
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 6fd7609f90995c774f78ba1887618c3a642ad84e JackA1ltman <cs2dtzq@163.com> 1766631944 +0800	clone: from https://github.com/LineageOS/android_kernel_xiaomi_sm8350.git
++0000000000000000000000000000000000000000 6fd7609f90995c774f78ba1887618c3a642ad84e JackA1ltman <cs2dtzq@163.com> 1763698850 +0800	clone: from https://github.com/LineageOS/android_kernel_xiaomi_sm8350.git
+diff --git a/.git/logs/refs/heads/lineage-22.2 b/.git/logs/refs/heads/lineage-22.2
+index a1078ee..53c55a5 100644
+--- a/.git/logs/refs/heads/lineage-22.2
++++ b/.git/logs/refs/heads/lineage-22.2
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 6fd7609f90995c774f78ba1887618c3a642ad84e JackA1ltman <cs2dtzq@163.com> 1766631944 +0800	clone: from https://github.com/LineageOS/android_kernel_xiaomi_sm8350.git
++0000000000000000000000000000000000000000 6fd7609f90995c774f78ba1887618c3a642ad84e JackA1ltman <cs2dtzq@163.com> 1763698850 +0800	clone: from https://github.com/LineageOS/android_kernel_xiaomi_sm8350.git
+diff --git a/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.idx b/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.idx
+similarity index 88%
+rename from sm8350_a15_los_bak/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.idx
+rename to sm8350_a15_los/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.idx
+index 038b568..a1a0d39 100644
+Binary files a/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.idx and b/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.idx differ
+diff --git a/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.pack b/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.pack
+similarity index 99%
+rename from sm8350_a15_los_bak/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.pack
+rename to sm8350_a15_los/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.pack
+index 12f089f..255ca28 100644
+Binary files a/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.pack and b/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.pack differ
+diff --git a/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.rev b/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.rev
+similarity index 99%
+rename from sm8350_a15_los_bak/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.rev
+rename to sm8350_a15_los/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.rev
+index 1a843ea..faf8107 100644
+Binary files a/.git/objects/pack/pack-b5a39c88857b172612a02c2554f691377e0a4824.rev and b/.git/objects/pack/pack-8397a0cbe744d29407cf70910f6d263b69d32946.rev differ
 diff --git a/fs/Makefile b/fs/Makefile
 index 1c949ac..b3282ad 100644
 --- a/fs/Makefile
@@ -1974,10 +2009,10 @@ index 4960c69..7647d9c 100644
  
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..c6222c9
+index 0000000..e6bf0ae
 --- /dev/null
 +++ b/fs/susfs.c
-@@ -0,0 +1,993 @@
+@@ -0,0 +1,995 @@
 +#include <linux/version.h>
 +#include <linux/cred.h>
 +#include <linux/fs.h>
@@ -2349,7 +2384,9 @@ index 0000000..c6222c9
 +/* sus_mount */
 +#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 +static DEFINE_SPINLOCK(susfs_spin_lock_sus_mount);
-+bool susfs_hide_sus_mnts_for_all_procs = true; // hide sus mounts for all processes by default
++// - Default to false now so zygisk can pick up the sus mounts without the need to turn it off manually in post-fs-data stage
++//   otherwise user needs to turn it on in post-fs-data stage and turn it off in boot-completed stage
++bool susfs_hide_sus_mnts_for_all_procs = false;
 +
 +void susfs_set_hide_sus_mnts_for_all_procs(void __user **user_info) {
 +	struct st_susfs_hide_sus_mnts_for_all_procs info = {0};

@@ -1,3 +1,38 @@
+diff --git a/.git/index b/.git/index
+index 4e177ab..ce71673 100644
+Binary files a/.git/index and b/.git/index differ
+diff --git a/.git/logs/HEAD b/.git/logs/HEAD
+index 9749fb4..2009e4b 100644
+--- a/.git/logs/HEAD
++++ b/.git/logs/HEAD
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 e21e98053a2a94b666bc23db555ca8a0c967df32 JackA1ltman <cs2dtzq@163.com> 1766631696 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8150.git
++0000000000000000000000000000000000000000 e21e98053a2a94b666bc23db555ca8a0c967df32 JackA1ltman <cs2dtzq@163.com> 1763694896 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8150.git
+diff --git a/.git/logs/refs/heads/15.0-base b/.git/logs/refs/heads/15.0-base
+index 9749fb4..2009e4b 100644
+--- a/.git/logs/refs/heads/15.0-base
++++ b/.git/logs/refs/heads/15.0-base
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 e21e98053a2a94b666bc23db555ca8a0c967df32 JackA1ltman <cs2dtzq@163.com> 1766631696 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8150.git
++0000000000000000000000000000000000000000 e21e98053a2a94b666bc23db555ca8a0c967df32 JackA1ltman <cs2dtzq@163.com> 1763694896 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8150.git
+diff --git a/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.idx b/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.idx
+similarity index 82%
+rename from sm8150_a15_crdroid_bak/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.idx
+rename to sm8150_a15_crdroid/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.idx
+index d758aed..712768d 100644
+Binary files a/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.idx and b/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.idx differ
+diff --git a/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.pack b/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.pack
+similarity index 99%
+rename from sm8150_a15_crdroid_bak/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.pack
+rename to sm8150_a15_crdroid/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.pack
+index 47a1510..6a83fc2 100644
+Binary files a/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.pack and b/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.pack differ
+diff --git a/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.rev b/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.rev
+similarity index 99%
+rename from sm8150_a15_crdroid_bak/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.rev
+rename to sm8150_a15_crdroid/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.rev
+index da18e0c..84fe1c9 100644
+Binary files a/.git/objects/pack/pack-96fa4fe02eea12b8f822b5678434dd28e81baec7.rev and b/.git/objects/pack/pack-70322173510b3d38e11cc00617e6f4ff8312847f.rev differ
 diff --git a/fs/Makefile b/fs/Makefile
 index 3bbe62a..c9d9eef 100644
 --- a/fs/Makefile
@@ -2026,10 +2061,10 @@ index e6ceb3e..f13ac70 100644
  
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..c6222c9
+index 0000000..e6bf0ae
 --- /dev/null
 +++ b/fs/susfs.c
-@@ -0,0 +1,993 @@
+@@ -0,0 +1,995 @@
 +#include <linux/version.h>
 +#include <linux/cred.h>
 +#include <linux/fs.h>
@@ -2401,7 +2436,9 @@ index 0000000..c6222c9
 +/* sus_mount */
 +#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 +static DEFINE_SPINLOCK(susfs_spin_lock_sus_mount);
-+bool susfs_hide_sus_mnts_for_all_procs = true; // hide sus mounts for all processes by default
++// - Default to false now so zygisk can pick up the sus mounts without the need to turn it off manually in post-fs-data stage
++//   otherwise user needs to turn it on in post-fs-data stage and turn it off in boot-completed stage
++bool susfs_hide_sus_mnts_for_all_procs = false;
 +
 +void susfs_set_hide_sus_mnts_for_all_procs(void __user **user_info) {
 +	struct st_susfs_hide_sus_mnts_for_all_procs info = {0};

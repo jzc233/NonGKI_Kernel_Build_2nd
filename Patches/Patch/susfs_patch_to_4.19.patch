@@ -1,3 +1,20 @@
+diff --git a/.git/index b/.git/index
+index 15a88aa..7ffa10f 100644
+Binary files a/.git/index and b/.git/index differ
+diff --git a/.git/logs/HEAD b/.git/logs/HEAD
+index 6f87a07..2c2ac14 100644
+--- a/.git/logs/HEAD
++++ b/.git/logs/HEAD
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1766631818 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
++0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1763695795 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
+diff --git a/.git/logs/refs/heads/15.0-pipa b/.git/logs/refs/heads/15.0-pipa
+index 6f87a07..2c2ac14 100644
+--- a/.git/logs/refs/heads/15.0-pipa
++++ b/.git/logs/refs/heads/15.0-pipa
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1766631818 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
++0000000000000000000000000000000000000000 a97afbdcb6cc7798257aa95d60017ac5b97c6b0f JackA1ltman <cs2dtzq@163.com> 1763695795 +0800	clone: from https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250.git
 diff --git a/fs/Makefile b/fs/Makefile
 index 0fc34ca..8f4b814 100644
 --- a/fs/Makefile
@@ -2008,10 +2025,10 @@ index 2978659..4c4712f 100644
  
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..c6222c9
+index 0000000..e6bf0ae
 --- /dev/null
 +++ b/fs/susfs.c
-@@ -0,0 +1,993 @@
+@@ -0,0 +1,995 @@
 +#include <linux/version.h>
 +#include <linux/cred.h>
 +#include <linux/fs.h>
@@ -2383,7 +2400,9 @@ index 0000000..c6222c9
 +/* sus_mount */
 +#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 +static DEFINE_SPINLOCK(susfs_spin_lock_sus_mount);
-+bool susfs_hide_sus_mnts_for_all_procs = true; // hide sus mounts for all processes by default
++// - Default to false now so zygisk can pick up the sus mounts without the need to turn it off manually in post-fs-data stage
++//   otherwise user needs to turn it on in post-fs-data stage and turn it off in boot-completed stage
++bool susfs_hide_sus_mnts_for_all_procs = false;
 +
 +void susfs_set_hide_sus_mnts_for_all_procs(void __user **user_info) {
 +	struct st_susfs_hide_sus_mnts_for_all_procs info = {0};
