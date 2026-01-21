@@ -2018,7 +2018,7 @@ index 2978659..4c4712f 100644
  
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..71be41a
+index 0000000..19d5276
 --- /dev/null
 +++ b/fs/susfs.c
 @@ -0,0 +1,995 @@
@@ -2397,7 +2397,7 @@ index 0000000..71be41a
 +//   otherwise user needs to turn it on in post-fs-data stage and turn it off in boot-completed stage
 +bool susfs_hide_sus_mnts_for_non_su_procs = false;
 +
-+void susfs_set_hide_sus_mnts_for_all_procs(void __user **user_info) {
++void susfs_set_hide_sus_mnts_for_non_su_procs(void __user **user_info) {
 +	struct st_susfs_hide_sus_mnts_for_non_su_procs info = {0};
 +
 +	if (copy_from_user(&info, (struct st_susfs_hide_sus_mnts_for_non_su_procs __user*)*user_info, sizeof(info))) {
