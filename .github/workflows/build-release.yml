@@ -56,7 +56,7 @@ jobs:
         | Redmi 8 | olive | 4.19 | Based-AOSP | 15 | AnyKernel3 | SukiSU(U) | ✅ | ✅ | ✅ | ✅ | Inline |
         | Redmi Note 7 | lavender | 4.19 | Based-AOSP | 15 | AnyKernel3 | rsuntk | ✅ | ❌ | ❌ | ❌ | Inline |
         | Samsung Note 10 | d1 | 4.14 | OneUI 7 | 15 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ❌ | ❌ | Inline |
-        | Redmi Note 11 Pro 5G | veux | 5.4 | Based-AOSP | 16 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ✅ | ❌ | Inline |
+        | Redmi Note 11 Pro 5G | veux | 5.4 | Based-AOSP | 16 | AnyKernel3 | ReSukiSU | ✅ | ❌ | ✅ | ❌ | Inline |
         | OnePlus 8 | instantnoodle | 4.19 | Color OS 15 | 13 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ✅ | ✅ | Inline |
         | Xiaomi Mix2s | polaris | 4.19 | Based-AOSP | 16 | AnyKernel3 | SukiSU(U) | ✅ | ❌ | ❌ | ❌ | Inline |
         | Nothing Phone (1) | spacewar | 5.4 | Lineage OS 23.0 | 16 | AnyKernel3 | rsuntk | ✅ | ❌ | ❌ | ❌ | Inline |
@@ -107,6 +107,8 @@ jobs:
           KSU_SUKISU_ULTRA_VERSION=$(cd KernelSU-SukiSU-Ultra && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
           git clone -b legacy https://github.com/KernelSU-Next/KernelSU-Next.git KernelSU-Next
           KSU_NEXT_VERSION=$(cd KernelSU-Next && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
+          git clone -b builtin https://github.com/ReSukiSU/ReSukiSU.git KernelSU-ReSukiSU
+          KSU_RESUKISU_VERSION=$(cd KernelSU-ReSukiSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
 
           # Input release note
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
@@ -115,6 +117,7 @@ jobs:
           echo "[KernelSU-rsuntk](https://github.com/rsuntk/KernelSU) Version: $KSU_RSUNTK_VERSION  " >> $GITHUB_ENV
           echo "[KernelSU-SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra) Version: $KSU_SUKISU_ULTRA_VERSION  " >> $GITHUB_ENV
           echo "[KernelSU-Next](https://github.com/KernelSU-Next/KernelSU-Next) Version: $KSU_NEXT_VERSION  " >> $GITHUB_ENV
+          echo "[KernelSU-ReSukiSU](https://github.com/ReSukiSU/ReSukiSU) Version: $KSU_RESUKISU_VERSION  " >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       # Create GitHub Release and upload files if make_release is true
