@@ -240,7 +240,7 @@ runs:
           GET_KPATCH_NEXT_TOOLS(){
 
             REPO="KernelSU-Next/KPatch-Next"
-            ${{ env.CURLX }} "https://github.com/$REPO/releases/latest/download/kpatch-android" kpatch-android
+            ${{ env.CURLX }} "https://github.com/$REPO/releases/latest/download/kpimg-linux" kpatch-android
             ${{ env.CURLX }} "https://github.com/$REPO/releases/latest/download/kptools-linux" kptools-linux
 
             if [ -f "kptools-linux" ]; then

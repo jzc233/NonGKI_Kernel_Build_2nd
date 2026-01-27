@@ -261,7 +261,7 @@ runs:
                   if [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
                     cp patch "$IMAGE_DIR/"
                   else
-                    cp kpatch-android "$IMAGE_DIR/"
+                    cp kpimg-linux "$IMAGE_DIR/"
                     cp kptools-linux "$IMAGE_DIR/"
                   fi
 
@@ -288,7 +288,7 @@ runs:
               if [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
                 cp patch "$IMAGE_DIR/"
               else
-                cp kpatch-android "$IMAGE_DIR/"
+                cp kpimg-linux "$IMAGE_DIR/"
                 cp kptools-linux "$IMAGE_DIR/"
               fi
 
@@ -310,7 +310,7 @@ runs:
               if [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
                 cp patch "$IMAGE_DIR/"
               else
-                cp kpatch-android "$IMAGE_DIR/"
+                cp kpimg-linux "$IMAGE_DIR/"
                 cp kptools-linux "$IMAGE_DIR/"
               fi
 
