@@ -33,7 +33,7 @@ env:
   KERNELSU_BRANCH : ""
 
   KERNELSU_AUTO_GET : "true"
-  KERNELSU_AUTO_FORK : "rsuntk" # magic, rsuntk , next and sukisu
+  KERNELSU_AUTO_FORK : "sukisu" # magic, rsuntk , next and sukisu
 
   SUSFS_ENABLE : true
   SUSFS_FIXED : true
@@ -129,6 +129,13 @@ jobs:
           echo "CONFIG_LTO_NONE=n" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_SHADOW_CALL_STACK=n" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           echo "CONFIG_RELR=n" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+
+          # EROFS
+          echo "CONFIG_EROFS_FS=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_EROFS_FS_ZIP=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_EROFS_FS_XATTR=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_EROFS_FS_POSIX_ACL=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
+          echo "CONFIG_EROFS_FS_SECURITY=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
       - name: 🧰 Patch Kernel of Re:Kernel
         uses: ./.github/workflows/patch-rekernel
