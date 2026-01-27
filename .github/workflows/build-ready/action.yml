@@ -226,9 +226,9 @@ runs:
             echo "[+] Detected set_memory."
             echo "CONFIG_KPM=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
             ${{ env.CURLX }} "${{ env.KPM_PATCH_SOURCE }}" patch
-            chmod a+x patch
 
             if [ -f "patch" ]; then
+                chmod a+x patch
                 echo "[+] Get KPM Tools successfully !"
             else
                 echo "[-] Get KPM Tools failed !"
@@ -241,10 +241,10 @@ runs:
 
             REPO="KernelSU-Next/KPatch-Next"
             ${{ env.CURLX }} "https://github.com/$REPO/releases/latest/download/kpimg-linux" kpimg-linux
-            ${{ env.CURLX }} "https://github.com/$REPO/releases/latest/download/kptools-linux" kpimg-linux
-            chmod a+x kptools-linux
+            ${{ env.CURLX }} "https://github.com/$REPO/releases/latest/download/kptools-linux" kptools-linux
 
             if [ -f "kptools-linux" ]; then
+                chmod a+x kptools-linux
                 echo "[+] Get KPatch-Next Tools successfully !"
             else
                 echo "[-] Get KPatch-Next Tools failed !"
