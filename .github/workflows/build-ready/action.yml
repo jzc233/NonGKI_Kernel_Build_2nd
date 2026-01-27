@@ -270,12 +270,15 @@ runs:
             fi
 
           elif [[ "${{ env.KERNELSU_SOURCE }}" != *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" != "sukisu" ]] && [[ "${{ env.KPM_INLINE }}" == "true" ]]; then
-            echo "[-] KernelSU not supported KPM Inline!"
+            echo "[-] Your KernelSU Fork could not support KPM Inline!"
             false
+
+          elif [[ "${{ env.KPM_KPATCH_NEXT }}" == "true" ]]; then
+            GET_KPATCH_NEXT_TOOLS
 
           else
             ENABLE_KPM_CONFIGS
-            GET_KPATCH_NEXT_TOOLS
+            echo "[+] Necessary configuration items have been enabled for the KPM feature."
 
           fi
 
