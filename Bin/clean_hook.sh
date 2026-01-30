@@ -26,7 +26,6 @@ done
 # Removal of KernelSU Hook
 
 for file in "${KSU_CLEAN_FILES[@]}"; do
-    perl -i -0777 -pe 's/#ifndef CONFIG_KSU[^\n]*\n(.*?)#else\n(.*?)#endif\n/$1/gs; s/#ifdef CONFIG_KSU[^\n]*\n(.*?)#else\n(.*?)#endif\n/$1/gs' "${file}"
     sed -i '/#ifdef CONFIG_KSU/,/#endif/d' "${file}"
 
     if grep -q "CONFIG_KSU" "${file}"; then
@@ -39,7 +38,6 @@ done
 # Removal of SuSFS
 
 for file in "${SUSFS_CLEAN_FILES[@]}"; do
-    perl -i -0777 -pe 's/#ifndef CONFIG_KSU_SUSFS[^\n]*\n(.*?)#else\n(.*?)#endif\n/$1/gs; s/#ifdef CONFIG_KSU_SUSFS[^\n]*\n(.*?)#else\n(.*?)#endif\n/$1/gs' "${file}"
     sed -i '/#ifdef CONFIG_KSU_SUSFS/,/#endif/d' "${file}"
     sed -i '/#if defined(CONFIG_KSU_SUSFS/,/#endif/d' "${file}"
     sed -i '/#ifndef CONFIG_KSU_SUSFS/,/#endif/d' "${file}"
