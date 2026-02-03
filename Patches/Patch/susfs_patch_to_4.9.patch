@@ -2982,7 +2982,7 @@ index 0000000..70b7ec8
 +		return 0;
 +	if (target_path_is_found)
 +		return 0;
-+	if (susfs_fname_len(file_name) == 13 && !memcmp(susfs_fname_arg(file_name), "Android", 7)) {
++	if (susfs_fname_len(file_name) == 7 && !memcmp(susfs_fname_arg(file_name), "Android", 7)) {
 +		SUSFS_LOGI("'%s' detected, mask: %d\n", SDCARD_ANDROID_DATA_PATH, mask);
 +		target_path_is_found = true;
 +		unwatch_one_dir(&g_watch);
