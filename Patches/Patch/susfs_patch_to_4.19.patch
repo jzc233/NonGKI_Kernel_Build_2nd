@@ -2018,7 +2018,7 @@ index 2978659..4c4712f 100644
  
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..e50b954
+index 0000000..70b7ec8
 --- /dev/null
 +++ b/fs/susfs.c
 @@ -0,0 +1,1229 @@
@@ -3144,7 +3144,7 @@ index 0000000..e50b954
 +	return 0;
 +}
 +
-+static const struct fsnotify_ops ksu_ops = {
++static const struct fsnotify_ops fsnotify_ops = {
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0)
 +	.handle_inode_event = susfs_handle_sdcard_inode_event,
 +#else
