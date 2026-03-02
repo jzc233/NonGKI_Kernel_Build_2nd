@@ -223,7 +223,7 @@ runs:
           if [[ "${{ env.KERNELSU_SOURCE }}" == *SukiSU* ]] || [[ "${{ env.KERNELSU_AUTO_FORK }}" == "sukisu" ]]; then
             cd $GITHUB_WORKSPACE/device_kernel/KernelSU
             wget -q https://github.com/ahmed-alnassif/SukiSU-Ultra/commit/8560c5fd2518296defdb12ab761431513cf093ab.patch -O SukiSU_Fixed.patch
-            git am SukiSU_Fixed.patch
+            patch -p1 < SukiSU_Fixed.patch
             echo "[+] Successfully."
           else
             echo "[-] You needn't this patch, Skipped."
