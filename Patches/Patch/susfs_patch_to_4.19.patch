@@ -509,7 +509,7 @@ index 94f388e..c984d5d 100644
  	return filp;
  }
 diff --git a/fs/namespace.c b/fs/namespace.c
-index 5e94ec9..ed7962d 100644
+index 5e94ec9..f76b7f2 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
 @@ -26,10 +26,24 @@
@@ -530,7 +530,7 @@ index 5e94ec9..ed7962d 100644
 +#define CL_COPY_MNT_NS BIT(25) /* used by copy_mnt_ns() */
 +
 +static DEFINE_IDA(susfs_mnt_id_ida);
-+static DEFINE_IDA(susfs_mnt_group_ida)
++static DEFINE_IDA(susfs_mnt_group_ida);
 +
 +#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 +
