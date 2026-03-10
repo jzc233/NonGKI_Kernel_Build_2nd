@@ -1847,7 +1847,7 @@ index 4960c69..1f3e142 100644
  
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..40a4a89
+index 0000000..fadc54a
 --- /dev/null
 +++ b/fs/susfs.c
 @@ -0,0 +1,1064 @@
@@ -2570,7 +2570,7 @@ index 0000000..40a4a89
 +#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MAP
 +
 +/* susfs avc log spoofing */
-+bool susfs_is_avc_log_spoofing_enabled = false;
++extern bool susfs_is_avc_log_spoofing_enabled;
 +
 +void susfs_set_avc_log_spoofing(void __user **user_info) {
 +	struct st_susfs_avc_log_spoofing info = {0};
@@ -3348,7 +3348,7 @@ index fa3f48a..6f7f523 100644
  	if (copy_to_user(name, &tmp, sizeof(tmp)))
  		return -EFAULT;
 diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index 7e1e6bc..06acdc1 100644
+index 7e1e6bc..b153ec3 100644
 --- a/security/selinux/avc.c
 +++ b/security/selinux/avc.c
 @@ -693,6 +693,11 @@ static void avc_audit_pre_callback(struct audit_buffer *ab, void *a)
@@ -3358,7 +3358,7 @@ index 7e1e6bc..06acdc1 100644
 +#ifdef CONFIG_KSU_SUSFS
 +extern u32 susfs_ksu_sid;
 +extern u32 susfs_priv_app_sid;
-+extern bool susfs_is_avc_log_spoofing_enabled;
++bool susfs_is_avc_log_spoofing_enabled = false;
 +#endif
  
  /**
