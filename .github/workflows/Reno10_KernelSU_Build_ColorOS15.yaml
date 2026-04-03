@@ -7,7 +7,7 @@ on:
 env:
   # Device env
   DEVICE_NAME : "oppo_reno10"
-  DEVICE_CODENAME : "qemu"
+  DEVICE_CODENAME : "CPH2531"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
