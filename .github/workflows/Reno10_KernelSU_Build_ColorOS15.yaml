@@ -126,6 +126,18 @@ jobs:
         run: |
           echo "ccflags-y += -Wno-vla -Wno-error=vla -Wno-strict-prototypes" >> device_kernel/techpack/audio/asoc/codecs/sia81xx/Makefile
 
+      - name: Disable Werror for SIA81xx Audio Driver
+        run: |
+          SIA_MAKEFILE="device_kernel/techpack/audio/asoc/codecs/sia81xx/Makefile"
+          
+          if [ -f "$SIA_MAKEFILE" ]; then
+            echo "Found Makefile, disabling VLA and strict-prototype errors..."
+
+            sed -i '1i ccflags-y += -Wno-vla -Wno-strict-prototypes -Wno-error' "$SIA_MAKEFILE"
+          else
+            echo "Error: Makefile not found at $SIA_MAKEFILE"
+          fi
+          
       - name: 🚀 Build Process
         uses: ./.github/workflows/build-process
 
