@@ -33,7 +33,7 @@ env:
   KERNELSU_BRANCH : ""
 
   KERNELSU_AUTO_GET : "true"
-  KERNELSU_AUTO_FORK : "sukisu" # xxksu, rsuntk , next, resukisu and sukisu
+  KERNELSU_AUTO_FORK : "next" # xxksu, rsuntk , next, resukisu and sukisu
 
   SUSFS_ENABLE : false
   SUSFS_FIXED : false
@@ -121,23 +121,6 @@ jobs:
 
       - name: 🔧 Patch Hide Stuff
         uses: ./.github/workflows/patch-hide-stuff
-
-      - name: Fix KernelSU Source Errors
-        run: |
-          cd device_kernel/drivers/kernelsu
-          
-          echo "Repairing supercall.h redefinition..."
-          sed -i '17s/KSU_INSTALL_MAGIC1/KSU_INSTALL_MAGIC2/' include/uapi/supercall.h
-        
-          sed -i '17s/0xDEADBEEF/0x12345678/' include/uapi/supercall.h
-          
-          echo "Repairing app_profile.c missing header..."
-        
-          if ! grep -q "linux/seccomp.h" policy/app_profile.c; then
-            sed -i '1i #include <linux/seccomp.h>' policy/app_profile.c
-          fi
-          
-          echo "KernelSU source fixed."
 
       - name: 🚀 Build Process
         uses: ./.github/workflows/build-process
