@@ -10,7 +10,7 @@ env:
   DEVICE_CODENAME : "CPH2531"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
-  EXTRA_CMDS : "LD=ld.lld"
+  EXTRA_CMDS : 'LD=ld.lld KCFLAGS="-Wno-error -Wno-vla -Wno-strict-prototypes -Wno-declaration-after-statement"'
 
   KERNEL_SOURCE : "https://github.com/miaizhe/Reno10_android_kernel_oppo_sm7325.git"
   KERNEL_BRANCH : "oppo/sm7325_v_15.0.0_reno10"
