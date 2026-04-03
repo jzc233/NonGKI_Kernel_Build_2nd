@@ -121,6 +121,10 @@ jobs:
 
       - name: 🔧 Patch Hide Stuff
         uses: ./.github/workflows/patch-hide-stuff
+        
+      - name: Disable Werror for Audio Techpack
+        run: |
+          echo "ccflags-y += -Wno-vla -Wno-error=vla -Wno-strict-prototypes" >> device_kernel/techpack/audio/asoc/codecs/sia81xx/Makefile
 
       - name: 🚀 Build Process
         uses: ./.github/workflows/build-process
