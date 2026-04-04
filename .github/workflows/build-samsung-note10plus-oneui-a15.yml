@@ -1,4 +1,4 @@
-ame: Build Samsung Note 10 Plus (OneUI A15)
+name: Build Samsung Note 10 Plus (OneUI A15)
 
 on:
   workflow_call:
