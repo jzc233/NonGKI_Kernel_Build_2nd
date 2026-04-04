@@ -1,4 +1,4 @@
-name: Build Oppo Reno10 (ColorOS 15 A15)
+name: Build OPPO Reno 10 (ColorOS 15 A15)
 
 on:
   workflow_call:
@@ -46,7 +46,7 @@ env:
   NEED_DTBO : false
   NEED_SAFE_DTBO : false
 
-  ROM_TEXT : "ColorOS15"
+  ROM_TEXT : "coloros15_a15"
 
   # Other env
   PYTHON_VERSION: "3" # Only 2(Ubuntu 22.04 and Ubuntu 20.04) or 3(Any OS Versions).
@@ -92,7 +92,7 @@ env:
 
 jobs:
   build-kernel:
-    name: Oppo Reno10 (ColorOS 15 A15)
+    name: OPPO Reno 10 (ColorOS 15 A15)
     runs-on: ubuntu-latest # u can changed to ubuntu 22.04, and need container set ubuntu-latest
     # container: archlinux/archlinux:latest # if u need use arch linux -> archlinux/archlinux:latest or ubuntu 20.04 -> ubuntu:focal
     env:
