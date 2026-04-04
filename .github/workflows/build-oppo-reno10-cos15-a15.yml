@@ -45,7 +45,8 @@ env:
 
   NEED_DTBO : false
   NEED_SAFE_DTBO : false
-
+  PACK_KMODULES: "true"
+  
   ROM_TEXT : "coloros15_a15"
 
   # Other env
