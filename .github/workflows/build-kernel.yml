@@ -9,6 +9,13 @@ on:
 
 jobs:
   # OPPO
+  build-oppo-reno10-cos15-a15:
+    name: "OPPO Reno 10 (ColorOS 15 A15)"
+    strategy:
+      fail-fast: true
+    uses: ./.github/workflows/build-oppo-reno10-cos15-a15.yml
+    secrets: inherit
+
   ## Oneplus
   build-oneplus-8-series-oos13-a13-xtd:
     name: "Oneplus 8 Series (ColorOS 13 A13 XTD)"
