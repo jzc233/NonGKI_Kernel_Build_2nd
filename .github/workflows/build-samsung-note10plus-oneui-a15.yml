@@ -1,4 +1,4 @@
-name: Build Samsung Note 10 Plus (OneUI A15)
+ame: Build Samsung Note 10 Plus (OneUI A15)
 
 on:
   workflow_call:
@@ -101,7 +101,7 @@ jobs:
 
     steps:
       - name: ⏰ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: ⌛️ Compilation environment preparation
         uses: ./.github/workflows/build-env
