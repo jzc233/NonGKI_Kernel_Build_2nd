@@ -97,3 +97,11 @@ jobs:
       fail-fast: true
     uses: ./.github/workflows/build-smartisan-u3pro-lineageos18-a11.yml
     secrets: inherit
+
+  # Nothing
+  build-nothing-phone-1-lineageos23-a16:
+    name: "Nothing Phone (1) (LineageOS 23.0 A16)"
+    strategy:
+      fail-fast: true
+    uses: ./.github/workflows/build-nothing-phone-1-lineageos23-a16.yml
+    secrets: inherit
