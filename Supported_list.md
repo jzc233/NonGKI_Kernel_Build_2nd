@@ -7,11 +7,11 @@
 | Xiaomi 11 | All | venus | [5.4/kamikaonashi/venus](https://github.com/kamikaonashi/kernel_xiaomi_venus) | Evolution X 11.X | 16 | AnyKernel3 | ReSukiSU | ✅ | Inline | ✅ | ✅ | ❌ | Stable |  
 | Smartisan U3 Pro | CN | osborn | [4.4/anrui2032/LineageOS](https://github.com/anrui2032/android_kernel_smartisan_sdm660) | Lineage OS 18 | 11 | AnyKernel3 | xxksu | ❌ | Syscall | ❌ | ❌ | ❌ | Stable |  
 | Redmi 8 | All | olive | [4.19/blazey66/sdm439-4.19](https://github.com/blazey66/android_kernel_xiaomi_sdm439-4.19) | Based-AOSP | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ✅ | ✅ | ✅ | Stable |  
-| Redmi Note 7 | CN | lavender | [4.19/pix106/southwest](https://github.com/pix106/android_kernel_xiaomi_southwest-4.19) | Based-AOSP | 15 | AnyKernel3 | rsuntk | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
+| Redmi Note 7 | CN | lavender | [4.19/pix106/southwest](https://github.com/pix106/android_kernel_xiaomi_southwest-4.19) | Based-AOSP | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
 | Samsung Note 10 | EU | d1 | [4.14/Ocin4ever/ExtremeKernel](https://github.com/Ocin4ever/ExtremeKernel) | OneUI 7 | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
 | Redmi Note 11 Pro 5G | INT | veux | [5.4/dereference23/eplus](https://github.com/dereference23/kernel_xiaomi_sm6375) | Based AOSP | 16 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
 | Oneplus 8 | All | instantnoodle | [4.19/toraidl/los](https://github.com/toraidl/android_kernel_oneplus_sm8250_los) | Color OS 15 | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ✅ | ❌ | ✅ | Stable |  
-| Xiaomi Mix2s | All | polaris | [4.19/duckyduckG/sdm845_419](https://github.com/duckyduckG/android_kernel_xiaomi_sdm845_419) | Based AOSP | 16 | AnyKernel3 | rsuntk | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
+| Xiaomi Mix2s | All | polaris | [4.19/duckyduckG/sdm845_419](https://github.com/duckyduckG/android_kernel_xiaomi_sdm845_419) | Based AOSP | 16 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
 | Nothing Phone (1) | All | spacewar | [5.4/LineageOS/LineageOS](https://github.com/LineageOS/android_kernel_nothing_sm7325) | Lineage OS 23.0 | 16 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
 
 **English**:  
