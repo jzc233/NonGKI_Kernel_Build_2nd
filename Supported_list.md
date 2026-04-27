@@ -1,6 +1,6 @@
 | Device | Location | Codename | Kernel/Author/Name | OS | Android | Pack Method | KernelSU | SuSFS | Hook | KPM | Re:Kernel | BBG | Status |  
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|  
-| Oneplus 8 | All | instantnoodle | [4.19/ppajda/XTD](https://github.com/ppajda/android_kernel_oneplus_sm8250) | Oxygen OS 13.1 | 13 | AnyKernel3 | rsuntk | ❌ | Syscall | ❌ | ❌ | ✅ | Stable |  
+| Oneplus 8 | All | instantnoodle | [4.19/ppajda/XTD](https://github.com/ppajda/android_kernel_oneplus_sm8250) | Oxygen OS 13.1 | 13 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ✅ | Stable |  
 | Xiaomi Mix2s | All | polaris | [4.9/Evolution-X-Devices/sdm845](https://github.com/Evolution-X-Devices/kernel_xiaomi_sdm845) | Evolution X 10.X | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ✅ | ✅ | ✅ | Stable |   
 | Redmi K20 Pro | All | raphael | [4.14/SOVIET-ANDROID/SOVIET-STAR-OSS](https://github.com/SOVIET-ANDROID/kernel_xiaomi_raphael) | Based-AOSP | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
 | Samsung Note 10 Plus | EU | d2s | [4.14/Ocin4ever/ExtremeKernel](https://github.com/Ocin4ever/ExtremeKernel) | OneUI 7 | 15 | AnyKernel3 | ReSukiSU | ✅ | Inline | ❌ | ❌ | ❌ | Stable |  
