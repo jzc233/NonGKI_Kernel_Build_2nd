@@ -1,4 +1,4 @@
-name: Build Xiaomi Mix2s (Based AOSP A16) (Kernel 4.19)
+name: Build Xiaomi8 UD (Based AOSP A16) (Kernel 4.19)
 
 on:
   workflow_call:
@@ -6,7 +6,7 @@ on:
 
 env:
   # Device env
-  DEVICE_NAME : "xiaomi_mi8"
+  DEVICE_NAME : "xiaomi_mi8UD"
   DEVICE_CODENAME : "equuleus"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
