@@ -12,8 +12,8 @@ env:
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
 
-  KERNEL_SOURCE : "https://github.com/zcj1an9/kernel_xiaomi_sdm845.git"
-  KERNEL_BRANCH : "1"
+  KERNEL_SOURCE : "https://github.com/zcj1an9/kernel_xiaomi_sdm845_49bpf.git"
+  KERNEL_BRANCH : "stable"
 
   CLANG_SOURCE : "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
   CLANG_BRANCH : "lineage-20.0"
