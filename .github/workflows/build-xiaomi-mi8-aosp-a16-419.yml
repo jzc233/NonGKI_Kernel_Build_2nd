@@ -7,7 +7,7 @@ on:
 env:
   # Device env
   DEVICE_NAME : "xiaomi_mi8"
-  DEVICE_CODENAME : "dipper"
+  DEVICE_CODENAME : "perseus"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
@@ -85,7 +85,7 @@ env:
   SKIP_PATCH: "false" # Ignore errors found in Patch Debugger.
 
   BUILD_OTHER_CONFIG: "true" # Merge config files.
-  MERGE_CONFIG_FILES: "vendor/xiaomi/sdm845-common.config,vendor/xiaomi/dipper.config,vendor/xiaomi/lxc.config"
+  MERGE_CONFIG_FILES: "vendor/xiaomi/sdm845-common.config,vendor/xiaomi/perseus.config,vendor/xiaomi/lxc.config"
 
   FREE_MORE_SPACE: "false" # if u want get more space, enabled it.
 
@@ -122,7 +122,7 @@ jobs:
           # Get neccssary components
           # git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
           # git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
-          # git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-dipper arch/arm64/boot/dts/xiaomi
+          # git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-perseus arch/arm64/boot/dts/xiaomi
 
           # Build config
           echo "CONFIG_COMPAT_VDSO=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
