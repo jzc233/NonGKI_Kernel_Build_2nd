@@ -12,8 +12,8 @@ env:
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
 
-  KERNEL_SOURCE : "https://github.com/duckyduckG/android_kernel_xiaomi_sdm845_419.git"
-  KERNEL_BRANCH : "lineage-23.2_xiaomi"
+  KERNEL_SOURCE : "https://github.com/jzc233/android_kernel_xiaomi_sdm845_419.git"
+  KERNEL_BRANCH : "perf"
 
   CLANG_SOURCE : "https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.7/LLVM-19.1.7-Linux-X64.tar.xz"
   CLANG_BRANCH : ""
@@ -84,7 +84,7 @@ env:
   SKIP_PATCH: "false" # Ignore errors found in Patch Debugger.
 
   BUILD_OTHER_CONFIG: "true" # Merge config files.
-  MERGE_CONFIG_FILES: "vendor/xiaomi/sdm845-common.config,vendor/xiaomi/polaris.config"
+  MERGE_CONFIG_FILES: "vendor/xiaomi/sdm845-common.config,vendor/xiaomi/dipper.config"
 
   FREE_MORE_SPACE: "false" # if u want get more space, enabled it.
 
@@ -119,9 +119,9 @@ jobs:
           cd $GITHUB_WORKSPACE/device_kernel
 
           # Get neccssary components
-          # git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
-          # git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
-          # git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-dipper arch/arm64/boot/dts/xiaomi
+          git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
+          git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
+          git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-dipper arch/arm64/boot/dts/xiaomi
 
           # Build config
           echo "CONFIG_COMPAT_VDSO=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
