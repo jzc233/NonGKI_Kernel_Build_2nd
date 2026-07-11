@@ -13,7 +13,7 @@ env:
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
 
   KERNEL_SOURCE : "https://github.com/jzc233/android_kernel_xiaomi_sdm845_419.git"
-  KERNEL_BRANCH : "lineage-23.2_xiaomi"
+  KERNEL_BRANCH : "perf-5.10-bpf"
 
   CLANG_SOURCE : "https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.7/LLVM-19.1.7-Linux-X64.tar.xz"
   CLANG_BRANCH : ""
@@ -119,9 +119,9 @@ jobs:
           cd $GITHUB_WORKSPACE/device_kernel
 
           # Get neccssary components
-          # git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
-          # git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
-          # git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-dipper arch/arm64/boot/dts/xiaomi
+          git clone https://github.com/duckyduckG/kernel_techpack_mi845_419.git -b main techpack/mi845
+          git clone https://github.com/duckyduckG/devicetree_qcom-sdm845_419.git -b main arch/arm64/boot/dts/qcom-sdm845
+          git clone https://github.com/duckyduckG/devicetree_xiaomi_419.git -b master-dipper arch/arm64/boot/dts/xiaomi
 
           # Build config
           echo "CONFIG_COMPAT_VDSO=y" >> ./arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
