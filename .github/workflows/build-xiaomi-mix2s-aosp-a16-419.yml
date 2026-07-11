@@ -12,7 +12,7 @@ env:
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
 
-  KERNEL_SOURCE : "https://github.com/Kernel114514/android_kernel_xiaomi_sdm845_419.git"
+  KERNEL_SOURCE : "https://github.com/jzc233/android_kernel_xiaomi_sdm845_419.git"
   KERNEL_BRANCH : "lineage-23.2_xiaomi"
 
   CLANG_SOURCE : "https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.7/LLVM-19.1.7-Linux-X64.tar.xz"
