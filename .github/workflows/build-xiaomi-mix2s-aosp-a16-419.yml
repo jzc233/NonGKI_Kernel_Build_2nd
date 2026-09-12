@@ -13,7 +13,7 @@ env:
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
 
   KERNEL_SOURCE : "https://github.com/jzc233/Home.git"
-  KERNEL_BRANCH : "ims"
+  KERNEL_BRANCH : "dpi"
 
   CLANG_SOURCE : "https://github.com/ZyCromerZ/Clang/releases/download/14.0.6-20260619-release/Clang-14.0.6-20260619.tar.gz"
   CLANG_BRANCH : ""
