@@ -6,8 +6,8 @@ on:
 
 env:
   # Device env
-  DEVICE_NAME : "xiaomi_mix2s"
-  DEVICE_CODENAME : "dipper"
+  DEVICE_NAME : "xiaomi_mix3"
+  DEVICE_CODENAME : "perseus"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
@@ -43,7 +43,7 @@ env:
 
   BOOT_SOURCE : ""
 
-  NEED_DTBO : false
+  NEED_DTBO : true
   NEED_SAFE_DTBO : false
 
   ROM_TEXT : "aosp_a16_4.19"
@@ -83,7 +83,7 @@ env:
   SKIP_PATCH: "false" # Ignore errors found in Patch Debugger.
 
   BUILD_OTHER_CONFIG: "true" # Merge config files.
-  MERGE_CONFIG_FILES: "vendor/xiaomi/sdm845-common.config,vendor/xiaomi/dipper.config"
+  MERGE_CONFIG_FILES: "vendor/xiaomi/sdm845-common.config,vendor/xiaomi/perseus.config"
 
   FREE_MORE_SPACE: "false" # if u want get more space, enabled it.
 
