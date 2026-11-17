@@ -6,14 +6,14 @@ on:
 
 env:
   # Device env
-  DEVICE_NAME : "xiaomi_mix2s"
-  DEVICE_CODENAME : "polaris"
+  DEVICE_NAME : "xiaomi_mix3"
+  DEVICE_CODENAME : "perseus"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
 
-  KERNEL_SOURCE : "https://github.com/JackA1ltman/kernel_xiaomi_sdm845_binder_cgroup_v2.git"
-  KERNEL_BRANCH : "staging"
+  KERNEL_SOURCE : "https://github.com/wzy114514sb/kernel_xiaomi_perseus.git"
+  KERNEL_BRANCH : "seventeen"
 
   CLANG_SOURCE : "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
   CLANG_BRANCH : "lineage-20.0"
@@ -86,7 +86,7 @@ env:
   SKIP_PATCH: "false" # Ignore errors found in Patch Debugger.
 
   BUILD_OTHER_CONFIG: "true" # Merge config files.
-  MERGE_CONFIG_FILES: "vendor/xiaomi/polaris.config,vendor/debugfs.config"
+  MERGE_CONFIG_FILES: "vendor/xiaomi/perseus.config,vendor/debugfs.config"
 
   FREE_MORE_SPACE: "false" # if u want get more space, enabled it.
 
