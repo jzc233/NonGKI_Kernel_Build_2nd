@@ -15,7 +15,7 @@ env:
   KERNEL_SOURCE : "https://github.com/zcj1an9/android_kernel_xiaomi_sdm845_419.git"
   KERNEL_BRANCH : "test"
 
-  CLANG_SOURCE : "https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.7/LLVM-19.1.7-Linux-X64.tar.xz"
+  CLANG_SOURCE : "https://github.com/ZyCromerZ/Clang/releases/download/14.0.6-20260619-release/Clang-14.0.6-20260619.tar.gz"
   CLANG_BRANCH : ""
 
   GCC_GNU : false
