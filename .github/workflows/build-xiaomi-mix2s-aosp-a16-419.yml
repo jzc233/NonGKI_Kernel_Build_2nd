@@ -13,7 +13,7 @@ env:
   EXTRA_CMDS : "LLVM=1 LLVM_IAS=1"
 
   KERNEL_SOURCE : "https://github.com/zcj1an9/android_kernel_xiaomi_sdm845_419.git"
-  KERNEL_BRANCH : "test"
+  KERNEL_BRANCH : "A17"
 
   CLANG_SOURCE : "https://github.com/ZyCromerZ/Clang/releases/download/14.0.6-20260619-release/Clang-14.0.6-20260619.tar.gz"
   CLANG_BRANCH : ""
@@ -43,7 +43,7 @@ env:
 
   BOOT_SOURCE : ""
 
-  NEED_DTBO : true
+  NEED_DTBO : false
   NEED_SAFE_DTBO : false
 
   ROM_TEXT : "aosp_a16_4.19"
