@@ -7,7 +7,7 @@ on:
 env:
   # Device env
   DEVICE_NAME : "xiaomi_mix3"
-  DEVICE_CODENAME : "perseus"
+  DEVICE_CODENAME : "dipper"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
@@ -43,7 +43,7 @@ env:
 
   BOOT_SOURCE : ""
 
-  NEED_DTBO : true
+  NEED_DTBO : false
   NEED_SAFE_DTBO : false
 
   ROM_TEXT : "evolution_x_a15"
@@ -79,14 +79,14 @@ env:
   BASEBAND_GUARD_ENABLE: "true" #if u want prevent unauthorized writes to critical partitions/device nodes.
   BASEBAND_GUARD_BOOT: "false" #if u want to protect boot partition.
 
-  GENERATE_DTB: "true" # if u kernel need DTB , but cannot auto generate it. (Only AnyKernel3).
+  GENERATE_DTB: "false" # if u kernel need DTB , but cannot auto generate it. (Only AnyKernel3).
   GENERATE_CHIP: "qcom" # only supported for qcom and mediatek.
 
   BUILD_DEBUGGER: "false" # Output build errors.
   SKIP_PATCH: "false" # Ignore errors found in Patch Debugger.
 
   BUILD_OTHER_CONFIG: "true" # Merge config files.
-  MERGE_CONFIG_FILES: "vendor/xiaomi/perseus.config,vendor/debugfs.config"
+  MERGE_CONFIG_FILES: "vendor/xiaomi/dipper.config,vendor/debugfs.config"
 
   FREE_MORE_SPACE: "false" # if u want get more space, enabled it.
 
